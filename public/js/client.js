@@ -111,7 +111,3 @@ function iceCallback2(candidate,bMore){
     socket.emit('candidate', JSON.stringify({type: 'candidate1', label: candidate.label, candidate: candidate.toSdp()}));
   }
 }
-
-pc1 = new webkitPeerConnection00(null, iceCallback1);
-pc2 = new webkitPeerConnection00(null, iceCallback2);
-pc2.onaddstream = gotRemoteStream;
