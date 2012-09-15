@@ -73,7 +73,7 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('startICE', function(){
-    io.sockets.emit('startICE');
+    client.broadcast.emit('startICEreceiver');
   })
 });
 

@@ -34,10 +34,6 @@ function call() {
   if(!pc1){
     pc1 = new webkitPeerConnection00(null, iceCallback1);
   }
-  if(!pc2) {
-    pc2 = new webkitPeerConnection00(null, iceCallback2);
-    pc2.onaddstream = gotRemoteStream;
-  }
   btn2.disabled = true;
   btn3.disabled = false;
   trace("Starting call");
@@ -54,9 +50,6 @@ function call() {
 }
 
 socket.on('offer', function(offer) {
-  if(!pc1){
-    pc1 = new webkitPeerConnection00(null, iceCallback1);
-  }
   if(!pc2) {
     pc2 = new webkitPeerConnection00(null, iceCallback2);
     pc2.onaddstream = gotRemoteStream;
@@ -71,11 +64,11 @@ socket.on('offer', function(offer) {
 socket.on('answer', function(answer){
   answer = JSON.parse(answer);
   pc1.setRemoteDescription(pc1.SDP_ANSWER, new SessionDescription(answer));
+  pc1.startIce();
   socket.emit('startICE');
 });
 
-socket.on('startICE', function(){
-  pc1.startIce();
+socket.on('startICEreceiver', function(){
   pc2.startIce();
 });
 
@@ -100,17 +93,17 @@ function hangup() {
 function gotRemoteStream(e) {
   var vid = document.createElement("video");
   vid.setAttribute('id', id);
+  vid.setAttribute('autoplay', 'autoplay');
   id++;
   document.body.appendChild(vid);
-
   vid.src = webkitURL.createObjectURL(e.stream);
   trace("Received remote stream");
 }
 
 function iceCallback1(candidate,bMore){
-    if (candidate) {
-      socket.emit('candidate', JSON.stringify({type: 'candidate2', label: candidate.label, candidate: candidate.toSdp()}));
-    }
+  if (candidate) {
+    socket.emit('candidate', JSON.stringify({type: 'candidate2', label: candidate.label, candidate: candidate.toSdp()}));
+  }
 }
 
 function iceCallback2(candidate,bMore){
