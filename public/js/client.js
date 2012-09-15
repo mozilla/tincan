@@ -5,6 +5,9 @@ btn2.disabled = true;
 btn3.disabled = true;
 var pc1,pc2;
 var localstream;
+var peerConnections = [];
+var videoids = [];
+var id = 0;
 
 function trace(text) {
   // This function is used for logging.
@@ -50,7 +53,7 @@ function call() {
   socket.emit('offer', JSON.stringify(offer.toSdp()));
 }
 
-socket.on('offer', function(offer){
+socket.on('offer', function(offer) {
   if(!pc1){
     pc1 = new webkitPeerConnection00(null, iceCallback1);
   }
@@ -94,8 +97,13 @@ function hangup() {
   btn2.disabled = false;
 }
 
-function gotRemoteStream(e){
-  vid2.src = webkitURL.createObjectURL(e.stream);
+function gotRemoteStream(e) {
+  var vid = document.createElement("video");
+  vid.setAttribute('id', id);
+  id++;
+  document.body.appendChild(vid);
+
+  vid.src = webkitURL.createObjectURL(e.stream);
   trace("Received remote stream");
 }
 

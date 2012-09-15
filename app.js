@@ -57,12 +57,10 @@ io.sockets.on('connection', function(client) {
 
   client.on('connect', function() {
     numClients = numClients <= 0 ? 1 : numClients+1;
-    console.log(numClients);
   });
 
   client.on('disconnect', function(){
     numClients = numClients <= 0 ? 0 : numClients-1;
-    console.log(numClients);
   });
 
   client.on('answer', function(ans) {
