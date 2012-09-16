@@ -29,7 +29,6 @@ function start() {
 }
 
 socket.on('newUserConnected', function(socketid) {
-  console.log('new user connected!');
   if(localstream) {
     var lpc = new webkitPeerConnection00(null, iceCallback1);
     lpc.addStream(localstream);
@@ -105,15 +104,19 @@ function hangup() {
   var key;
   for(key in peerConnections) {
     if(peerConnections.hasOwnProperty(key)) {
-      peerConnections[key].close();
-      peerConnections[key] = null;
+      if(peerConnections[key]) {
+        peerConnections[key].close();
+        peerConnections[key] = null;
+      }
     }
   }
 
   for(key in localPeerConnections) {
     if(localPeerConnections.hasOwnProperty(key)) {
-      localPeerConnections[key].close();
-      localPeerConnections[key] = null;
+      if(localPeerConnections[key]) {
+        localPeerConnections[key].close();
+        localPeerConnections[key] = null;
+      }
     }
   }
 
@@ -135,6 +138,7 @@ socket.on('userDisconnect', function(socketid){
   if(vid) {
     document.body.removeChild(vid);
   }
+  peerConnections[socketid] = null;
 });
 
 function iceCallback1(candidate, bMore) {
