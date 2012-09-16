@@ -4,7 +4,8 @@ btn2.disabled = true;
 btn3.disabled = true;
 var pc1,pc2;
 var localstream;
-var peerConnections = [];
+var peerConnections = {};
+var localPeerConnections = {};
 
 function trace(text) {
   // This function is used for logging.
@@ -24,75 +25,103 @@ function gotStream(stream){
 function start() {
   trace("Requesting local stream");
   btn1.disabled = true;
-  navigator.webkitGetUserMedia({audio:true, video:true}, gotStream, function() {});
+  navigator.webkitGetUserMedia({audio:true, video:true}, gotStream);
 }
 
 socket.on('newUserConnected', function(socketid) {
-  if(pc1) {
-    createOfferAndSend(socketid);
+  console.log('new user connected!');
+  if(localstream) {
+    var lpc = new webkitPeerConnection00(null, iceCallback1);
+    lpc.addStream(localstream);
+    localPeerConnections[socketid] = lpc;
+    var offer = lpc.createOffer(null);
+    lpc.setLocalDescription(lpc.SDP_OFFER, offer);
+    socket.emit('offer', JSON.stringify(offer.toSdp()), socketid);
   }
 });
 
 function call() {
-
   btn2.disabled = true;
   btn3.disabled = false;
   trace("Starting call");
-  if (localstream.videoTracks.length > 0)
-    trace('Using Video device: ' + localstream.videoTracks[0].label);
-  if (localstream.audioTracks.length > 0)
-    trace('Using Audio device: ' + localstream.audioTracks[0].label);
+  socket.emit('getConnectedSockets');
+  /*
+  var lpc = new webkitPeerConnection00(null, iceCallback1);
+  lpc.addStream(localstream);
+  localPeerConnections[socket.socket.sessionid] = lpc;
+  var offer = lpc.createOffer(null);
+  lpc.setLocalDescription(lpc.SDP_OFFER, offer);
+  socket.emit('offer', JSON.stringify(offer.toSdp()));
+   */
 
-  pc1.addStream(localstream);
-  createOfferAndSend();
 }
+
+socket.on('getConnectedSockets', function(sockets){
+  sockets = JSON.parse(sockets);
+  var len = sockets.length;
+  var socketid;
+  for(var i = 0; i < len; i++){
+    socketid = sockets[i];
+    if(socketid != socket.socket.sessionid) {
+      var lpc = new webkitPeerConnection00(null, iceCallback1);
+      lpc.addStream(localstream);
+      localPeerConnections[socketid] = lpc;
+      var offer = lpc.createOffer(null);
+      lpc.setLocalDescription(lpc.SDP_OFFER, offer);
+      socket.emit('offer', JSON.stringify(offer.toSdp()), socketid);
+    }
+  }
+});
 
 function createOfferAndSend(socketid) {
-  var offer = pc1.createOffer(null);
-  pc1.setLocalDescription(pc1.SDP_OFFER, offer);
-  socket.emit('offer', JSON.stringify(offer.toSdp()), socketid);
+
 }
 
-socket.on('offer', function(offer) {
+socket.on('offer', function(offer, socketid) {
+  console.log('make peer connection');
   var newpeerconn = new webkitPeerConnection00(null, iceCallback2);
-
+  peerConnections[socketid] = newpeerconn;
+  console.log('set peer connections');
   newpeerconn.onaddstream = gotRemoteStream;
-
   offer = JSON.parse(offer);
   newpeerconn.setRemoteDescription(newpeerconn.SDP_OFFER, new SessionDescription(offer));
   var answer = newpeerconn.createAnswer(offer, {has_audio:true, has_video:true});
   newpeerconn.setLocalDescription(newpeerconn.SDP_ANSWER, answer);
-  peerConnections.push(newpeerconn);
+  peerConnections[socketid] = newpeerconn;
   socket.emit('answer', JSON.stringify({answer: answer.toSdp()}));
 });
 
-socket.on('answer', function(answer){
+socket.on('answer', function(answer, socketid) {
   answer = JSON.parse(answer);
   answer = answer.answer;
-  pc1.setRemoteDescription(pc1.SDP_ANSWER, new SessionDescription(answer));
-  pc1.startIce();
+  var lpc = localPeerConnections[socketid];
+  lpc.setRemoteDescription(lpc.SDP_ANSWER, new SessionDescription(answer));
+  lpc.startIce();
   socket.emit('startICE');
 });
 
-socket.on('startICE', function(){
-  peerConnections[peerConnections.length-1].startIce();
+socket.on('startICE', function(socketid) {
+  peerConnections[socketid].startIce();
 });
 
-socket.on('candidate', function(candidate) {
+socket.on('candidate', function(candidate, socketid) {
   cand = JSON.parse(candidate);
   candidate = new IceCandidate(cand.label, cand.candidate);
-  if(cand.type == "candidate1") pc1.processIceMessage(candidate);
-  else peerConnections[peerConnections.length-1].processIceMessage(candidate);
+  if(cand.type == "candidate1") localPeerConnections[socketid].processIceMessage(candidate);
+  else peerConnections[socketid].processIceMessage(candidate);
 });
-pc1 = new webkitPeerConnection00(null, iceCallback1);
+
 function hangup() {
   trace("Ending call");
-  pc1.close();
+  //pc1.close();
+  /*
   for (var i = peerConnections.length - 1; i >= 0; i--) {
     peerConnections[i].close();
     peerConnections[i] = null;
   }
-  pc1 = null;
+
+   */
+  //pc1 = null;
   btn3.disabled = true;
   btn2.disabled = false;
 }
@@ -117,5 +146,3 @@ function iceCallback2(candidate, bMore){
     socket.emit('candidate', JSON.stringify({type: 'candidate1', label: candidate.label, candidate: candidate.toSdp()}));
   }
 }
-
-pc1 = new webkitPeerConnection00(null, iceCallback1);

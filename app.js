@@ -49,15 +49,14 @@ app.get('/', routes.index);
 
 var numClients = 0;
 var offerid = 1;
+clients = [];
 io.sockets.on('connection', function(client) {
 
   client.broadcast.emit('newUserConnected', client.id);
+  clients.push(client.id);
 
   client.on('offer', function(offer, socketid) {
-    if(socketid) {
-      io.sockets.socket(socketid).emit('offer', offer);
-    }
-    else client.broadcast.emit('offer', offer);
+    io.sockets.socket(socketid).emit('offer', offer, client.id);
   });
 
   client.on('connect', function() {
@@ -66,6 +65,7 @@ io.sockets.on('connection', function(client) {
 
   client.on('disconnect', function() {
     numClients = numClients <= 0 ? 0 : numClients-1;
+    clients.splice(clients.indexOf(client.id), 1);
   });
 
   client.on('answer', function(ans) {
@@ -77,8 +77,12 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('startICE', function(){
-    client.broadcast.emit('startICE');
-  })
+    client.broadcast.emit('startICE', client.id);
+  });
+
+  client.on('getConnectedSockets', function(){
+    client.emit('getConnectedSockets', JSON.stringify(clients));
+  });
 });
 
 app.listen(process.env.PORT || 3000, function() {
