@@ -66,6 +66,7 @@ io.sockets.on('connection', function(client) {
   client.on('disconnect', function() {
     numClients = numClients <= 0 ? 0 : numClients-1;
     clients.splice(clients.indexOf(client.id), 1);
+    client.broadcast.emit('userDisconnect', client.id);
   });
 
   client.on('answer', function(ans) {

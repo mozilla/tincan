@@ -69,7 +69,9 @@ socket.on('offer', function(offer, socketid) {
   var newpeerconn = new webkitPeerConnection00(null, iceCallback2);
   peerConnections[socketid] = newpeerconn;
   console.log('set peer connections');
-  newpeerconn.onaddstream = gotRemoteStream;
+  newpeerconn.onaddstream = function(e) {
+    gotRemoteStream(e, socketid);
+  };
   offer = JSON.parse(offer);
   newpeerconn.setRemoteDescription(newpeerconn.SDP_OFFER, new SessionDescription(offer));
   var answer = newpeerconn.createAnswer(offer, {has_audio:true, has_video:true});
@@ -119,14 +121,21 @@ function hangup() {
   btn2.disabled = false;
 }
 
-function gotRemoteStream(e) {
+function gotRemoteStream(e, socketid) {
   var vid = document.createElement("video");
-  vid.setAttribute('id', 'vid'+Math.random());
+  vid.setAttribute('id', 'vid'+socketid);
   vid.setAttribute('autoplay', 'autoplay');
   document.body.appendChild(vid);
   vid.src = webkitURL.createObjectURL(e.stream);
   trace("Received remote stream");
 }
+
+socket.on('userDisconnect', function(socketid){
+  vid = document.getElementById('vid' + socketid);
+  if(vid) {
+    document.body.removeChild(vid);
+  }
+});
 
 function iceCallback1(candidate, bMore) {
   if (candidate) {
