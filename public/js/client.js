@@ -45,15 +45,6 @@ function call() {
   btn3.disabled = false;
   trace("Starting call");
   socket.emit('getConnectedSockets');
-  /*
-  var lpc = new webkitPeerConnection00(null, iceCallback1);
-  lpc.addStream(localstream);
-  localPeerConnections[socket.socket.sessionid] = lpc;
-  var offer = lpc.createOffer(null);
-  lpc.setLocalDescription(lpc.SDP_OFFER, offer);
-  socket.emit('offer', JSON.stringify(offer.toSdp()));
-   */
-
 }
 
 socket.on('getConnectedSockets', function(sockets){
@@ -72,10 +63,6 @@ socket.on('getConnectedSockets', function(sockets){
     }
   }
 });
-
-function createOfferAndSend(socketid) {
-
-}
 
 socket.on('offer', function(offer, socketid) {
   console.log('make peer connection');
@@ -113,15 +100,21 @@ socket.on('candidate', function(candidate, socketid) {
 
 function hangup() {
   trace("Ending call");
-  //pc1.close();
-  /*
-  for (var i = peerConnections.length - 1; i >= 0; i--) {
-    peerConnections[i].close();
-    peerConnections[i] = null;
+  var key;
+  for(key in peerConnections) {
+    if(peerConnections.hasOwnProperty(key)) {
+      peerConnections[key].close();
+      peerConnections[key] = null;
+    }
   }
 
-   */
-  //pc1 = null;
+  for(key in localPeerConnections) {
+    if(localPeerConnections.hasOwnProperty(key)) {
+      localPeerConnections[key].close();
+      localPeerConnections[key] = null;
+    }
+  }
+
   btn3.disabled = true;
   btn2.disabled = false;
 }
