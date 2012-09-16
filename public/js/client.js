@@ -1,13 +1,10 @@
 var socket = io.connect();
-socket.emit('connect');
 btn1.disabled = false;
 btn2.disabled = true;
 btn3.disabled = true;
 var pc1,pc2;
 var localstream;
 var peerConnections = [];
-var videoids = [];
-var id = 0;
 
 function trace(text) {
   // This function is used for logging.
@@ -30,10 +27,14 @@ function start() {
   navigator.webkitGetUserMedia({audio:true, video:true}, gotStream, function() {});
 }
 
-function call() {
-  if(!pc1){
-    pc1 = new webkitPeerConnection00(null, iceCallback1);
+socket.on('newUserConnected', function(socketid) {
+  if(pc1) {
+    createOfferAndSend(socketid);
   }
+});
+
+function call() {
+
   btn2.disabled = true;
   btn3.disabled = false;
   trace("Starting call");
@@ -43,71 +44,78 @@ function call() {
     trace('Using Audio device: ' + localstream.audioTracks[0].label);
 
   pc1.addStream(localstream);
+  createOfferAndSend();
+}
+
+function createOfferAndSend(socketid) {
   var offer = pc1.createOffer(null);
   pc1.setLocalDescription(pc1.SDP_OFFER, offer);
-
-  socket.emit('offer', JSON.stringify(offer.toSdp()));
+  socket.emit('offer', JSON.stringify(offer.toSdp()), socketid);
 }
 
 socket.on('offer', function(offer) {
-  if(!pc2) {
-    pc2 = new webkitPeerConnection00(null, iceCallback2);
-    pc2.onaddstream = gotRemoteStream;
-  }
+  var newpeerconn = new webkitPeerConnection00(null, iceCallback2);
+
+  newpeerconn.onaddstream = gotRemoteStream;
+
   offer = JSON.parse(offer);
-  pc2.setRemoteDescription(pc2.SDP_OFFER, new SessionDescription(offer));
-  var answer = pc2.createAnswer(offer, {has_audio:true, has_video:true});
-  pc2.setLocalDescription(pc2.SDP_ANSWER, answer);
-  socket.emit('answer', JSON.stringify(answer.toSdp()));
+  newpeerconn.setRemoteDescription(newpeerconn.SDP_OFFER, new SessionDescription(offer));
+  var answer = newpeerconn.createAnswer(offer, {has_audio:true, has_video:true});
+  newpeerconn.setLocalDescription(newpeerconn.SDP_ANSWER, answer);
+  peerConnections.push(newpeerconn);
+  socket.emit('answer', JSON.stringify({answer: answer.toSdp()}));
 });
 
 socket.on('answer', function(answer){
   answer = JSON.parse(answer);
+  answer = answer.answer;
   pc1.setRemoteDescription(pc1.SDP_ANSWER, new SessionDescription(answer));
   pc1.startIce();
   socket.emit('startICE');
 });
 
-socket.on('startICEreceiver', function(){
-  pc2.startIce();
+socket.on('startICE', function(){
+  peerConnections[peerConnections.length-1].startIce();
 });
 
 socket.on('candidate', function(candidate) {
   cand = JSON.parse(candidate);
   candidate = new IceCandidate(cand.label, cand.candidate);
   if(cand.type == "candidate1") pc1.processIceMessage(candidate);
-  else pc2.processIceMessage(candidate);
-  trace("Remote ICE candidate: " + candidate.toSdp());
+  else peerConnections[peerConnections.length-1].processIceMessage(candidate);
 });
-
+pc1 = new webkitPeerConnection00(null, iceCallback1);
 function hangup() {
   trace("Ending call");
   pc1.close();
-  pc2.close();
+  for (var i = peerConnections.length - 1; i >= 0; i--) {
+    peerConnections[i].close();
+    peerConnections[i] = null;
+  }
   pc1 = null;
-  pc2 = null;
   btn3.disabled = true;
   btn2.disabled = false;
 }
 
 function gotRemoteStream(e) {
   var vid = document.createElement("video");
-  vid.setAttribute('id', id);
+  vid.setAttribute('id', 'vid'+Math.random());
   vid.setAttribute('autoplay', 'autoplay');
-  id++;
   document.body.appendChild(vid);
   vid.src = webkitURL.createObjectURL(e.stream);
   trace("Received remote stream");
 }
 
-function iceCallback1(candidate,bMore){
+function iceCallback1(candidate, bMore) {
   if (candidate) {
     socket.emit('candidate', JSON.stringify({type: 'candidate2', label: candidate.label, candidate: candidate.toSdp()}));
   }
 }
 
-function iceCallback2(candidate,bMore){
+function iceCallback2(candidate, bMore){
   if (candidate) {
     socket.emit('candidate', JSON.stringify({type: 'candidate1', label: candidate.label, candidate: candidate.toSdp()}));
   }
 }
+
+pc1 = new webkitPeerConnection00(null, iceCallback1);

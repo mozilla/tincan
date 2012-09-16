@@ -48,32 +48,36 @@ app.configure('production', function(){
 app.get('/', routes.index);
 
 var numClients = 0;
-
+var offerid = 1;
 io.sockets.on('connection', function(client) {
-  client.on('offer', function(offer) {
-    //io.sockets.emit('offer', offer);
-    client.broadcast.emit('offer', offer);
+
+  client.broadcast.emit('newUserConnected', client.id);
+
+  client.on('offer', function(offer, socketid) {
+    if(socketid) {
+      io.sockets.socket(socketid).emit('offer', offer);
+    }
+    else client.broadcast.emit('offer', offer);
   });
 
   client.on('connect', function() {
     numClients = numClients <= 0 ? 1 : numClients+1;
   });
 
-  client.on('disconnect', function(){
+  client.on('disconnect', function() {
     numClients = numClients <= 0 ? 0 : numClients-1;
   });
 
   client.on('answer', function(ans) {
-    //io.sockets.emit('answer', ans);
-    client.broadcast.emit('answer', ans);
+    client.broadcast.emit('answer', ans, client.id);
   });
 
-  client.on('candidate', function(cand){
-    client.broadcast.emit('candidate', cand);
+  client.on('candidate', function(cand) {
+    client.broadcast.emit('candidate', cand, client.id);
   });
 
   client.on('startICE', function(){
-    client.broadcast.emit('startICEreceiver');
+    client.broadcast.emit('startICE');
   })
 });
 
