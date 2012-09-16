@@ -32,9 +32,9 @@ socket.on('newUserConnected', function(socketid) {
   if(localstream) {
     var lpc = new webkitPeerConnection00(null, iceCallback1);
     lpc.addStream(localstream);
-    localPeerConnections[socketid] = lpc;
     var offer = lpc.createOffer(null);
     lpc.setLocalDescription(lpc.SDP_OFFER, offer);
+    localPeerConnections[socketid] = lpc;
     socket.emit('offer', JSON.stringify(offer.toSdp()), socketid);
   }
 });
@@ -55,9 +55,9 @@ socket.on('getConnectedSockets', function(sockets){
     if(socketid != socket.socket.sessionid) {
       var lpc = new webkitPeerConnection00(null, iceCallback1);
       lpc.addStream(localstream);
-      localPeerConnections[socketid] = lpc;
       var offer = lpc.createOffer(null);
       lpc.setLocalDescription(lpc.SDP_OFFER, offer);
+      localPeerConnections[socketid] = lpc;
       socket.emit('offer', JSON.stringify(offer.toSdp()), socketid);
     }
   }
@@ -66,15 +66,17 @@ socket.on('getConnectedSockets', function(sockets){
 socket.on('offer', function(offer, socketid) {
   console.log('make peer connection');
   var newpeerconn = new webkitPeerConnection00(null, iceCallback2);
-  peerConnections[socketid] = newpeerconn;
+  //peerConnections[socketid] = newpeerconn;
   console.log('set peer connections');
   newpeerconn.onaddstream = function(e) {
+    console.log(socketid);
     gotRemoteStream(e, socketid);
   };
   offer = JSON.parse(offer);
   newpeerconn.setRemoteDescription(newpeerconn.SDP_OFFER, new SessionDescription(offer));
   var answer = newpeerconn.createAnswer(offer, {has_audio:true, has_video:true});
   newpeerconn.setLocalDescription(newpeerconn.SDP_ANSWER, answer);
+  console.log('storing in peerConnections for socket:' + socketid);
   peerConnections[socketid] = newpeerconn;
   socket.emit('answer', JSON.stringify({answer: answer.toSdp()}));
 });
@@ -82,6 +84,7 @@ socket.on('offer', function(offer, socketid) {
 socket.on('answer', function(answer, socketid) {
   answer = JSON.parse(answer);
   answer = answer.answer;
+  console.log('getting from localPeerConnections for socket:' + socketid);
   var lpc = localPeerConnections[socketid];
   lpc.setRemoteDescription(lpc.SDP_ANSWER, new SessionDescription(answer));
   lpc.startIce();
@@ -89,10 +92,12 @@ socket.on('answer', function(answer, socketid) {
 });
 
 socket.on('startICE', function(socketid) {
+  console.log('startICE for socket:' + socketid);
   peerConnections[socketid].startIce();
 });
 
 socket.on('candidate', function(candidate, socketid) {
+  console.log('candidate for socket:' + socketid);
   cand = JSON.parse(candidate);
   candidate = new IceCandidate(cand.label, cand.candidate);
   if(cand.type == "candidate1") localPeerConnections[socketid].processIceMessage(candidate);
