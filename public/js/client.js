@@ -6,18 +6,19 @@ var pc1,pc2;
 var localstream;
 var peerConnections = {};
 var localPeerConnections = {};
+var peerConnection = mozRTCPeerConnection || webkitPeerConnection;
 
 function trace(text) {
   // This function is used for logging.
   if (text[text.length - 1] == '\n') {
     text = text.substring(0, text.length - 1);
   }
-  console.log((performance.webkitNow() / 1000).toFixed(3) + ": " + text);
+  // console.log((performance.webkitNow() / 1000).toFixed(3) + ": " + text);
 }
 
 function gotStream(stream){
   trace("Received local stream");
-  vid1.src = webkitURL.createObjectURL(stream);
+  vid1.src = window.URL.createObjectURL(stream);
   localstream = stream;
   btn2.disabled = false;
 }
@@ -25,12 +26,18 @@ function gotStream(stream){
 function start() {
   trace("Requesting local stream");
   btn1.disabled = true;
-  navigator.webkitGetUserMedia({audio:true, video:true}, gotStream);
+  navigator.getMedia = (navigator.getUserMedia ||
+                       navigator.webkitGetUserMedia ||
+                       navigator.mozGetUserMedia ||
+                       navigator.msGetUserMedia);
+  navigator.getMedia({audio:true, video:true}, gotStream, function(err) {
+    console.log("The following error occured: " + err);
+   });
 }
 
 socket.on('newUserConnected', function(socketid) {
   if(localstream) {
-    var lpc = new webkitPeerConnection00(null, iceCallback1);
+    var lpc = new peerConnection(null, iceCallback1);
     lpc.addStream(localstream);
     var offer = lpc.createOffer(null);
     lpc.setLocalDescription(lpc.SDP_OFFER, offer);
@@ -53,7 +60,7 @@ socket.on('getConnectedSockets', function(sockets){
   for(var i = 0; i < len; i++){
     socketid = sockets[i];
     if(socketid != socket.socket.sessionid) {
-      var lpc = new webkitPeerConnection00(null, iceCallback1);
+      var lpc = new peerConnection(null, iceCallback1);
       lpc.addStream(localstream);
       var offer = lpc.createOffer(null);
       lpc.setLocalDescription(lpc.SDP_OFFER, offer);
@@ -65,7 +72,7 @@ socket.on('getConnectedSockets', function(sockets){
 
 socket.on('offer', function(offer, socketid) {
   console.log('make peer connection');
-  var newpeerconn = new webkitPeerConnection00(null, iceCallback2);
+  var newpeerconn = new peerConnection(null, iceCallback2);
   //peerConnections[socketid] = newpeerconn;
   console.log('set peer connections');
   newpeerconn.onaddstream = function(e) {
@@ -134,7 +141,7 @@ function gotRemoteStream(e, socketid) {
   vid.setAttribute('id', 'vid'+socketid);
   vid.setAttribute('autoplay', 'autoplay');
   document.body.appendChild(vid);
-  vid.src = webkitURL.createObjectURL(e.stream);
+  vid.src = window.URL.createObjectURL(e.stream);
   trace("Received remote stream");
 }
 
