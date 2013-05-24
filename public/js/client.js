@@ -7,6 +7,7 @@ var localstream;
 var peerConnections = {};
 var localPeerConnections = {};
 var peerConnection = mozRTCPeerConnection || webkitPeerConnection;
+// var SessionDescription = RTCSessionDescription || mozRTCSessionDescription;
 
 function trace(text) {
   // This function is used for logging.
@@ -54,6 +55,7 @@ function call() {
 }
 
 socket.on('getConnectedSockets', function(sockets){
+  // SessionDescription = mozRTCSessionDescription;
   sockets = JSON.parse(sockets);
   var len = sockets.length;
   var socketid;
@@ -63,7 +65,10 @@ socket.on('getConnectedSockets', function(sockets){
       var lpc = new peerConnection(null, iceCallback1);
       lpc.addStream(localstream);
       var offer = lpc.createOffer(null);
-      lpc.setLocalDescription(lpc.SDP_OFFER, offer);
+
+      offer = new SessionDescription(offer);
+      lpc.setLocalDescription(offer);
+      // lpc.setLocalDescription(lpc.SDP_OFFER, offer);
       localPeerConnections[socketid] = lpc;
       socket.emit('offer', JSON.stringify(offer.toSdp()), socketid);
     }
@@ -71,8 +76,11 @@ socket.on('getConnectedSockets', function(sockets){
 });
 
 socket.on('offer', function(offer, socketid) {
+  SessionDescription = RTCSessionDescription || mozRTCSessionDescription;
+
   console.log('make peer connection');
   var newpeerconn = new peerConnection(null, iceCallback2);
+
   //peerConnections[socketid] = newpeerconn;
   console.log('set peer connections');
   newpeerconn.onaddstream = function(e) {
@@ -80,7 +88,9 @@ socket.on('offer', function(offer, socketid) {
     gotRemoteStream(e, socketid);
   };
   offer = JSON.parse(offer);
-  newpeerconn.setRemoteDescription(newpeerconn.SDP_OFFER, new SessionDescription(offer));
+  offer = new SessionDescription(offer);
+  newpeerconn.setRemoteDescription(offer);
+  // newpeerconn.setRemoteDescription(newpeerconn.SDP_OFFER, new SessionDescription(offer));
   var answer = newpeerconn.createAnswer(offer, {has_audio:true, has_video:true});
   newpeerconn.setLocalDescription(newpeerconn.SDP_ANSWER, answer);
   console.log('storing in peerConnections for socket:' + socketid);
