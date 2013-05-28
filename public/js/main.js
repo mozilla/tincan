@@ -65,7 +65,11 @@ function call() {
   pc1.addStream(localstream);
   trace("Adding Local Stream to peer connection");
 
-  pc1.createOffer(gotDescription1, null, null);
+  pc1.createOffer(gotDescription1,
+    function() {
+      console.log('create offer success!');
+    },
+    null);
 }
 
 socket.on('OtherUserConnected', function(socketid) {
@@ -89,7 +93,6 @@ socket.on('offerComingThru', function(){
 
 socket.on('incomingOfferDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
-  // console.log(desc);
   pc2.setRemoteDescription(new RTCSessionDescription(desc));
   pc2.createAnswer(gotDescription2, null, null);
 });
@@ -118,6 +121,7 @@ function hangup() {
   pc2.close();
   pc1 = null;
   pc2 = null;
+  vid2.src = "";
   btn3.disabled = true;
   btn2.disabled = false;
 }
