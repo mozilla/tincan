@@ -47,42 +47,37 @@ app.configure('production', function(){
 
 app.get('/', routes.index);
 
-var numClients = 0;
-var offerid = 1;
-clients = [];
+var first_pc = null;
+var second_pc = null;
 io.sockets.on('connection', function(client) {
 
-  client.broadcast.emit('newUserConnected', client.id);
-  clients.push(client.id);
+  if(!first_pc && !second_pc) first_pc = client.id;
+  else if(first_pc && !second_pc) {
+    second_pc = client.id;
+    client.broadcast.emit('OtherUserConnected', client.id);
+    io.sockets.socket(client.id).emit('OtherUserConnected', first_pc);
+  }
+  else if(!first_pc && second_pc) {
+    first_pc = second_pc;
+    second_pc = client.id;
+    client.broadcast.emit('OtherUserConnected', client.id);
+    io.sockets.socket(client.id).emit('OtherUserConnected', first_pc);
+  }
+  else {
+    console.log('too many clients');
+  }
 
-  client.on('offer', function(offer, socketid) {
-    io.sockets.socket(socketid).emit('offer', offer, client.id);
-  });
-
-  client.on('connect', function() {
-    numClients = numClients <= 0 ? 1 : numClients+1;
-  });
+  io.sockets.socket(client.id).emit('YouConnected', client.id);
 
   client.on('disconnect', function() {
-    numClients = numClients <= 0 ? 0 : numClients-1;
-    clients.splice(clients.indexOf(client.id), 1);
-    client.broadcast.emit('userDisconnect', client.id);
-  });
-
-  client.on('answer', function(ans) {
-    client.broadcast.emit('answer', ans, client.id);
-  });
-
-  client.on('candidate', function(cand) {
-    client.broadcast.emit('candidate', cand, client.id);
-  });
-
-  client.on('startICE', function(){
-    client.broadcast.emit('startICE', client.id);
-  });
-
-  client.on('getConnectedSockets', function(){
-    client.emit('getConnectedSockets', JSON.stringify(clients));
+    console.log('disconnecting');
+    if(first_pc == client.id) {
+      first_pc = second_pc;
+      second_pc = null;
+    }
+    else if(second_pc == client.id){
+      second_pc = null;
+    }
   });
 });
 

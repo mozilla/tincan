@@ -1,5 +1,4 @@
-
-
+var socket = io.connect();
 performance.now = performance.now || performance.webkitNow; // hack added by SD!
 
 var vid1 = document.getElementById("vid1");
@@ -71,9 +70,19 @@ function call() {
   pc1.createOffer(gotDescription1);
 }
 
+socket.on('OtherUserConnected', function(socketid) {
+  document.getElementById('pc2status').innerHTML = socketid + "'s Stream (Other Browser)";
+});
+
+socket.on('YouConnected', function(socketid) {
+  document.getElementById('pc1status').innerHTML = socketid + "'s Stream (Your Browser)";
+})
+
 function gotDescription1(desc){
   pc1.setLocalDescription(desc);
   trace("Offer from pc1 \n" + desc.sdp);
+  socket.emit('sendOfferDescription', JSON.stringify({ 'desc' : desc }));
+  //send below desc to other browser
   pc2.setRemoteDescription(desc);
   pc2.createAnswer(gotDescription2);
 }
