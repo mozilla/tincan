@@ -22,7 +22,7 @@ if (navigator.mozGetUserMedia) {
 
   // Get UserMedia (only difference is the prefix).
   // Code from Adam Barth.
-  getUserMedia = navigator.mozGetUserMedia.bind(navigator);
+  navigator.getUserMedia = navigator.mozGetUserMedia;
 
   // Attach a media stream to an element.
   attachMediaStream = function(element, stream) {
@@ -56,7 +56,7 @@ if (navigator.mozGetUserMedia) {
 
   // Get UserMedia (only difference is the prefix).
   // Code from Adam Barth.
-  getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
+  navigator.getUserMedia = navigator.webkitGetUserMedia;
 
   // Attach a media stream to an element.
   attachMediaStream = function(element, stream) {

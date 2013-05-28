@@ -26,11 +26,7 @@ function gotStream(stream){
 function start() {
   trace("Requesting local stream");
   btn1.disabled = true;
-  navigator.getMedia = (navigator.getUserMedia ||
-                       navigator.webkitGetUserMedia ||
-                       navigator.mozGetUserMedia ||
-                       navigator.msGetUserMedia);
-  navigator.getMedia({audio:true, video:true}, gotStream, function(err) {
+  navigator.getUserMedia({audio:true, video:true}, gotStream, function(err) {
     console.log("The following error occured: " + err);
    });
 }
