@@ -56,18 +56,16 @@ function call() {
   if (localstream.getAudioTracks().length > 0)
     trace('Using Audio device: ' + localstream.getAudioTracks()[0].label);
 
-  pc1 = new RTCPeerConnection(servers);
+  pc1 = new RTCPeerConnection(null);
   trace("Created local peer connection object pc1");
   pc1.onicecandidate = iceCallback1;
-  pc2 = new RTCPeerConnection(servers);
-  trace("Created remote peer connection object pc2");
-  pc2.onicecandidate = iceCallback2;
-  pc2.onaddstream = gotRemoteStream;
+
+  socket.emit('offer');
 
   pc1.addStream(localstream);
   trace("Adding Local Stream to peer connection");
 
-  pc1.createOffer(gotDescription1);
+  pc1.createOffer(gotDescription1, null, null);
 }
 
 socket.on('OtherUserConnected', function(socketid) {
@@ -76,22 +74,43 @@ socket.on('OtherUserConnected', function(socketid) {
 
 socket.on('YouConnected', function(socketid) {
   document.getElementById('pc1status').innerHTML = socketid + "'s Stream (Your Browser)";
-})
+});
+
+socket.on('offerComingThru', function(){
+  pc1 = new RTCPeerConnection(null);
+  // trace("Created local peer connection object pc1");
+  pc1.onicecandidate = iceCallback1;
+
+  pc2 = new RTCPeerConnection(null);
+  trace("Created remote peer connection object pc2");
+  pc2.onicecandidate = iceCallback2;
+  pc2.onaddstream = gotRemoteStream;
+});
+
+socket.on('incomingOfferDescription', function(obj) {
+  var desc = (JSON.parse(obj)).desc;
+  // console.log(desc);
+  pc2.setRemoteDescription(new RTCSessionDescription(desc));
+  pc2.createAnswer(gotDescription2, null, null);
+});
 
 function gotDescription1(desc){
-  pc1.setLocalDescription(desc);
+  pc1.setLocalDescription(new RTCSessionDescription(desc));
   trace("Offer from pc1 \n" + desc.sdp);
   socket.emit('sendOfferDescription', JSON.stringify({ 'desc' : desc }));
-  //send below desc to other browser
-  pc2.setRemoteDescription(desc);
-  pc2.createAnswer(gotDescription2);
 }
 
 function gotDescription2(desc){
-  pc2.setLocalDescription(desc);
+  pc2.setLocalDescription(new RTCSessionDescription(desc));
   trace("Answer from pc2 \n" + desc.sdp);
-  pc1.setRemoteDescription(desc);
+  //send back!
+  socket.emit('sendAnswerDescription', JSON.stringify({ 'desc' : desc }))
 }
+
+socket.on('incomingAnswerDescription', function(obj) {
+  var desc = (JSON.parse(obj)).desc;
+  pc1.setRemoteDescription(new RTCSessionDescription(desc));
+});
 
 function hangup() {
   trace("Ending call");
@@ -110,14 +129,23 @@ function gotRemoteStream(e){
 
 function iceCallback1(event){
   if (event.candidate) {
-    pc2.addIceCandidate(new RTCIceCandidate(event.candidate));
-    trace("Local ICE candidate: \n" + event.candidate.candidate);
+    socket.emit('sendIceCandidate1', JSON.stringify({'cand' : event.candidate }));
   }
 }
 
+socket.on('incomingIceCandidate1', function(obj) {
+  pc2.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
+  trace("Local ICE candidate: \n" + JSON.parse(obj).cand.candidate);
+});
+
+socket.on('incomingIceCandidate2', function(obj) {
+  pc1.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
+  trace("Local ICE candidate: \n" + JSON.parse(obj).cand.candidate);
+});
+
 function iceCallback2(event){
   if (event.candidate) {
-    pc1.addIceCandidate(new RTCIceCandidate(event.candidate));
-    trace("Remote ICE candidate: \n " + event.candidate.candidate);
+    socket.emit('sendIceCandidate2', JSON.stringify({'cand' : event.candidate }));
+    // trace("Remote ICE candidate: \n " + event.candidate.candidate);
   }
 }

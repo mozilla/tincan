@@ -79,6 +79,66 @@ io.sockets.on('connection', function(client) {
       second_pc = null;
     }
   });
+
+  client.on('offer', function(){
+    if(first_pc == client.id) {
+      io.sockets.socket(second_pc).emit('offerComingThru');
+    }
+    else if(second_pc == client.id){
+      io.sockets.socket(first_pc).emit('offerComingThru');
+    }
+    else {
+      console.log('you cant make a call');
+    }
+  });
+
+  client.on('sendOfferDescription', function(obj) {
+    if(first_pc == client.id) {
+      io.sockets.socket(second_pc).emit('incomingOfferDescription', obj);
+    }
+    else if(second_pc == client.id){
+      io.sockets.socket(first_pc).emit('incomingOfferDescription', obj);
+    }
+    else {
+      console.log('you have nobody to offer');
+    }
+  });
+
+  client.on('sendIceCandidate1', function(obj) {
+    if(first_pc == client.id) {
+      io.sockets.socket(second_pc).emit('incomingIceCandidate1', obj);
+    }
+    else if(second_pc == client.id){
+      io.sockets.socket(first_pc).emit('incomingIceCandidate1', obj);
+    }
+    else {
+      console.log('you have nobody to answer');
+    }
+  });
+
+  client.on('sendIceCandidate2', function(obj) {
+    if(first_pc == client.id) {
+      io.sockets.socket(second_pc).emit('incomingIceCandidate2', obj);
+    }
+    else if(second_pc == client.id){
+      io.sockets.socket(first_pc).emit('incomingIceCandidate2', obj);
+    }
+    else {
+      console.log('you have nobody to answer');
+    }
+  });
+
+  client.on('sendAnswerDescription', function(obj) {
+    if(first_pc == client.id) {
+      io.sockets.socket(second_pc).emit('incomingAnswerDescription', obj);
+    }
+    else if(second_pc == client.id){
+      io.sockets.socket(first_pc).emit('incomingAnswerDescription', obj);
+    }
+    else {
+      console.log('you have nobody to answer');
+    }
+  });
 });
 
 app.listen(process.env.PORT || 3000, function() {
