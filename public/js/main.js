@@ -2,8 +2,8 @@
 
 performance.now = performance.now || performance.webkitNow; // hack added by SD!
 
-//var vid1 = document.getElementById("vid1");
-//var vid2 = document.getElementById("vid2");
+var vid1 = document.getElementById("vid1");
+var vid2 = document.getElementById("vid2");
 btn1.disabled = false;
 btn2.disabled = true;
 btn3.disabled = true;
