@@ -32,6 +32,9 @@ function start() {
 }
 
 socket.on('newUserConnected', function(socketid) {
+  /*
+  When a new user connects, offer your video/audio stream to them.
+   */
   if(localstream) {
     var lpc = new RTCPeerConnection(null, iceCallback1);
     lpc.addStream(localstream);
@@ -43,6 +46,7 @@ socket.on('newUserConnected', function(socketid) {
 });
 
 function call() {
+  // Calling the server to see how many sockets (people) are connected
   btn2.disabled = true;
   btn3.disabled = false;
   trace("Starting call");
@@ -50,7 +54,10 @@ function call() {
 }
 
 socket.on('getConnectedSockets', function(sockets){
-  // SessionDescription = mozRTCSessionDescription;
+  /*
+  Get the socketid's of people that are connected.
+  For each socketid, create an offer for them of your video/audio.
+   */
   sockets = JSON.parse(sockets);
   var len = sockets.length;
   var socketid;
@@ -63,7 +70,6 @@ socket.on('getConnectedSockets', function(sockets){
 
       offer = new SessionDescription(offer);
       lpc.setLocalDescription(offer);
-      // lpc.setLocalDescription(lpc.SDP_OFFER, offer);
       localPeerConnections[socketid] = lpc;
       socket.emit('offer', JSON.stringify(offer.toSdp()), socketid);
     }
@@ -71,6 +77,10 @@ socket.on('getConnectedSockets', function(sockets){
 });
 
 socket.on('offer', function(offer, socketid) {
+  /**
+   * When you receive an offer from someone, accept their offer by emiting
+   * an answer, and add their offer stream to your browser window
+   */
   SessionDescription = RTCSessionDescription || mozRTCSessionDescription;
 
   console.log('make peer connection');
@@ -94,6 +104,9 @@ socket.on('offer', function(offer, socketid) {
 });
 
 socket.on('answer', function(answer, socketid) {
+  /**
+   * If someone accepts your offer, start the peer to peer connection by emiting a startICE
+  */
   answer = JSON.parse(answer);
   answer = answer.answer;
   console.log('getting from localPeerConnections for socket:' + socketid);
@@ -104,6 +117,9 @@ socket.on('answer', function(answer, socketid) {
 });
 
 socket.on('startICE', function(socketid) {
+  /**
+   * Starting a peer connection with a specific socket.
+   */
   console.log('startICE for socket:' + socketid);
   peerConnections[socketid].startIce();
 });
@@ -158,14 +174,16 @@ socket.on('userDisconnect', function(socketid){
   peerConnections[socketid] = null;
 });
 
-function iceCallback1(candidate, bMore) {
-  if (candidate) {
-    socket.emit('candidate', JSON.stringify({type: 'candidate2', label: candidate.label, candidate: candidate.toSdp()}));
+function iceCallback1(event){
+  if (event.candidate) {
+    pc2.addIceCandidate(new RTCIceCandidate(event.candidate));
+    trace("Local ICE candidate: \n" + event.candidate.candidate);
   }
 }
 
-function iceCallback2(candidate, bMore){
-  if (candidate) {
-    socket.emit('candidate', JSON.stringify({type: 'candidate1', label: candidate.label, candidate: candidate.toSdp()}));
+function iceCallback2(event){
+  if (event.candidate) {
+    pc1.addIceCandidate(new RTCIceCandidate(event.candidate));
+    trace("Remote ICE candidate: \n " + event.candidate.candidate);
   }
 }

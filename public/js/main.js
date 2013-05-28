@@ -7,7 +7,10 @@ performance.now = performance.now || performance.webkitNow; // hack added by SD!
 btn1.disabled = false;
 btn2.disabled = true;
 btn3.disabled = true;
-var localstream;
+var localstream; //the stream of audio/video coming from this browser
+var servers = null;
+var pc1; //this computer
+var pc2; //remote computer
 
 function trace(text) {
   // This function is used for logging.
@@ -19,7 +22,7 @@ function trace(text) {
 
 function gotStream(stream){
   trace("Received local stream");
-  vid1.src = window.URL.createObjectURL(stream);
+  vid1.src = window.URL.createObjectURL(stream); // add preview
   localstream = stream;
   btn2.disabled = false;
 }
@@ -53,11 +56,11 @@ function call() {
     trace('Using Video device: ' + localstream.getVideoTracks()[0].label);
   if (localstream.getAudioTracks().length > 0)
     trace('Using Audio device: ' + localstream.getAudioTracks()[0].label);
-  var servers = null;
-  window.pc1 = new RTCPeerConnection(servers);
+
+  pc1 = new RTCPeerConnection(servers);
   trace("Created local peer connection object pc1");
   pc1.onicecandidate = iceCallback1;
-  window.pc2 = new RTCPeerConnection(servers);
+  pc2 = new RTCPeerConnection(servers);
   trace("Created remote peer connection object pc2");
   pc2.onicecandidate = iceCallback2;
   pc2.onaddstream = gotRemoteStream;
