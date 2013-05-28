@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
-<head>
-<title>WebRTC Test</title>
-<style>
-video {
-  border:5px solid black;
-  width:240px;
-  height:180px;
-}
-button {
-  font: 18px sans-serif;
-  padding: 8px;
-}
-textarea {
-  font-family: monospace;
-  margin: 2px;
-  width:480px;
-  height:640px;
-}
-</style>
-</head>
-<body>
-<script src='/socket.io/socket.io.js'></script>
-<video id="vid1" autoplay></video>
-<br>
-<button id="btn1" onclick="start()">Start</button>
-<button id="btn2" onclick="call()">Call</button>
-<button id="btn3" onclick="hangup()">Hang Up</button>
-<br>
-<script src="/js/client.js"></script>
-</body>
+  <head>
+    <title>WebRTC Test</title>
+    <style>
+    video {
+      border:5px solid black;
+      width:240px;
+      height:180px;
+    }
+    button {
+      font: 18px sans-serif;
+      padding: 8px;
+    }
+    textarea {
+      font-family: monospace;
+      margin: 2px;
+      width:480px;
+      height:640px;
+    }
+    </style>
+    <script src='/socket.io/socket.io.js'></script>
+  </head>
+  <body>
+    <video id="vid1" autoplay></video>
+    <br>
+    <button id="btn1" onclick="start()">Start</button>
+    <button id="btn2" onclick="call()">Call</button>
+    <button id="btn3" onclick="hangup()">Hang Up</button>
+    <br>
+    <script src="/js/client.js"></script>
+  </body>
 </html>
