@@ -6,8 +6,7 @@ var pc1,pc2;
 var localstream;
 var peerConnections = {};
 var localPeerConnections = {};
-var peerConnection = mozRTCPeerConnection || webkitPeerConnection;
-// var SessionDescription = RTCSessionDescription || mozRTCSessionDescription;
+// var peerConnection = mozRTCPeerConnection || webkitPeerConnection;
 
 function trace(text) {
   // This function is used for logging.
@@ -38,7 +37,7 @@ function start() {
 
 socket.on('newUserConnected', function(socketid) {
   if(localstream) {
-    var lpc = new peerConnection(null, iceCallback1);
+    var lpc = new RTCPeerConnection(null, iceCallback1);
     lpc.addStream(localstream);
     var offer = lpc.createOffer(null);
     lpc.setLocalDescription(lpc.SDP_OFFER, offer);
@@ -62,7 +61,7 @@ socket.on('getConnectedSockets', function(sockets){
   for(var i = 0; i < len; i++){
     socketid = sockets[i];
     if(socketid != socket.socket.sessionid) {
-      var lpc = new peerConnection(null, iceCallback1);
+      var lpc = new RTCPeerConnection(null, iceCallback1);
       lpc.addStream(localstream);
       var offer = lpc.createOffer(null);
 
@@ -79,7 +78,7 @@ socket.on('offer', function(offer, socketid) {
   SessionDescription = RTCSessionDescription || mozRTCSessionDescription;
 
   console.log('make peer connection');
-  var newpeerconn = new peerConnection(null, iceCallback2);
+  var newpeerconn = new RTCPeerConnection(null, iceCallback2);
 
   //peerConnections[socketid] = newpeerconn;
   console.log('set peer connections');

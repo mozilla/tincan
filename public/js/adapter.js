@@ -3,6 +3,7 @@ var getUserMedia = null;
 var attachMediaStream = null;
 var reattachMediaStream = null;
 var webrtcDetectedBrowser = null;
+var SessionDescription = null;
 
 if (navigator.mozGetUserMedia) {
   console.log("This appears to be Firefox");
@@ -11,6 +12,7 @@ if (navigator.mozGetUserMedia) {
 
   // The RTCPeerConnection object.
   RTCPeerConnection = mozRTCPeerConnection;
+  SessionDescription = mozRTCSessionDescription;
 
   // The RTCSessionDescription object.
   RTCSessionDescription = mozRTCSessionDescription;
@@ -50,7 +52,8 @@ if (navigator.mozGetUserMedia) {
 
   // The RTCPeerConnection object.
   RTCPeerConnection = webkitRTCPeerConnection;
-  
+  SessionDescription = RTCSessionDescription;
+
   // Get UserMedia (only difference is the prefix).
   // Code from Adam Barth.
   getUserMedia = navigator.webkitGetUserMedia.bind(navigator);
