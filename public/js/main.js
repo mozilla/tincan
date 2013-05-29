@@ -65,11 +65,7 @@ function call() {
   pc1.addStream(localstream);
   trace("Adding Local Stream to peer connection");
 
-  pc1.createOffer(gotDescription1,
-    function() {
-      console.log('create offer success!');
-    },
-    null);
+  pc1.createOffer(gotDescription1, null, null);
 }
 
 socket.on('OtherUserConnected', function(socketid) {
@@ -144,12 +140,11 @@ socket.on('incomingIceCandidate1', function(obj) {
 
 socket.on('incomingIceCandidate2', function(obj) {
   pc1.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
-  trace("Local ICE candidate: \n" + JSON.parse(obj).cand.candidate);
+  trace("Remote ICE candidate: \n" + JSON.parse(obj).cand.candidate);
 });
 
 function iceCallback2(event){
   if (event.candidate) {
     socket.emit('sendIceCandidate2', JSON.stringify({'cand' : event.candidate }));
-    // trace("Remote ICE candidate: \n " + event.candidate.candidate);
   }
 }
