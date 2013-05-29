@@ -96,6 +96,7 @@ socket.on('incomingOfferDescription', function(obj) {
 function gotDescription1(desc){
   pc1.setLocalDescription(new RTCSessionDescription(desc));
   trace("Offer from pc1 \n" + desc.sdp);
+  //send offer!
   socket.emit('sendOfferDescription', JSON.stringify({ 'desc' : desc }));
 }
 
