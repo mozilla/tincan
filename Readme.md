@@ -1,10 +1,26 @@
-# webrtc test
+# node-webrtc
 
-This project was implemented over the course of a weekend hackathon in Chattanooga, TN (Hackanooga!).
-It uses WebRTC to connect 2-6 people together using WebRTC.
+node-webrtc is a WebRTC PeerConnection demo built on Node.js and SocketIO.
+It uses WebRTC to connect 2 users together with full audio/video using no plugins.
 
-Though the project could likely handle more users, it was not tested or refined for such use.
-It was just a hack! With all the changes made to WebRTC since this project was created (Sept 2012),
-this code may be completely unusable now.
+## Requirements
 
-Scary code may likely lie within these repo walls, enter at risk.
+Your browser must support WebRTC (e.g. latest Firefox or Google Chrome). You must also have a webcam and/or microphone.
+
+## Development
+
+If you wish to develop this project further, awesome! You can install all of the required dependencies by running:
+
+```$ npm install```
+
+and then you can start the server by running:
+
+```$ node app.js```
+
+and direct your browser to `http://localhost:3000`
+
+## Contributions
+
+If you wish to contribute to this project in any way, please don't hesistate to fork it and send a pull request!
+I am always open for more suggestions, cleaner code, better design and everything in between!
+Thanks for your contributions!
