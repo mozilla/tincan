@@ -89,6 +89,7 @@ socket.on('offerComingThru', function(){
 
 socket.on('incomingOfferDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
+  trace('got offer desc ' + desc.sdp);
   pc2.setRemoteDescription(new RTCSessionDescription(desc));
   pc2.createAnswer(gotDescription2, null, null);
 });
@@ -109,6 +110,7 @@ function gotDescription2(desc){
 
 socket.on('incomingAnswerDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
+  trace('got answer desc ' + desc.sdp);
   pc1.setRemoteDescription(new RTCSessionDescription(desc));
 });
 
