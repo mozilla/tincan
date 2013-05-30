@@ -1,11 +1,10 @@
 var socket = io.connect();
 performance.now = performance.now || performance.webkitNow; // hack added by SD!
 
-var vid1 = document.getElementById("vid1");
-var vid2 = document.getElementById("vid2");
 btn1.disabled = false;
 btn2.disabled = true;
 btn3.disabled = true;
+btn4.disabled = true;
 var localstream; //the stream of audio/video coming from this browser
 var servers = null;
 var pc1; //this computer
@@ -68,6 +67,9 @@ function call() {
 }
 
 function gotDescription1(desc) {
+  // pop up persona dialog
+  // if fail then return
+  // else
   pc1.setLocalDescription(new RTCSessionDescription(desc));
   trace("Offer from pc1 \n" + desc.sdp);
   //send offer!
@@ -78,7 +80,23 @@ function gotDescription2(desc) {
   pc2.setLocalDescription(new RTCSessionDescription(desc));
   trace("Answer from pc2 \n" + desc.sdp);
   //send back!
-  socket.emit('sendAnswerDescription', JSON.stringify({ 'desc' : desc }))
+  socket.emit('sendAnswerDescription', JSON.stringify({ 'desc' : desc }));
+}
+
+function stopTransmitting() {
+  pc1.close();
+  pc1 = null;
+  btn3.disabled = true;
+  btn2.disabled = false;
+  socket.emit('IStoppedTransmitting');
+}
+
+function stopReceiving() {
+  pc2.close();
+  pc2 = null;
+  btn4.disabled = true;
+  vid2.src = "";
+  socket.emit('IStoppedReceiving');
 }
 
 function hangup() {
@@ -117,11 +135,19 @@ socket.on('YouConnected', function(socketid) {
   document.getElementById('pc1status').innerHTML = socketid + "'s Stream (Your Browser)";
 });
 
-socket.on('offerComingThru', function(){
-  pc1 = new RTCPeerConnection(null);
-  // trace("Created local peer connection object pc1");
-  pc1.onicecandidate = iceCallback1;
+socket.on('callerStoppedTransmitting', function() {
+  stopReceiving();
+});
 
+socket.on('calleeStoppedReceiving', function() {
+  stopTransmitting();
+});
+
+socket.on('offerComingThru', function(){
+  if(!pc1) {
+    pc1 = new RTCPeerConnection(null);
+    pc1.onicecandidate = iceCallback1;
+  }
   pc2 = new RTCPeerConnection(null);
   trace("Created remote peer connection object pc2");
   pc2.onicecandidate = iceCallback2;
@@ -133,12 +159,14 @@ socket.on('incomingOfferDescription', function(obj) {
   trace('got offer desc ' + desc.sdp);
   pc2.setRemoteDescription(new RTCSessionDescription(desc));
   pc2.createAnswer(gotDescription2, null, null);
+  btn4.disabled = false;
 });
 
 socket.on('incomingAnswerDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
   trace('got answer desc ' + desc.sdp);
   pc1.setRemoteDescription(new RTCSessionDescription(desc));
+  btn3.disabled = false;
 });
 
 socket.on('incomingIceCandidate1', function(obj) {

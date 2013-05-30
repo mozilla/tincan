@@ -138,6 +138,30 @@ io.sockets.on('connection', function(client) {
       console.log('you have nobody to answer');
     }
   });
+
+  client.on('IStoppedTransmitting', function() {
+    if(first_pc == client.id) {
+      io.sockets.socket(second_pc).emit('callerStoppedTransmitting');
+    }
+    else if(second_pc == client.id){
+      io.sockets.socket(first_pc).emit('callerStoppedTransmitting');
+    }
+    else {
+      console.log('Error. You dont transmit anything');
+    }
+  });
+
+  client.on('IStoppedReceiving', function() {
+    if(first_pc == client.id) {
+      io.sockets.socket(second_pc).emit('calleeStoppedReceiving');
+    }
+    else if(second_pc == client.id){
+      io.sockets.socket(first_pc).emit('calleeStoppedReceiving');
+    }
+    else {
+      console.log('Error. You dont receive anything');
+    }
+  });
 });
 
 app.listen(process.env.PORT || 3000, function() {
