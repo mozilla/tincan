@@ -49,7 +49,6 @@ function call() {
       return this.audioTracks;
     }
   }
-  ///////////////////////////////////////////
 
   if (localstream.getVideoTracks().length > 0)
     trace('Using Video device: ' + localstream.getVideoTracks()[0].label);
@@ -66,6 +65,48 @@ function call() {
   trace("Adding Local Stream to peer connection");
 
   pc1.createOffer(gotDescription1, null, null);
+}
+
+function gotDescription1(desc) {
+  pc1.setLocalDescription(new RTCSessionDescription(desc));
+  trace("Offer from pc1 \n" + desc.sdp);
+  //send offer!
+  socket.emit('sendOfferDescription', JSON.stringify({ 'desc' : desc }));
+}
+
+function gotDescription2(desc) {
+  pc2.setLocalDescription(new RTCSessionDescription(desc));
+  trace("Answer from pc2 \n" + desc.sdp);
+  //send back!
+  socket.emit('sendAnswerDescription', JSON.stringify({ 'desc' : desc }))
+}
+
+function hangup() {
+  trace("Ending call");
+  pc1.close();
+  pc2.close();
+  pc1 = null;
+  pc2 = null;
+  vid2.src = "";
+  btn3.disabled = true;
+  btn2.disabled = false;
+}
+
+function gotRemoteStream(e) {
+  vid2.src = window.URL.createObjectURL(e.stream);
+  trace("Received remote stream");
+}
+
+function iceCallback1(event) {
+  if (event.candidate) {
+    socket.emit('sendIceCandidate1', JSON.stringify({'cand' : event.candidate }));
+  }
+}
+
+function iceCallback2(event){
+  if (event.candidate) {
+    socket.emit('sendIceCandidate2', JSON.stringify({'cand' : event.candidate }));
+  }
 }
 
 socket.on('OtherUserConnected', function(socketid) {
@@ -94,47 +135,11 @@ socket.on('incomingOfferDescription', function(obj) {
   pc2.createAnswer(gotDescription2, null, null);
 });
 
-function gotDescription1(desc){
-  pc1.setLocalDescription(new RTCSessionDescription(desc));
-  trace("Offer from pc1 \n" + desc.sdp);
-  //send offer!
-  socket.emit('sendOfferDescription', JSON.stringify({ 'desc' : desc }));
-}
-
-function gotDescription2(desc){
-  pc2.setLocalDescription(new RTCSessionDescription(desc));
-  trace("Answer from pc2 \n" + desc.sdp);
-  //send back!
-  socket.emit('sendAnswerDescription', JSON.stringify({ 'desc' : desc }))
-}
-
 socket.on('incomingAnswerDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
   trace('got answer desc ' + desc.sdp);
   pc1.setRemoteDescription(new RTCSessionDescription(desc));
 });
-
-function hangup() {
-  trace("Ending call");
-  pc1.close();
-  pc2.close();
-  pc1 = null;
-  pc2 = null;
-  vid2.src = "";
-  btn3.disabled = true;
-  btn2.disabled = false;
-}
-
-function gotRemoteStream(e){
-  vid2.src = window.URL.createObjectURL(e.stream);
-  trace("Received remote stream");
-}
-
-function iceCallback1(event){
-  if (event.candidate) {
-    socket.emit('sendIceCandidate1', JSON.stringify({'cand' : event.candidate }));
-  }
-}
 
 socket.on('incomingIceCandidate1', function(obj) {
   pc2.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
@@ -145,9 +150,3 @@ socket.on('incomingIceCandidate2', function(obj) {
   pc1.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
   trace("Remote ICE candidate: \n" + JSON.parse(obj).cand.candidate);
 });
-
-function iceCallback2(event){
-  if (event.candidate) {
-    socket.emit('sendIceCandidate2', JSON.stringify({'cand' : event.candidate }));
-  }
-}
