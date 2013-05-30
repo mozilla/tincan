@@ -18,15 +18,32 @@
       width:480px;
       height:640px;
     }
+    body {
+      padding-right:25px;
+      padding-left:25px;
+    }
     </style>
+    <link rel="stylesheet" href="/css/pure-min.css">
+    <link rel="stylesheet" href="/css/persona-buttons.css">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <script src="http://127.0.0.1:10002/include.js"></script> <!-- include.js points to local server-->
     <script src='/socket.io/socket.io.js'></script>
     <script src='/js/adapter.js'></script>
   </head>
   <body>
-    <p id='pc1status'>This Browser's Stream</p>
-    <video id="vid1" autoplay></video>
-    <p id='pc2status'>The Other Browser's Stream</p>
-    <video id="vid2" autoplay></video>
+    <h1>WebRTC Test</h1>
+    <a href="#" id="signin" class="persona-button"><span>Sign in</span></a>
+    <a href="#" id="signout" class="pure-button"><span>Sign out</span></a>
+    <div class="pure-g-r">
+      <div class="pure-u-1-2">
+        <p id='pc1status'>This Browser's Stream</p>
+        <video id="vid1" autoplay></video>
+      </div>
+      <div class="pure-u-1-2">
+        <p id='pc2status'>The Other Browser's Stream</p>
+        <video id="vid2" autoplay></video>
+      </div>
+    </div>
     <br>
     <button id="btn1" onclick="start()">Turn On Camera</button>
     <button id="btn2" onclick="call()">Call</button>

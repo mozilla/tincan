@@ -2,12 +2,15 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , routes = require('./routes')
-  , socket = require('socket.io');
+var express = require('express'),
+    routes = require('./routes'),
+    socket = require('socket.io'),
+    request = require('request');
 
 var app = module.exports = express.createServer()
   , io = socket.listen(app);
+
+var sessions = {};
 
 // Configuration
 
@@ -162,6 +165,31 @@ io.sockets.on('connection', function(client) {
       console.log('Error. You dont receive anything');
     }
   });
+
+  //assertion=<ASSERTION>&audience=https://example.com:443
+
+  client.on('signin', function(obj) {
+    var assertion = obj.assertion;
+    request.post(
+      'http://127.0.0.1:10000/verify',
+        { form: {
+            assertion: assertion,
+            audience: "http://localhost:3000"
+          }
+        },
+        function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+                console.log(body);
+            }
+            else {
+              console.log(error);
+              console.log(response);
+            }
+        }
+    );
+    //verifier: http://127.0.0.1:10000
+  });
+
 });
 
 app.listen(process.env.PORT || 3000, function() {
