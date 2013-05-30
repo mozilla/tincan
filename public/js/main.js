@@ -11,11 +11,12 @@ var pc1; //this computer
 var pc2; //remote computer
 
 var currentUser = null;
+var keyFingerprint = "keyboard cat";
 
 //persona buttons
 var signinLink = document.getElementById('signin');
 if (signinLink) {
-  signinLink.onclick = function() { navigator.id.request(); };
+  signinLink.onclick = function() { navigator.id.request({ fingerprint : keyFingerprint } ); };
 }
 
 var signoutLink = document.getElementById('signout');
@@ -25,7 +26,7 @@ if (signoutLink) {
 
 socket.on('successfulSignin', function(email) {
   currentUser = email;
-  window.location.reload();
+  // window.location.reload();
 });
 
 socket.on('successfulSignout', function() {
