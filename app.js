@@ -166,8 +166,6 @@ io.sockets.on('connection', function(client) {
     }
   });
 
-  //assertion=<ASSERTION>&audience=https://example.com:443
-
   client.on('signin', function(obj) {
     var assertion = obj.assertion;
     request.post(
@@ -187,7 +185,6 @@ io.sockets.on('connection', function(client) {
             }
         }
     );
-    //verifier: http://127.0.0.1:10000
   });
 
 });
