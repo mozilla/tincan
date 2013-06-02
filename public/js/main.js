@@ -13,7 +13,7 @@ var pc2; //remote computer
 var currentUser = null;
 var keyFingerprint = "keyboard cat";
 
-//persona buttons
+//signin and signout buttons
 var signinLink = document.getElementById('signin');
 if (signinLink) {
   signinLink.onclick = function() { if(navigator.id) navigator.id.request({ fingerprint : keyFingerprint } ); };
@@ -52,29 +52,9 @@ if(navigator.id) {
       // A user has logged in! Here you need to:
       // 1. Send the assertion to your backend for verification and to create a session.
       // 2. Update your UI.
-      // $.ajax({ /* <-- This example uses jQuery, but you can use whatever you'd like */
-      //   type: 'POST',
-      //   url: '/auth/login', // This is a URL on your website.
-      //   data: {assertion: assertion},
-      //   success: function(res, status, xhr) { window.location.reload(); },
-      //   error: function(xhr, status, err) {
-      //     navigator.id.logout();
-      //     alert("Login failure: " + err);
-      //   }
-      // });
     },
     onlogout: function() {
       socket.emit('signout');
-      // A user has logged out! Here you need to:
-      // Tear down the user's session by redirecting the user or making a call to your backend.
-      // Also, make sure loggedInUser will get set to null on the next page load.
-      // (That's a literal JavaScript null. Not false, 0, or undefined. null.)
-      // $.ajax({
-      //   type: 'POST',
-      //   url: '/auth/logout', // This is a URL on your website.
-      //   success: function(res, status, xhr) { window.location.reload(); },
-      //   error: function(xhr, status, err) { alert("Logout failure: " + err); }
-      // });
     }
   });
 }
@@ -130,6 +110,8 @@ function call() {
   socket.emit('offer');
 
   pc1.addStream(localstream);
+
+  console.log(localstream);
   trace("Adding Local Stream to peer connection");
 
   pc1.createOffer(gotDescription1, null, null);
@@ -180,6 +162,7 @@ function hangup() {
 }
 
 function gotRemoteStream(e) {
+  console.log(e.stream);
   vid2.src = window.URL.createObjectURL(e.stream);
   trace("Received remote stream");
 }
