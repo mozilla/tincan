@@ -114,7 +114,9 @@ function call() {
   console.log(localstream);
   trace("Adding Local Stream to peer connection");
 
-  pc1.createOffer(gotDescription1, null, null);
+  setTimeout(function() {
+    pc1.createOffer(gotDescription1, null, null);
+  }, 1000);
 }
 
 function gotDescription1(desc) {
