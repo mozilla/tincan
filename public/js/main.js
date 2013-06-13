@@ -211,7 +211,11 @@ socket.on('offerComingThru', function(){
 socket.on('incomingOfferDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
   trace('got offer desc ' + desc.sdp);
-  pc2.setRemoteDescription(new RTCSessionDescription(desc));
+  pc2.setRemoteDescription(new RTCSessionDescription(desc), function() {
+    console.log('incomingOfferDescription SUCCEEDED to be set as remote description');
+  }, function(){
+    console.log('incomingOfferDescription FAILED set as remote description');
+  });
   pc2.createAnswer(gotDescription2, null, null);
   btn4.disabled = false;
 });
@@ -219,7 +223,11 @@ socket.on('incomingOfferDescription', function(obj) {
 socket.on('incomingAnswerDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
   trace('got answer desc ' + desc.sdp);
-  pc1.setRemoteDescription(new RTCSessionDescription(desc));
+  pc1.setRemoteDescription(new RTCSessionDescription(desc), function() {
+    console.log('incomingAnswerDescription SUCCEEDED to be set as remote description');
+  }, function(){
+    console.log('incomingAnswerDescription FAILED set as remote description');
+  });
   btn3.disabled = false;
 });
 
