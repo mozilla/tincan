@@ -164,18 +164,21 @@ function hangup() {
 }
 
 function gotRemoteStream(e) {
+  trace("got remote stream!!");
   console.log(e.stream);
   vid2.src = window.URL.createObjectURL(e.stream);
-  trace("Received remote stream");
+  trace("set remote stream!!");
 }
 
 function iceCallback1(event) {
+  trace("running ice callback 1!!");
   if (event.candidate) {
     socket.emit('sendIceCandidate1', JSON.stringify({'cand' : event.candidate }));
   }
 }
 
 function iceCallback2(event){
+  trace("running ice callback 2!!");
   if (event.candidate) {
     socket.emit('sendIceCandidate2', JSON.stringify({'cand' : event.candidate }));
   }
@@ -198,10 +201,13 @@ socket.on('calleeStoppedReceiving', function() {
 });
 
 socket.on('offerComingThru', function(){
+  trace("offerComingThru!!");
   if(!pc1) {
+    trace("making pc1!!");
     pc1 = new RTCPeerConnection(null);
     pc1.onicecandidate = iceCallback1;
   }
+  trace("making pc2!!");
   pc2 = new RTCPeerConnection(null);
   trace("Created remote peer connection object pc2");
   pc2.onicecandidate = iceCallback2;
@@ -211,18 +217,23 @@ socket.on('offerComingThru', function(){
 socket.on('incomingOfferDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
   trace('got offer desc ' + desc.sdp);
+  trace("Setting Remote Description for pc2");
   pc2.setRemoteDescription(new RTCSessionDescription(desc), function() {
     console.log('incomingOfferDescription SUCCEEDED to be set as remote description');
+    trace("Creating Answer for pc2");
+    pc2.createAnswer(gotDescription2, null, null);
+    btn4.disabled = false;
   }, function(){
+    alert("failed set remote description");
     console.log('incomingOfferDescription FAILED set as remote description');
   });
-  pc2.createAnswer(gotDescription2, null, null);
-  btn4.disabled = false;
+
 });
 
 socket.on('incomingAnswerDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
   trace('got answer desc ' + desc.sdp);
+  trace("Setting Remote Description for pc1");
   pc1.setRemoteDescription(new RTCSessionDescription(desc), function() {
     console.log('incomingAnswerDescription SUCCEEDED to be set as remote description');
   }, function(){
@@ -232,11 +243,13 @@ socket.on('incomingAnswerDescription', function(obj) {
 });
 
 socket.on('incomingIceCandidate1', function(obj) {
+  trace("Adding ICE candidate to pc2");
   pc2.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
   trace("Local ICE candidate: \n" + JSON.parse(obj).cand.candidate);
 });
 
 socket.on('incomingIceCandidate2', function(obj) {
+  trace("Adding ICE candidate to pc1");
   pc1.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
   trace("Remote ICE candidate: \n" + JSON.parse(obj).cand.candidate);
 });
