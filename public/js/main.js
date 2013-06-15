@@ -6,17 +6,16 @@ btn2.disabled = true;
 btn3.disabled = true;
 btn4.disabled = true;
 var localstream; //the stream of audio/video coming from this browser
-var servers = null;
+
 var pc1; //this computer
 var pc2; //remote computer
 
 var currentUser = null;
-var keyFingerprint = "keyboard cat";
 
 //signin and signout buttons
 var signinLink = document.getElementById('signin');
 if (signinLink) {
-  signinLink.onclick = function() { if(navigator.id) navigator.id.request({ fingerprint : keyFingerprint } ); };
+  signinLink.onclick = function() { if(navigator.id) navigator.id.request(); };
 }
 
 var signoutLink = document.getElementById('signout');
@@ -227,7 +226,6 @@ socket.on('incomingOfferDescription', function(obj) {
     alert("failed set remote description");
     console.log('incomingOfferDescription FAILED set as remote description');
   });
-
 });
 
 socket.on('incomingAnswerDescription', function(obj) {

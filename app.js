@@ -10,10 +10,7 @@ var express = require('express'),
 var app = module.exports = express.createServer()
   , io = socket.listen(app);
 
-var sessions = {};
-
 // Configuration
-
 app.configure(function(){
   app.set('view engine', 'html');
   app.set('views', __dirname + '/views');
@@ -89,9 +86,6 @@ io.sockets.on('connection', function(client) {
     else if(second_pc == client.id){
       io.sockets.socket(first_pc).emit('offerComingThru');
     }
-    else {
-      console.log('you cant make a call');
-    }
   });
 
   client.on('sendOfferDescription', function(obj) {
@@ -100,9 +94,6 @@ io.sockets.on('connection', function(client) {
     }
     else if(second_pc == client.id){
       io.sockets.socket(first_pc).emit('incomingOfferDescription', obj);
-    }
-    else {
-      console.log('you have nobody to offer');
     }
   });
 
@@ -113,9 +104,6 @@ io.sockets.on('connection', function(client) {
     else if(second_pc == client.id){
       io.sockets.socket(first_pc).emit('incomingIceCandidate1', obj);
     }
-    else {
-      console.log('you have nobody to answer');
-    }
   });
 
   client.on('sendIceCandidate2', function(obj) {
@@ -124,9 +112,6 @@ io.sockets.on('connection', function(client) {
     }
     else if(second_pc == client.id){
       io.sockets.socket(first_pc).emit('incomingIceCandidate2', obj);
-    }
-    else {
-      console.log('you have nobody to answer');
     }
   });
 
@@ -137,9 +122,6 @@ io.sockets.on('connection', function(client) {
     else if(second_pc == client.id){
       io.sockets.socket(first_pc).emit('incomingAnswerDescription', obj);
     }
-    else {
-      console.log('you have nobody to answer');
-    }
   });
 
   client.on('IStoppedTransmitting', function() {
@@ -149,9 +131,6 @@ io.sockets.on('connection', function(client) {
     else if(second_pc == client.id){
       io.sockets.socket(first_pc).emit('callerStoppedTransmitting');
     }
-    else {
-      console.log('Error. You dont transmit anything');
-    }
   });
 
   client.on('IStoppedReceiving', function() {
@@ -160,9 +139,6 @@ io.sockets.on('connection', function(client) {
     }
     else if(second_pc == client.id){
       io.sockets.socket(first_pc).emit('calleeStoppedReceiving');
-    }
-    else {
-      console.log('Error. You dont receive anything');
     }
   });
 
@@ -186,7 +162,6 @@ io.sockets.on('connection', function(client) {
         }
     );
   });
-
 });
 
 app.listen(process.env.PORT || 3000, function() {
