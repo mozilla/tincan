@@ -9,6 +9,7 @@ var localstream; //the stream of audio/video coming from this browser
 
 var pc1; //this computer
 var pc2; //remote computer
+var debug = true; // true to log messages
 
 var currentUser = null;
 
@@ -67,7 +68,7 @@ function trace(text) {
 }
 
 function gotStream(stream){
-  trace("Received local stream");
+  if(debug) trace("Received local stream");
   vid1.src = window.URL.createObjectURL(stream); // add preview
   localstream = stream;
   btn2.disabled = false;
@@ -83,7 +84,7 @@ function start() {
 function call() {
   btn2.disabled = true;
   btn3.disabled = false;
-  trace("Starting call");
+  if(debug) trace("Starting call");
 
   // temporary hacks to cope with API change
   if (!!localstream.videoTracks && !localstream.getVideoTracks) {
@@ -98,12 +99,12 @@ function call() {
   }
 
   if (localstream.getVideoTracks().length > 0)
-    trace('Using Video device: ' + localstream.getVideoTracks()[0].label);
+    if(debug) trace('Using Video device: ' + localstream.getVideoTracks()[0].label);
   if (localstream.getAudioTracks().length > 0)
-    trace('Using Audio device: ' + localstream.getAudioTracks()[0].label);
+    if(debug) trace('Using Audio device: ' + localstream.getAudioTracks()[0].label);
 
   pc1 = new RTCPeerConnection(null);
-  trace("Created local peer connection object pc1");
+  if(debug) trace("Created local peer connection object pc1");
   pc1.onicecandidate = iceCallback1;
 
   socket.emit('offer');
@@ -111,7 +112,7 @@ function call() {
   pc1.addStream(localstream);
 
   console.log(localstream);
-  trace("Adding Local Stream to peer connection");
+  if(debug) trace("Adding Local Stream to peer connection");
 
   setTimeout(function() {
     pc1.createOffer(gotDescription1, null, null);
@@ -123,14 +124,14 @@ function gotDescription1(desc) {
   // if fail then return
   // else
   pc1.setLocalDescription(new RTCSessionDescription(desc));
-  trace("Offer from pc1 \n" + desc.sdp);
+  if(debug) trace("Offer from pc1 \n" + desc.sdp);
   //send offer!
   socket.emit('sendOfferDescription', JSON.stringify({ 'desc' : desc }));
 }
 
 function gotDescription2(desc) {
   pc2.setLocalDescription(new RTCSessionDescription(desc));
-  trace("Answer from pc2 \n" + desc.sdp);
+  if(debug) trace("Answer from pc2 \n" + desc.sdp);
   //send back!
   socket.emit('sendAnswerDescription', JSON.stringify({ 'desc' : desc }));
 }
@@ -152,7 +153,7 @@ function stopReceiving() {
 }
 
 function hangup() {
-  trace("Ending call");
+  if(debug) trace("Ending call");
   pc1.close();
   pc2.close();
   pc1 = null;
@@ -163,21 +164,20 @@ function hangup() {
 }
 
 function gotRemoteStream(e) {
-  trace("got remote stream!!");
+  if(debug) trace("got remote stream!!");
   console.log(e.stream);
   vid2.src = window.URL.createObjectURL(e.stream);
-  trace("set remote stream!!");
 }
 
 function iceCallback1(event) {
-  trace("running ice callback 1!!");
+  if(debug) trace("running ice callback 1!!");
   if (event.candidate) {
     socket.emit('sendIceCandidate1', JSON.stringify({'cand' : event.candidate }));
   }
 }
 
 function iceCallback2(event){
-  trace("running ice callback 2!!");
+  if(debug) trace("running ice callback 2!!");
   if (event.candidate) {
     socket.emit('sendIceCandidate2', JSON.stringify({'cand' : event.candidate }));
   }
@@ -200,31 +200,30 @@ socket.on('calleeStoppedReceiving', function() {
 });
 
 socket.on('offerComingThru', function(){
-  trace("offerComingThru!!");
+  if(debug) trace("offerComingThru!!");
   if(!pc1) {
     trace("making pc1!!");
     pc1 = new RTCPeerConnection(null);
     pc1.onicecandidate = iceCallback1;
   }
-  trace("making pc2!!");
+  if(debug) trace("making pc2!!");
   pc2 = new RTCPeerConnection(null);
-  trace("Created remote peer connection object pc2");
+  if(debug) trace("Created remote peer connection object pc2");
   pc2.onicecandidate = iceCallback2;
   pc2.onaddstream = gotRemoteStream;
 });
 
 socket.on('incomingOfferDescription', function(obj) {
   var desc = (JSON.parse(obj)).desc;
-  trace('got offer desc ' + desc.sdp);
-  trace("Setting Remote Description for pc2");
+  if(debug) trace('got offer desc ' + desc.sdp);
+  if(debug) trace("Setting Remote Description for pc2");
   pc2.setRemoteDescription(new RTCSessionDescription(desc), function() {
-    console.log('incomingOfferDescription SUCCEEDED to be set as remote description');
-    trace("Creating Answer for pc2");
+    if(debug) console.log('incomingOfferDescription SUCCEEDED to be set as remote description');
+    if(debug) trace("Creating Answer for pc2");
     pc2.createAnswer(gotDescription2, null, null);
     btn4.disabled = false;
   }, function(){
-    alert("failed set remote description");
-    console.log('incomingOfferDescription FAILED set as remote description');
+    if(debug) console.log('incomingOfferDescription FAILED set as remote description');
   });
 });
 
@@ -233,21 +232,21 @@ socket.on('incomingAnswerDescription', function(obj) {
   trace('got answer desc ' + desc.sdp);
   trace("Setting Remote Description for pc1");
   pc1.setRemoteDescription(new RTCSessionDescription(desc), function() {
-    console.log('incomingAnswerDescription SUCCEEDED to be set as remote description');
+    if(debug) console.log('incomingAnswerDescription SUCCEEDED to be set as remote description');
   }, function(){
-    console.log('incomingAnswerDescription FAILED set as remote description');
+    if(debug) console.log('incomingAnswerDescription FAILED set as remote description');
   });
   btn3.disabled = false;
 });
 
 socket.on('incomingIceCandidate1', function(obj) {
-  trace("Adding ICE candidate to pc2");
+  if(debug) trace("Adding ICE candidate to pc2");
   pc2.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
-  trace("Local ICE candidate: \n" + JSON.parse(obj).cand.candidate);
+  if(debug) trace("Local ICE candidate: \n" + JSON.parse(obj).cand.candidate);
 });
 
 socket.on('incomingIceCandidate2', function(obj) {
-  trace("Adding ICE candidate to pc1");
+  if(debug) trace("Adding ICE candidate to pc1");
   pc1.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
-  trace("Remote ICE candidate: \n" + JSON.parse(obj).cand.candidate);
+  if(debug) trace("Remote ICE candidate: \n" + JSON.parse(obj).cand.candidate);
 });
