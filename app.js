@@ -7,8 +7,11 @@ var express = require('express'),
     socket = require('socket.io'),
     request = require('request');
 
-var app = module.exports = express.createServer()
-  , io = socket.listen(app);
+var app = module.exports = express.createServer();
+var io = socket.listen(app, { log: false });
+
+var BROWSERID_URL = "http://127.0.0.1:10002";
+var BROWSERID_VERIFY_URL = "http://127.0.0.1:10000/verify";
 
 // Configuration
 app.configure(function(){
@@ -24,6 +27,7 @@ app.configure(function(){
       };
     }
   });
+
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
@@ -145,7 +149,7 @@ io.sockets.on('connection', function(client) {
   client.on('signin', function(obj) {
     var assertion = obj.assertion;
     request.post(
-      'http://127.0.0.1:10000/verify',
+      BROWSERID_VERIFY_URL,
         { form: {
             assertion: assertion,
             audience: "http://localhost:3000"

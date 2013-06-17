@@ -221,8 +221,6 @@ socket.on('incomingOfferDescription', function(obj) {
     if(debug) trace("Creating Answer for pc2");
     pc2.createAnswer(gotDescription2, null, null);
     btn4.disabled = false;
-  }, function(){
-    if(debug) trace('incomingOfferDescription FAILED set as remote description');
   });
 });
 
