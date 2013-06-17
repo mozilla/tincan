@@ -8,7 +8,9 @@ var express = require('express'),
     request = require('request');
 
 var app = module.exports = express.createServer();
-var io = socket.listen(app, { log: false });
+var io = socket.listen(app);
+
+io.set('log level', 1); // reduce logging
 
 var BROWSERID_URL = "http://127.0.0.1:10002";
 var BROWSERID_VERIFY_URL = "http://127.0.0.1:10000/verify";
