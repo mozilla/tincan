@@ -111,7 +111,6 @@ function call() {
 
   pc1.addStream(localstream);
 
-  console.log(localstream);
   if(debug) trace("Adding Local Stream to peer connection");
 
   setTimeout(function() {
@@ -165,7 +164,7 @@ function hangup() {
 
 function gotRemoteStream(e) {
   if(debug) trace("got remote stream!!");
-  console.log(e.stream);
+  if(debug) trace(e.stream);
   vid2.src = window.URL.createObjectURL(e.stream);
 }
 
@@ -218,12 +217,12 @@ socket.on('incomingOfferDescription', function(obj) {
   if(debug) trace('got offer desc ' + desc.sdp);
   if(debug) trace("Setting Remote Description for pc2");
   pc2.setRemoteDescription(new RTCSessionDescription(desc), function() {
-    if(debug) console.log('incomingOfferDescription SUCCEEDED to be set as remote description');
+    if(debug) trace('incomingOfferDescription SUCCEEDED to be set as remote description');
     if(debug) trace("Creating Answer for pc2");
     pc2.createAnswer(gotDescription2, null, null);
     btn4.disabled = false;
   }, function(){
-    if(debug) console.log('incomingOfferDescription FAILED set as remote description');
+    if(debug) trace('incomingOfferDescription FAILED set as remote description');
   });
 });
 
@@ -232,9 +231,9 @@ socket.on('incomingAnswerDescription', function(obj) {
   trace('got answer desc ' + desc.sdp);
   trace("Setting Remote Description for pc1");
   pc1.setRemoteDescription(new RTCSessionDescription(desc), function() {
-    if(debug) console.log('incomingAnswerDescription SUCCEEDED to be set as remote description');
+    if(debug) trace('incomingAnswerDescription SUCCEEDED to be set as remote description');
   }, function(){
-    if(debug) console.log('incomingAnswerDescription FAILED set as remote description');
+    if(debug) trace('incomingAnswerDescription FAILED set as remote description');
   });
   btn3.disabled = false;
 });
