@@ -16,17 +16,19 @@ var currentUser = null;
 //signin and signout buttons
 var signinLink = document.getElementById('signin');
 if (signinLink) {
-  signinLink.onclick = function() { if(navigator.id) navigator.id.request(); };
-}
-
-var signoutLink = document.getElementById('signout');
-if (signoutLink) {
-  signoutLink.onclick = function() { if(navigator.id) navigator.id.logout(); };
+  signinLink.onclick = function() {
+    if(navigator.id) {
+      if(currentUser) {
+        navigator.id.logout();
+      }
+      else navigator.id.request();
+    }
+  };
 }
 
 socket.on('successfulSignin', function(email) {
   currentUser = email;
-  // window.location.reload();
+  if(email) signin.innerHTML = "<span>Logout of " + email + "</span>";
 });
 
 socket.on('successfulSignout', function() {
@@ -49,9 +51,6 @@ if(navigator.id) {
     loggedInUser: currentUser,
     onlogin: function(assertion) {
       socket.emit('signin', { assertion: assertion });
-      // A user has logged in! Here you need to:
-      // 1. Send the assertion to your backend for verification and to create a session.
-      // 2. Update your UI.
     },
     onlogout: function() {
       socket.emit('signout');
@@ -221,6 +220,8 @@ socket.on('incomingOfferDescription', function(obj) {
     if(debug) trace("Creating Answer for pc2");
     pc2.createAnswer(gotDescription2, null, null);
     btn4.disabled = false;
+  }, function(){
+    if(debug) trace('incomingOfferDescription FAILED set as remote description');
   });
 });
 

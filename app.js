@@ -159,7 +159,8 @@ io.sockets.on('connection', function(client) {
         },
         function (error, response, body) {
             if (!error && response.statusCode == 200) {
-                console.log(body);
+              console.log(body);
+              io.sockets.socket(client.id).emit('successfulSignin', JSON.parse(body).email);
             }
             else {
               console.log(error);
@@ -167,6 +168,10 @@ io.sockets.on('connection', function(client) {
             }
         }
     );
+  });
+
+  client.on('signout', function() {
+    io.sockets.socket(client.id).emit('successfulSignout');
   });
 });
 
