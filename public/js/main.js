@@ -1,17 +1,14 @@
 var socket = io.connect();
 performance.now = performance.now || performance.webkitNow; // hack added by SD!
-
 startbtn.disabled = false;
 callbtn.disabled = true;
 stoptransbtn.disabled = true;
 stopreceivebtn.disabled = true;
 
 var localstream; //the stream of audio/video coming from this browser
-
 var outgoing; // peer connection for data out
 var incoming; // peer connection for data in
 var debug = true; // true to log messages
-
 var currentUser = null;
 
 //signin and signout buttons
@@ -38,13 +35,13 @@ socket.on('successfulSignout', function() {
 });
 
 socket.on('failedSignout', function(err) {
-  alert("Signout failure: " + err);
+  // alert("Signout failure: " + err);
 });
 
 socket.on('failedSignin', function(err) {
   currentUser = null;
   navigator.id.logout();
-  alert("Signin failure: " + err);
+  // alert("Signin failure: " + err);
 });
 
 if(navigator.id) {
@@ -77,7 +74,6 @@ function gotStream(stream){
 function start() {
   trace("Requesting local stream");
   startbtn.disabled = true;
-
   navigator.getUserMedia({audio:true, video:true}, gotStream, function() {});
 }
 
@@ -106,13 +102,9 @@ function call() {
   outgoing = new RTCPeerConnection(null);
   if(debug) trace("Created local peer connection object outgoing");
   outgoing.onicecandidate = iceCallback1;
-
   socket.emit('offer');
-
   outgoing.addStream(localstream);
-
   if(debug) trace("Adding Local Stream to peer connection");
-
   setTimeout(function() {
     outgoing.createOffer(gotDescription1, null, null);
   }, 1000);
