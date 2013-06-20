@@ -129,6 +129,10 @@ io.sockets.on('connection', function(client) {
     socketsend(client.id, 'calleeStoppedReceiving');
   });
 
+  client.on('signout', function() {
+    io.sockets.socket(client.id).emit('successfulSignout');
+  });
+
   client.on('signin', function(obj) {
     var assertion = obj.assertion;
     request.post(
@@ -149,10 +153,6 @@ io.sockets.on('connection', function(client) {
             }
         }
     );
-  });
-
-  client.on('signout', function() {
-    io.sockets.socket(client.id).emit('successfulSignout');
   });
 });
 
