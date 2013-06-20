@@ -108,72 +108,30 @@ io.sockets.on('connection', function(client) {
 
   client.on('offer', function(){
     socketsend(client.id, 'offerComingThru');
-    // if(first_pc == client.id) {
-    //   io.sockets.socket(second_pc).emit('offerComingThru');
-    // }
-    // else if(second_pc == client.id){
-    //   io.sockets.socket(first_pc).emit('offerComingThru');
-    // }
   });
 
   client.on('sendOfferDescription', function(obj) {
     socketsend(client.id, 'incomingOfferDescription', obj);
-    // if(first_pc == client.id) {
-    //   io.sockets.socket(second_pc).emit('incomingOfferDescription', obj);
-    // }
-    // else if(second_pc == client.id){
-    //   io.sockets.socket(first_pc).emit('incomingOfferDescription', obj);
-    // }
   });
 
   client.on('sendIceCandidate1', function(obj) {
     socketsend(client.id, 'incomingIceCandidate1', obj);
-    // if(first_pc == client.id) {
-    //   io.sockets.socket(second_pc).emit('incomingIceCandidate1', obj);
-    // }
-    // else if(second_pc == client.id){
-    //   io.sockets.socket(first_pc).emit('incomingIceCandidate1', obj);
-    // }
   });
 
   client.on('sendIceCandidate2', function(obj) {
     socketsend(client.id, 'incomingIceCandidate2', obj);
-    // if(first_pc == client.id) {
-    //   io.sockets.socket(second_pc).emit('incomingIceCandidate2', obj);
-    // }
-    // else if(second_pc == client.id){
-    //   io.sockets.socket(first_pc).emit('incomingIceCandidate2', obj);
-    // }
   });
 
   client.on('sendAnswerDescription', function(obj) {
     socketsend(client.id, 'incomingAnswerDescription', obj);
-    // if(first_pc == client.id) {
-    //   io.sockets.socket(second_pc).emit('incomingAnswerDescription', obj);
-    // }
-    // else if(second_pc == client.id){
-    //   io.sockets.socket(first_pc).emit('incomingAnswerDescription', obj);
-    // }
   });
 
   client.on('IStoppedTransmitting', function() {
     socketsend(client.id, 'callerStoppedTransmitting');
-    // if(first_pc == client.id) {
-    //   io.sockets.socket(second_pc).emit('callerStoppedTransmitting');
-    // }
-    // else if(second_pc == client.id){
-    //   io.sockets.socket(first_pc).emit('callerStoppedTransmitting');
-    // }
   });
 
   client.on('IStoppedReceiving', function() {
     socketsend(client.id, 'calleeStoppedReceiving');
-    // if(first_pc == client.id) {
-    //   io.sockets.socket(second_pc).emit('calleeStoppedReceiving');
-    // }
-    // else if(second_pc == client.id){
-    //   io.sockets.socket(first_pc).emit('calleeStoppedReceiving');
-    // }
   });
 
   client.on('signin', function(obj) {
