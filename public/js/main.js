@@ -1,10 +1,10 @@
 var socket = io.connect();
 performance.now = performance.now || performance.webkitNow; // hack added by SD!
 
-btn1.disabled = false;
-btn2.disabled = true;
-btn3.disabled = true;
-btn4.disabled = true;
+startbtn.disabled = false;
+callbtn.disabled = true;
+stoptransbtn.disabled = true;
+stopreceivebtn.disabled = true;
 
 var localstream; //the stream of audio/video coming from this browser
 
@@ -71,19 +71,19 @@ function gotStream(stream){
   if(debug) trace("Received local stream");
   vid1.src = window.URL.createObjectURL(stream); // add preview
   localstream = stream;
-  btn2.disabled = false;
+  callbtn.disabled = false;
 }
 
 function start() {
   trace("Requesting local stream");
-  btn1.disabled = true;
+  startbtn.disabled = true;
 
   navigator.getUserMedia({audio:true, video:true}, gotStream, function() {});
 }
 
 function call() {
-  btn2.disabled = true;
-  btn3.disabled = false;
+  callbtn.disabled = true;
+  stoptransbtn.disabled = false;
   if(debug) trace("Starting call");
 
   // temporary hacks to cope with API change
@@ -135,16 +135,16 @@ function gotDescription2(desc) {
 function stopTransmitting() {
   outgoing.close();
   outgoing = null;
-  btn3.disabled = true;
-  btn2.disabled = false;
+  stoptransbtn.disabled = true;
+  callbtn.disabled = false;
   socket.emit('IStoppedTransmitting');
 }
 
 function stopReceiving() {
   incoming.close();
   incoming = null;
-  btn4.disabled = true;
-  vid2.src = "";
+  stopreceivebtn.disabled = true;
+  incomingvid.src = "";
   socket.emit('IStoppedReceiving');
 }
 
@@ -154,15 +154,15 @@ function hangup() {
   incoming.close();
   outgoing = null;
   incoming = null;
-  vid2.src = "";
-  btn3.disabled = true;
-  btn2.disabled = false;
+  incomingvid.src = "";
+  stoptransbtn.disabled = true;
+  callbtn.disabled = false;
 }
 
 function gotRemoteStream(e) {
   if(debug) trace("got remote stream");
   if(debug) trace(e.stream);
-  vid2.src = window.URL.createObjectURL(e.stream);
+  incomingvid.src = window.URL.createObjectURL(e.stream);
 }
 
 function iceCallback1(event) {
@@ -209,9 +209,8 @@ socket.on('incomingOfferDescription', function(obj) {
   if(debug) trace("Setting Remote Description for incoming");
   incoming.setRemoteDescription(new RTCSessionDescription(desc), function() {
     if(debug) trace('incomingOfferDescription SUCCEEDED to be set as remote description');
-    if(debug) trace("Creating Answer for incoming");
     incoming.createAnswer(gotDescription2, null, null);
-    btn4.disabled = false;
+    stopreceivebtn.disabled = false;
   }, function(){
     if(debug) trace('incomingOfferDescription FAILED set as remote description');
   });
@@ -226,7 +225,7 @@ socket.on('incomingAnswerDescription', function(obj) {
   }, function(){
     if(debug) trace('incomingAnswerDescription FAILED set as remote description');
   });
-  btn3.disabled = false;
+  stoptransbtn.disabled = false;
 });
 
 socket.on('incomingIceCandidate1', function(obj) {

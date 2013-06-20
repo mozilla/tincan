@@ -4,7 +4,7 @@
     <title>WebRTC Test</title>
     <style>
     video {
-      border:5px solid black;
+      border:3px solid black;
       width:240px;
       height:180px;
     }
@@ -12,18 +12,11 @@
       font: 18px sans-serif;
       padding: 8px;
     }
-    textarea {
-      font-family: monospace;
-      margin: 2px;
-      width:480px;
-      height:640px;
-    }
     body {
-      padding-right:25px;
-      padding-left:25px;
+      padding-right:15px;
+      padding-left:15px;
     }
     </style>
-    <link rel="stylesheet" href="/css/pure-min.css">
     <link rel="stylesheet" href="/css/persona-buttons.css">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <script src="http://127.0.0.1:10002/include.js"></script> <!-- include.js points to local server-->
@@ -33,22 +26,16 @@
   <body>
     <h1>WebRTC Test</h1>
     <a id="signin" class="persona-button orange"><span>Sign in</span></a>
-    <div class="pure-g-r">
-      <div class="pure-u-1-2">
-        <p id='pc1status'>This Browser's Stream</p>
-        <video id="vid1" autoplay></video>
-      </div>
-      <br />
-      <div class="pure-u-1-2">
-        <p id='pc2status'>The Other Browser's Stream</p>
-        <video id="vid2" autoplay></video>
-      </div>
-    </div>
+    <p id='outgoingstatus'>This Browser's Stream</p>
+    <video id="outgoingvid" autoplay></video>
+  <br />
+    <p id='incomingstatus'>The Other Browser's Stream</p>
+    <video id="incomingvid" autoplay></video>
     <br>
-    <button id="btn1" onclick="start()">Turn On Camera</button>
-    <button id="btn2" onclick="call()">Call</button>
-    <button id="btn3" onclick="stopTransmitting()">Stop Transmitting</button>
-    <button id="btn4" onclick="stopReceiving()">Stop Receiving</button>
+    <button id="startbtn" onclick="start()">Turn On Camera</button>
+    <button id="callbtn" onclick="call()">Call</button>
+    <button id="stoptransbtn" onclick="stopTransmitting()">Stop Transmitting</button>
+    <button id="stopreceivebtn" onclick="stopReceiving()">Stop Receiving</button>
     <br>
     <script src="/js/main.js"></script>
   </body>
