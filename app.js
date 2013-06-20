@@ -96,7 +96,6 @@ io.sockets.on('connection', function(client) {
   io.sockets.socket(client.id).emit('YouConnected', client.id);
 
   client.on('disconnect', function() {
-    console.log('disconnecting');
     if(first_pc == client.id) {
       first_pc = second_pc;
       second_pc = null;
