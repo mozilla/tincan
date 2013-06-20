@@ -66,7 +66,7 @@ function trace(text) {
 
 function gotStream(stream){
   if(debug) trace("Received local stream");
-  vid1.src = window.URL.createObjectURL(stream); // add preview
+  outgoingvid.src = window.URL.createObjectURL(stream); // add preview
   localstream = stream;
   callbtn.disabled = false;
 }
@@ -125,11 +125,14 @@ function gotDescription2(desc) {
 }
 
 function stopTransmitting() {
-  outgoing.close();
-  outgoing = null;
-  stoptransbtn.disabled = true;
-  callbtn.disabled = false;
-  socket.emit('IStoppedTransmitting');
+  if(outgoing) {
+    outgoing.close();
+    outgoing = null;
+    // outgoingvid.src = "";
+    stoptransbtn.disabled = true;
+    callbtn.disabled = false;
+    socket.emit('IStoppedTransmitting');
+  }
 }
 
 function stopReceiving() {
@@ -140,16 +143,16 @@ function stopReceiving() {
   socket.emit('IStoppedReceiving');
 }
 
-function hangup() {
-  if(debug) trace("Ending call");
-  outgoing.close();
-  incoming.close();
-  outgoing = null;
-  incoming = null;
-  incomingvid.src = "";
-  stoptransbtn.disabled = true;
-  callbtn.disabled = false;
-}
+// function hangup() {
+//   // if(debug) trace("Ending call");
+//   // outgoing.close();
+//   // incoming.close();
+//   // outgoing = null;
+//   // incoming = null;
+//   // incomingvid.src = "";
+//   // stoptransbtn.disabled = true;
+//   // callbtn.disabled = false;
+// }
 
 function gotRemoteStream(e) {
   if(debug) trace("got remote stream");
