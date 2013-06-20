@@ -1,7 +1,3 @@
-/**
- * Module dependencies.
- */
-
 var express = require('express'),
     routes = require('./routes'),
     socket = require('socket.io'),
