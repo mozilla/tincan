@@ -1,0 +1,14 @@
+body
+  h1= title
+  p(id='outgoingstatus') This Browser's Stream
+  video(id="outgoingvid", autoplay)
+  br
+  p(id='incomingstatus') The Other Browser's Stream
+  video(id="incomingvid", autoplay)
+  br
+  button(id="startbtn", onclick="start()") Turn On Camera
+  button(id="callbtn", onclick="call()") Call
+  button(id="stoptransbtn", onclick="stopTransmitting()") Stop Transmitting
+  button(id="stopreceivebtn", onclick="stopReceiving()") Stop Receiving
+  br
+  script(src="/js/main.js")

@@ -8,23 +8,25 @@ var io = socket.listen(app);
 
 io.set('log level', 1); // reduce logging
 
+// var BROWSERID_URL = "https://login.persona.org";
 var BROWSERID_URL = "http://127.0.0.1:10002";
+// var BROWSERID_VERIFY_URL = "https://verifier.login.persona.org/verify";
 var BROWSERID_VERIFY_URL = "http://127.0.0.1:10000/verify";
 
 // Configuration
 app.configure(function(){
-  app.set('view engine', 'html');
+  app.set('view engine', 'jade');
   app.set('views', __dirname + '/views');
-  app.set("view options", {layout: false});
-
+  // app.set("view options", {layout: false});
+  // app.set('view engine', 'jade');
   // make a custom html template
-  app.register('.html', {
-    compile: function(str, options){
-      return function(locals){
-        return str;
-      };
-    }
-  });
+  // app.register('.html', {
+  //   compile: function(str, options){
+  //     return function(locals){
+  //       return str;
+  //     };
+  //   }
+  // });
 
   app.use(express.bodyParser());
   app.use(express.methodOverride());
@@ -47,6 +49,7 @@ app.configure('production', function(){
 // Routes
 
 app.get('/', routes.index);
+app.get('/call', routes.call);
 
 var first_pc = null;
 var second_pc = null;
