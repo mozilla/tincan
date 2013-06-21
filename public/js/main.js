@@ -13,8 +13,6 @@ var currentUser = null;
 
 //signin and signout buttons
 
-
-
 function trace(text) {
   // This function is used for logging.
   if (text[text.length - 1] == '\n') {
@@ -95,11 +93,13 @@ function stopTransmitting() {
 }
 
 function stopReceiving() {
-  incoming.close();
-  incoming = null;
-  stopreceivebtn.disabled = true;
-  incomingvid.src = "";
-  socket.emit('IStoppedReceiving');
+  if(incoming) {
+    incoming.close();
+    incoming = null;
+    stopreceivebtn.disabled = true;
+    incomingvid.src = "";
+    socket.emit('IStoppedReceiving');
+  }
 }
 
 // function hangup() {

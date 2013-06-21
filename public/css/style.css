@@ -1,0 +1,13 @@
+video {
+  border:3px solid black;
+  width:240px;
+  height:180px;
+}
+button {
+  font: 18px sans-serif;
+  padding: 8px;
+}
+body {
+  padding-right:15px;
+  padding-left:15px;
+}
