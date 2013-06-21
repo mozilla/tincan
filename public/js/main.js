@@ -102,17 +102,6 @@ function stopReceiving() {
   }
 }
 
-// function hangup() {
-//   // if(debug) trace("Ending call");
-//   // outgoing.close();
-//   // incoming.close();
-//   // outgoing = null;
-//   // incoming = null;
-//   // incomingvid.src = "";
-//   // stoptransbtn.disabled = true;
-//   // callbtn.disabled = false;
-// }
-
 function gotRemoteStream(e) {
   if(debug) trace("got remote stream");
   if(debug) trace(e.stream);
