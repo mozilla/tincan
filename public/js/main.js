@@ -34,6 +34,10 @@ function start() {
   navigator.getUserMedia({audio:true, video:true}, gotStream, function() {});
 }
 
+function addContact() {
+  socket.emit('addContact', document.getElementById('contactemail').value);
+}
+
 function call() {
   callbtn.disabled = true;
   stoptransbtn.disabled = false;
@@ -136,6 +140,17 @@ socket.on('callerStoppedTransmitting', function() {
 
 socket.on('calleeStoppedReceiving', function() {
   stopTransmitting();
+});
+
+socket.on('allContacts', function(arr) {
+  for(var i =  0; i < arr.length; i++) {
+    document.getElementById('emails').innerHTML += "<div>" + arr[i] + "</div>";
+  }
+});
+
+socket.on('contactAdded', function(email) {
+  document.getElementById('emails').innerHTML += "<div>" + email + "</div>";
+  document.getElementById('contactemail').value = "";
 });
 
 socket.on('offerComingThru', function(){

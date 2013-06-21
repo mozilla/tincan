@@ -1,5 +1,7 @@
 body
   h1= title
+  a(id="signin", class="persona-button orange")
+    span Sign in
   p(id='outgoingstatus') This Browser's Stream
   video(id="outgoingvid", autoplay)
   br
@@ -11,4 +13,11 @@ body
   button(id="stoptransbtn", onclick="stopTransmitting()") Stop Transmitting
   button(id="stopreceivebtn", onclick="stopReceiving()") Stop Receiving
   br
+  br
+  input(id="contactemail", type="text", placeholder="Email")
+  button(id="addcontactbtn", onclick="addContact()") Add Contact
+  br
+  div Emails:
+    div(id="emails")
+  script(src="/js/login.js")
   script(src="/js/main.js")
