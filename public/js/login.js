@@ -17,10 +17,16 @@ if(navigator.id) {
   navigator.id.watch({
     loggedInUser: currentUser,
     onlogin: function(assertion) {
-      socket.emit('signin', { assertion: assertion });
+      $.post('/login',
+        { assertion: assertion },
+        function(data) {
+          window.location = JSON.parse(data).location;
+        }
+      );
+      // socket.emit('signin', { assertion: assertion });
     },
     onlogout: function() {
-      socket.emit('signout');
+      // socket.emit('signout');
     }
   });
 }

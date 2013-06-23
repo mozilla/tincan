@@ -1,7 +1,6 @@
 var express = require('express'),
     routes = require('./routes'),
-    socket = require('socket.io'),
-    request = require('request');
+    socket = require('socket.io');
 
 var app = module.exports = express.createServer();
 var io = socket.listen(app);
@@ -9,12 +8,10 @@ var io = socket.listen(app);
 io.set('log level', 1); // reduce logging
 
 var sessions = {};
-var contacts = {}; // {clientid : [email]}
+var contacts = {}; // { email : [email1, email2, ...] }
 
 // var BROWSERID_URL = "https://login.persona.org";
 var BROWSERID_URL = "http://127.0.0.1:10002";
-// var BROWSERID_VERIFY_URL = "https://verifier.login.persona.org/verify";
-var BROWSERID_VERIFY_URL = "http://127.0.0.1:10000/verify";
 
 // Configuration
 app.configure(function(){
@@ -42,6 +39,7 @@ app.configure('production', function(){
 
 app.get('/', routes.index);
 app.get('/call', routes.call);
+app.post('/login', routes.login);
 
 var first_pc = null;
 var second_pc = null;
@@ -85,9 +83,9 @@ io.sockets.on('connection', function(client) {
   }
 
   io.sockets.socket(client.id).emit('YouConnected', client.id);
-  io.sockets.socket(client.id).emit('allContacts', contacts[client.id] || [])
 
   client.on('disconnect', function() {
+    delete sessions[client.id]; // delete from sessions
     if(first_pc == client.id) {
       first_pc = second_pc;
       second_pc = null;
@@ -98,11 +96,14 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('addContact', function(email) {
-    if(contacts[client.id]) {
-      contacts[client.id].push(email);
+    if(!sessions[client.id]) {
+      console.log('Not signed in!');
+    }
+    else if(contacts[sessions[client.id]]) {
+      contacts[sessions[client.id]].push(email);
     }
     else {
-      contacts[client.id] = [email];
+      contacts[sessions[client.id]] = [email];
     }
     io.sockets.socket(client.id).emit('contactAdded', email);
   });
@@ -141,26 +142,7 @@ io.sockets.on('connection', function(client) {
 
   client.on('signin', function(obj) {
     var assertion = obj.assertion;
-    request.post(
-      BROWSERID_VERIFY_URL, {
-        form: {
-          assertion: assertion,
-          audience: "http://localhost:3000"
-        }
-      },
-      function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-          console.log(body);
-          var email = JSON.parse(body).email;
-          sessions[email] = client.id; // set session
-          io.sockets.socket(client.id).emit('successfulSignin', email);
-        }
-        else {
-          console.log(error);
-          console.log(response);
-        }
-      }
-    );
+
   });
 });
 
