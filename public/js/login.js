@@ -23,10 +23,8 @@ if(navigator.id) {
           window.location = JSON.parse(data).location;
         }
       );
-      // socket.emit('signin', { assertion: assertion });
     },
     onlogout: function() {
-      // socket.emit('signout');
     }
   });
 }

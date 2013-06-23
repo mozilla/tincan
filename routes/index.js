@@ -13,10 +13,12 @@ exports.call = function(req, res){
 
 exports.index = function(req, res){
   if(!req.session.email) {
+    console.log('no email');
     res.render('index', { title: 'WebRTC and Persona', email: null });
   }
   else {
-    res.redirect('call', { title: 'WebRTC and Persona', email: req.session.email });
+    console.log('redirecting...');
+    res.redirect('/call');
   }
 };
 
