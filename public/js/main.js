@@ -21,6 +21,26 @@ function trace(text) {
   console.log((performance.now() / 1000).toFixed(3) + ": " + text);
 }
 
+socket.on('successfulSignin', function(email) {
+  currentUser = email;
+  if(email) signin.innerHTML = "<span>Logout of " + email + "</span>";
+});
+
+socket.on('successfulSignout', function() {
+  currentUser = null;
+  window.location.reload();
+});
+
+socket.on('failedSignout', function(err) {
+  // alert("Signout failure: " + err);
+});
+
+socket.on('failedSignin', function(err) {
+  currentUser = null;
+  navigator.id.logout();
+  // alert("Signin failure: " + err);
+});
+
 function gotStream(stream){
   if(debug) trace("Received local stream");
   outgoingvid.src = window.URL.createObjectURL(stream); // add preview

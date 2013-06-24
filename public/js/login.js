@@ -28,23 +28,3 @@ if(navigator.id) {
     }
   });
 }
-
-socket.on('successfulSignin', function(email) {
-  currentUser = email;
-  if(email) signin.innerHTML = "<span>Logout of " + email + "</span>";
-});
-
-socket.on('successfulSignout', function() {
-  currentUser = null;
-  window.location.reload();
-});
-
-socket.on('failedSignout', function(err) {
-  // alert("Signout failure: " + err);
-});
-
-socket.on('failedSignin', function(err) {
-  currentUser = null;
-  navigator.id.logout();
-  // alert("Signin failure: " + err);
-});

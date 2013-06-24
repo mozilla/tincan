@@ -1,7 +1,8 @@
 body
   h1= title
-  a(id="signin", class="persona-button orange")
-    span Sign in
+  div= email || "Not logged in"
+  //- a(id="signin", class="persona-button orange")
+    //- span Sign in
   p(id='outgoingstatus') This Browser's Stream
   video(id="outgoingvid", autoplay)
   br
@@ -19,5 +20,5 @@ body
   br
   div Emails:
     div(id="emails")
-  script(src="/js/login.js")
+
   script(src="/js/main.js")
