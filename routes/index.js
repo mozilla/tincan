@@ -4,7 +4,7 @@ var BROWSERID_VERIFY_URL = "http://127.0.0.1:10000/verify";
 
 exports.call = function(req, res){
   if(!req.session.email) {
-    res.render('index', { title: 'WebRTC and Persona', email: null });
+    res.render('index', { title: 'WebRTC and Persona' });
   }
   else {
     res.render('call', { title: 'WebRTC and Persona', email: req.session.email });
@@ -13,7 +13,7 @@ exports.call = function(req, res){
 
 exports.index = function(req, res){
   if(!req.session.email) {
-    res.render('index', { title: 'WebRTC and Persona', email: null });
+    res.render('index', { title: 'WebRTC and Persona' });
   }
   else {
     res.redirect('/call');
