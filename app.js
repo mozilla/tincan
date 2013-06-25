@@ -139,11 +139,6 @@ io.sockets.on('connection', function(client) {
   client.on('signout', function() {
     io.sockets.socket(client.id).emit('successfulSignout');
   });
-
-  client.on('signin', function(obj) {
-    var assertion = obj.assertion;
-
-  });
 });
 
 app.listen(process.env.PORT || 3000, function() {
