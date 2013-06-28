@@ -17,7 +17,7 @@ and then you can start the server by running:
 
 ```$ node app.js```
 
-and direct your browser to `http://localhost:3000`
+and direct your browser to `http://127.0.0.1:3000`
 
 ## Contributing
 
