@@ -10,5 +10,9 @@
     "webrtc.io-client": "latest",
     "ws": "latest",
     "request": "~2.21.0"
+  },
+  "scripts": {
+    "preinstall": "npm install -g bower",
+    "postinstall": "bower install"
   }
 }
