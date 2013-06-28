@@ -5,9 +5,8 @@ html
     title= title
     link(rel='stylesheet', href='/css/persona-buttons.css')
     link(rel='stylesheet', href='/css/style.css')
-    //- script(src="https://login.persona.org/include.js")
-    script(src="http://127.0.0.1:10002/include.js")
     script(src='/lib/jquery.min.js')
+    script(src="#{persona_uri}/include.js")
     script(src="/js/adapter.js")
     script(src='/socket.io/socket.io.js')
   != body

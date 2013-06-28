@@ -1,6 +1,5 @@
 var request = require('request');
-// var BROWSERID_VERIFY_URL = "https://verifier.login.persona.org/verify";
-var BROWSERID_VERIFY_URL = "http://127.0.0.1:10000/verify";
+var config = require('../config');
 
 exports.call = function(req, res){
   if(!req.session.email) {
@@ -13,10 +12,15 @@ exports.call = function(req, res){
 
 exports.index = function(req, res){
   if(!req.session.email) {
-    res.render('index', { title: 'WebRTC and Persona' });
+    res.render('index',
+        { title: 'WebRTC and Persona',
+          persona_uri: config.persona_uri });
   }
   else {
-    res.render('call', { title: 'WebRTC and Persona', email: req.session.email });
+    res.render('call',
+        { title: 'WebRTC and Persona',
+          persona_uri: config.persona_uri,
+          email: req.session.email });
   }
 };
 
@@ -29,15 +33,14 @@ exports.logout = function(req, res) {
 exports.login = function(req, res) {
   // console.log(req);
   request.post(
-      BROWSERID_VERIFY_URL, {
+      config.persona_verifier_uri, {
         form: {
           assertion: req.body.assertion,
-          audience: "http://localhost:3000"
+          audience: config.host + ':' + config.port
         }
       },
       function (error, response, body) {
         if (!error && response.statusCode == 200) {
-          // console.log(body);
           var email = JSON.parse(body).email;
           req.session.email = email;
           res.send(JSON.stringify({location:"/"}));
