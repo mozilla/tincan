@@ -4,17 +4,17 @@ body
   button(onclick="logout()") Logout
   div(class="container")
     div(class="bigbox")
-      p(id='outgoingstatus') This Browser's Stream
       video(id="outgoingvid", autoplay)
-
+      p(id='outgoingstatus') This Browser's Stream
     div(class="smallbox")
+      video(id="incomingvid", autoplay)
+      p(id='incomingstatus') The Other Browser's Stream
     div(class="chatbox")
     div(class="msgbox")
+      input(id="contactemail", type="text", placeholder="Message")
+      button(onclick="alert('sent fake message')") Send
   br
-
   br
-  p(id='incomingstatus') The Other Browser's Stream
-  video(id="incomingvid", autoplay)
   br
   button(id="startbtn", onclick="start()") Turn On Camera
   button(id="callbtn", onclick="call()") Call
