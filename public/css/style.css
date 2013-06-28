@@ -1,13 +1,36 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
 video {
   border:3px solid black;
   width:240px;
   height:180px;
 }
 button {
-  font: 18px sans-serif;
+  font-size: 16px;
   padding: 8px;
 }
+
 body {
+/*background: #00539F;*/
+background-color: #00539F;
+background-image: url(/img/bg.png);
+background-position: center center;
+background-repeat: no-repeat;
+/* Safari 4-5, Chrome 1-9 */ /* Can't specify a percentage size? Laaaaaame. */
+background: -webkit-gradient(radial, center center, 0, center center, 460, from(#0095DD), to(#00539F));
+/* Safari 5.1+, Chrome 10+ */
+background: -webkit-radial-gradient(circle, #0095DD, #00539F);
+/* Firefox 3.6+ */
+background: -moz-radial-gradient(circle, #0095DD, #00539F); /* IE 10 */
+background: -ms-radial-gradient(circle, #0095DD, #00539F);
+
   padding-right:15px;
   padding-left:15px;
+  font: 14px/21px 'OpenSans-Reg', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
 }
+
+h1 {font-size: 36px; letter-spacing: -1.5px; line-height: 100%;}
+
+.headline-main, h1, h2, h3, h4 {font-family: 'OpenSans', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif; font-weight: normal; text-shadow: 0px 1px 0px rgba(255,255,255,0.75); color: rgb(66,79,90);}
+.headline-main {font-size: 48px; letter-spacing: -2px; line-height: 100%;}
+

@@ -17,16 +17,14 @@ function logout() {
 
 if(navigator.id) {
   navigator.id.watch({
-    onlogin: function(assertion) {
-      // window.location = "/";
+    onlogin: function() {
+      //we don't handle login on this page
     },
     onlogout: function() {
       window.location = "/logout";
     }
   });
 }
-
-//signin and signout buttons
 
 function trace(text) {
   // This function is used for logging.

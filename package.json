@@ -13,6 +13,7 @@
   },
   "scripts": {
     "preinstall": "npm install -g bower", //install bower globally
-    "postinstall": "bower install" //install bower front end dependencies
+    "postinstall": "bower install", //install bower front end dependencies
+    "start": "node app.js"
   }
 }

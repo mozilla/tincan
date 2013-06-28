@@ -3,12 +3,7 @@ var currentUser = null;
 
 if (signinLink) {
   signinLink.onclick = function() {
-    if(navigator.id) {
-      if(currentUser) {
-        navigator.id.logout();
-      }
-      else navigator.id.request();
-    }
+    navigator.id.request();
   };
 }
 
@@ -23,7 +18,7 @@ if(navigator.id) {
       );
     },
     onlogout: function() {
-      window.location = "/logout";
+      // we don't handle logout on this page
     }
   });
 }
