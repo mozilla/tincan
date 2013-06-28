@@ -1,4 +1,3 @@
-var socket = io.connect();
 var signinLink = document.getElementById('signin');
 var currentUser = null;
 
