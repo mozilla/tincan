@@ -5,6 +5,7 @@ video {
   width:240px;
   height:180px;
 }
+
 button {
   font-size: 16px;
   padding: 8px;
@@ -34,3 +35,31 @@ h1 {font-size: 36px; letter-spacing: -1.5px; line-height: 100%;}
 .headline-main, h1, h2, h3, h4 {font-family: 'OpenSans', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif; font-weight: normal; text-shadow: 0px 1px 0px rgba(255,255,255,0.75); color: rgb(66,79,90);}
 .headline-main {font-size: 48px; letter-spacing: -2px; line-height: 100%;}
 
+.bigbox {
+  float:left;
+  width:66%;
+  height:600px;
+  border:2px solid yellow; /* to debug */
+}
+
+.smallbox {
+  float:right;
+  width:33%;
+  height:250px;
+  border:2px solid red; /* to debug */
+}
+
+.chatbox {
+  float:right;
+  width:33%;
+  height:400px;
+  border:2px solid purple; /* to debug */
+}
+
+.msgbox {
+  /*float:left;*/
+  width:66%;
+  height:50px;
+  clear:left;
+  border:2px solid orange; /* to debug */
+}

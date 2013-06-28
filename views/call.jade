@@ -2,8 +2,16 @@ body
   h1= title
   div= email
   button(onclick="logout()") Logout
-  p(id='outgoingstatus') This Browser's Stream
-  video(id="outgoingvid", autoplay)
+  div(class="container")
+    div(class="bigbox")
+      p(id='outgoingstatus') This Browser's Stream
+      video(id="outgoingvid", autoplay)
+
+    div(class="smallbox")
+    div(class="chatbox")
+    div(class="msgbox")
+  br
+
   br
   p(id='incomingstatus') The Other Browser's Stream
   video(id="incomingvid", autoplay)
