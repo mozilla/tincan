@@ -12,8 +12,8 @@
     "request": "~2.21.0"
   },
   "scripts": {
-    "preinstall": "npm install -g bower", //install bower globally
-    "postinstall": "bower install", //install bower front end dependencies
+    "preinstall": "npm install -g bower",
+    "postinstall": "bower install",
     "start": "node app.js"
   }
 }
