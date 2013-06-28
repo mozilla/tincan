@@ -14,7 +14,6 @@ if (signinLink) {
 
 if(navigator.id) {
   navigator.id.watch({
-    loggedInUser: currentUser,
     onlogin: function(assertion) {
       $.post('/login',
         { assertion: assertion },
@@ -24,6 +23,7 @@ if(navigator.id) {
       );
     },
     onlogout: function() {
+      window.location = "/logout";
     }
   });
 }

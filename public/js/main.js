@@ -11,6 +11,21 @@ var incoming; // peer connection for data in
 var debug = true; // true to log messages
 var currentUser = null;
 
+function logout() {
+  navigator.id.logout();
+}
+
+if(navigator.id) {
+  navigator.id.watch({
+    onlogin: function(assertion) {
+      // window.location = "/";
+    },
+    onlogout: function() {
+      window.location = "/logout";
+    }
+  });
+}
+
 //signin and signout buttons
 
 function trace(text) {

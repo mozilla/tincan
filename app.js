@@ -38,8 +38,9 @@ app.configure('production', function(){
 // Routes
 
 app.get('/', routes.index);
-app.get('/call', routes.call);
+// app.get('/call', routes.call);
 app.post('/login', routes.login);
+app.get('/logout', routes.logout);
 
 var first_pc = null;
 var second_pc = null;
