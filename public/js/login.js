@@ -15,7 +15,7 @@ if(navigator.id) {
         '/login',
         { assertion: assertion },
         function(data) {
-          if(data=== 'failure') {
+          if(data === 'failure') {
             alert('Sign in failed! :(');
             navigator.id.logout();
           }
