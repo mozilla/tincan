@@ -67,9 +67,22 @@ function start() {
   navigator.getUserMedia({audio:true, video:true}, gotStream, function() {});
 }
 
-function addContact() {
-  socket.emit('addContact', document.getElementById('contactemail').value);
+submitcontact.onsubmit = function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  var contactemail = document.getElementById('contactemail');
+  contactemail.checkValidity();
+  if(contactemail.validity.valid && contactemail.value != "") {
+    socket.emit('addContact', contactemail.value);
+  }
+  else {
+    contactemail.setCustomValidity("Need to give a valid email");
+  }
 }
+
+function addContact() {
+
+};
 
 function call() {
   callbtn.disabled = true;
@@ -160,11 +173,11 @@ function iceCallback2(event){
 }
 
 socket.on('OtherUserConnected', function(socketid) {
-  document.getElementById('incomingstatus').innerHTML = socketid + "'s Stream (Other Browser)";
+  document.getElementById('incomingstatus').innerHTML = "Your Friend Connected!";
 });
 
 socket.on('YouConnected', function(socketid) {
-  document.getElementById('outgoingstatus').innerHTML = socketid + "'s Stream (Your Browser)";
+  document.getElementById('outgoingstatus').innerHTML = "You're Connected!";
 });
 
 socket.on('callerStoppedTransmitting', function() {
@@ -177,12 +190,12 @@ socket.on('calleeStoppedReceiving', function() {
 
 socket.on('allContacts', function(arr) {
   for(var i =  0; i < arr.length; i++) {
-    document.getElementById('emails').innerHTML += "<div>" + arr[i] + "</div>";
+    document.getElementById('emails').innerHTML += "<div class='clickable contactemail'>" + arr[i] + "</div>";
   }
 });
 
 socket.on('contactAdded', function(email) {
-  document.getElementById('emails').innerHTML += "<div>" + email + "</div>";
+  document.getElementById('contactlist').innerHTML += "<div class='clickable contactemail'>" + email + "<button style='float:right;'>Call</button></div>";
   document.getElementById('contactemail').value = "";
 });
 
@@ -230,3 +243,5 @@ socket.on('incomingIceCandidate2', function(obj) {
   outgoing.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
   if(debug) trace("Remote ICE candidate: \n" + JSON.parse(obj).cand.candidate);
 });
+
+start();

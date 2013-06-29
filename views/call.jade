@@ -1,29 +1,25 @@
 body
   h1= title
-  div= email
-  button(onclick="logout()") Logout
+  span
+    div= email
+    button(onclick="logout()") Logout
+    button(id="startbtn", onclick="start()") Turn On Camera
+    button(id="callbtn", onclick="call()") Call
+    button(id="stoptransbtn", onclick="stopTransmitting()") Stop Transmitting
+    button(id="stopreceivebtn", onclick="stopReceiving()") Stop Receiving
   div(class="container")
     div(class="bigbox")
-      p(id='incomingstatus', style="position:absolute;") The Other Browser's Stream
+      p(id='incomingstatus', style="position:absolute;") Your Friend Hasn't Connected
       video(id="incomingvid", class="smallboxvid", autoplay)
     div(class="smallbox")
-      p(id='outgoingstatus', style="position:absolute;") This Browser's Stream
+      p(id='outgoingstatus', style="position:absolute;") You're Connected
       video(id="outgoingvid", class="bigboxvid", autoplay)
     div(class="chatbox")
+      form(id='submitcontact')
+        input(id="contactemail", type="email", placeholder="Email")
+        button(type="submit", id="addcontactbtn", onclick="addContact()") Add Contact
+      div(id="contactlist")
     div(class="msgbox")
-      input(id="contactemail", type="text", placeholder="Message")
+      input(id="msginput", type="text", class="msginput", placeholder="Message")
       button(onclick="alert('sent fake message')") Send
-  br
-  br
-  button(id="startbtn", onclick="start()") Turn On Camera
-  button(id="callbtn", onclick="call()") Call
-  button(id="stoptransbtn", onclick="stopTransmitting()") Stop Transmitting
-  button(id="stopreceivebtn", onclick="stopReceiving()") Stop Receiving
-  br
-  br
-  input(id="contactemail", type="text", placeholder="Email")
-  button(id="addcontactbtn", onclick="addContact()") Add Contact
-  br
-  div Emails:
-    div(id="emails")
   script(src="/js/main.js")
