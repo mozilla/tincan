@@ -11,6 +11,8 @@ var incoming; // peer connection for data in
 var debug = true; // true to log messages
 var currentUser = null;
 
+var pcs = {};
+
 function logout() {
   navigator.id.logout();
 }
@@ -77,7 +79,7 @@ submitcontact.onsubmit = function(e) {
   }
 };
 
-function call() {
+function call(email) {
   callbtn.disabled = true;
   stoptransbtn.disabled = false;
   if(debug) trace("Starting call");
@@ -101,94 +103,135 @@ function call() {
 
   outgoing = new RTCPeerConnection(null);
   if(debug) trace("Created local peer connection object outgoing");
-  outgoing.onicecandidate = iceCallback1;
-  socket.emit('offer');
+  // socket.emit('offer', email);
   outgoing.addStream(localstream);
+
+  outgoing.onicecandidate = function(event) {
+
+    if(debug) trace("running ice callback 1");
+    console.log(event);
+    if (event.candidate) {
+      console.log(event.candidate);
+      socket.emit('ice_in', email, event.candidate);
+    }
+    else {
+      console.log("no candidate!");
+    }
+  };
+
   if(debug) trace("Adding Local Stream to peer connection");
   setTimeout(function() {
-    outgoing.createOffer(gotDescription1, null, null);
+    outgoing.createOffer(
+      function (desc) {
+        outgoing.setLocalDescription(new RTCSessionDescription(desc));
+        if(debug) trace("Offer from outgoing \n" + desc.sdp);
+        socket.emit('offer', email, desc);
+        // socket.emit('sendOfferDescription', JSON.stringify({ email: email, 'desc' : desc }));
+      },
+      null,
+      null
+    );
   }, 1000);
 }
 
-function gotDescription1(desc) {
-  outgoing.setLocalDescription(new RTCSessionDescription(desc));
-  if(debug) trace("Offer from outgoing \n" + desc.sdp);
-  //send offer!
-  socket.emit('sendOfferDescription', JSON.stringify({ 'desc' : desc }));
-}
+// function gotDescription2(desc) {
 
-function gotDescription2(desc) {
-  incoming.setLocalDescription(new RTCSessionDescription(desc));
-  if(debug) trace("Answer from incoming \n" + desc.sdp);
-  //send back!
-  socket.emit('sendAnswerDescription', JSON.stringify({ 'desc' : desc }));
-}
+// }
 
 function stopTransmitting() {
-  if(outgoing) {
-    outgoing.close();
-    outgoing = null;
-    // outgoingvid.src = "";
-    stoptransbtn.disabled = true;
-    callbtn.disabled = false;
-    socket.emit('IStoppedTransmitting');
-  }
+  // if(outgoing) {
+  //   outgoing.close();
+  //   outgoing = null;
+  //   // outgoingvid.src = "";
+  //   stoptransbtn.disabled = true;
+  //   callbtn.disabled = false;
+  //   socket.emit('IStoppedTransmitting');
+  // }
 }
 
 function stopReceiving() {
-  if(incoming) {
-    incoming.close();
-    incoming = null;
-    stopreceivebtn.disabled = true;
-    incomingvid.src = "";
-    socket.emit('IStoppedReceiving');
-  }
+  // if(incoming) {
+  //   incoming.close();
+  //   incoming = null;
+  //   stopreceivebtn.disabled = true;
+  //   incomingvid.src = "";
+  //   socket.emit('IStoppedReceiving');
+  // }
 }
 
-function gotRemoteStream(e) {
-  if(debug) trace("got remote stream");
-  if(debug) trace(e.stream);
-  incomingvid.src = window.URL.createObjectURL(e.stream);
-}
+// function gotRemoteStream(e) {
 
-function iceCallback1(event) {
-  if(debug) trace("running ice callback 1");
-  if (event.candidate) {
-    socket.emit('sendIceCandidate1', JSON.stringify({'cand' : event.candidate }));
-  }
-}
+// }
 
-function iceCallback2(event){
-  if(debug) trace("running ice callback 2");
-  if (event.candidate) {
-    socket.emit('sendIceCandidate2', JSON.stringify({'cand' : event.candidate }));
-  }
-}
+// function iceCallback1(event) {
+//   if(debug) trace("running ice callback 1");
+//   if (event.candidate) {
+//     socket.emit('ice_in', event.candidate);
+//   }
+// }
 
-socket.on('OtherUserConnected', function(socketid) {
-  document.getElementById('incomingstatus').innerHTML = "Your Friend Connected!";
+// function iceCallback2(event){
+//   if(debug) trace("running ice callback 2");
+//   if (event.candidate) {
+//     socket.emit('ice_out', event.candidate);
+//   }
+// }
+
+// socket.on('OtherUserConnected', function(socketid) {
+//   document.getElementById('incomingstatus').innerHTML = "Your Friend Connected!";
+// });
+
+// socket.on('YouConnected', function(socketid) {
+//   document.getElementById('outgoingstatus').innerHTML = "You're Connected!";
+// });
+
+socket.on('offer', function(email, offer) {
+  incoming = new RTCPeerConnection(null);
+
+  incoming.onicecandidate = function (event) {
+    if(debug) trace("running ice callback 2");
+    if (event.candidate) {
+      socket.emit('ice_out', email, event.candidate);
+    }
+  };
+
+  // got remote stream
+  incoming.onaddstream = function(e) {
+    if(debug) trace("got remote stream");
+    if(debug) trace(e.stream);
+    incomingvid.src = window.URL.createObjectURL(e.stream);
+  };
+
+  incoming.setRemoteDescription(new RTCSessionDescription(offer), function() {
+    if(debug) trace('offer SUCCEEDED to be set as remote description');
+    incoming.createAnswer(function(ans) {
+      incoming.setLocalDescription(new RTCSessionDescription(ans));
+      if(debug) trace("Answer from incoming \n" + ans.sdp);
+      //send back!
+      socket.emit('answer', email, ans);
+    }, null, null);
+    stopreceivebtn.disabled = false;
+  }, function(){
+    if(debug) trace('offer FAILED set as remote description');
+  });
 });
 
-socket.on('YouConnected', function(socketid) {
-  document.getElementById('outgoingstatus').innerHTML = "You're Connected!";
-});
+// socket.on('callerStoppedTransmitting', function() {
+//   stopReceiving();
+// });
 
-socket.on('callerStoppedTransmitting', function() {
-  stopReceiving();
-});
+// socket.on('calleeStoppedReceiving', function() {
+//   stopTransmitting();
+// });
 
-socket.on('calleeStoppedReceiving', function() {
-  stopTransmitting();
-});
+// socket.on('incomingCall', function(email) {
+//   if(confirm("Answer incoming call from " + email + " ?")) {
 
-socket.on('incomingCall', function(email) {
-  if(confirm("Answer incoming call from " + email + " ?")) {
-    alert('answered!');
-  }
-  else {
-    alert('denied');
-  }
-});
+//   }
+//   else {
+//     alert('denied');
+//   }
+// });
 
 socket.on('allContacts', function(arr) {
   for(var i =  0; i < arr.length; i++) {
@@ -197,53 +240,68 @@ socket.on('allContacts', function(arr) {
 });
 
 socket.on('contactAdded', function(email) {
-  document.getElementById('contactlist').innerHTML += "<div class='clickable contactemail'>" + email + "<button style='float:right;'>Call</button></div>";
+  document.getElementById('contactlist').innerHTML += "<div class='clickable contactemail'>" + email + "<button style='float:right;' onclick='call(\"" + email + "\");'>Call</button></div>";
   document.getElementById('contactemail').value = "";
 });
 
-socket.on('offerComingThru', function(){
-  if(debug) trace("offerComingThru");
-  incoming = new RTCPeerConnection(null);
-  if(debug) trace("Created remote peer connection object incoming");
-  incoming.onicecandidate = iceCallback2;
-  incoming.onaddstream = gotRemoteStream;
-});
+// socket.on('offerComingThru', function(){
+//   if(debug) trace("offerComingThru");
 
-socket.on('incomingOfferDescription', function(obj) {
-  var desc = (JSON.parse(obj)).desc;
-  if(debug) trace('got offer desc ' + desc.sdp);
-  if(debug) trace("Setting Remote Description for incoming");
-  incoming.setRemoteDescription(new RTCSessionDescription(desc), function() {
-    if(debug) trace('incomingOfferDescription SUCCEEDED to be set as remote description');
-    incoming.createAnswer(gotDescription2, null, null);
-    stopreceivebtn.disabled = false;
-  }, function(){
-    if(debug) trace('incomingOfferDescription FAILED set as remote description');
-  });
-});
+//   if(debug) trace("Created remote peer connection object incoming");
 
-socket.on('incomingAnswerDescription', function(obj) {
-  var desc = (JSON.parse(obj)).desc;
-  trace('got answer desc ' + desc.sdp);
+// });
+
+// socket.on('incomingOfferDescription', function(obj) {
+//   var desc = (JSON.parse(obj)).desc;
+//   if(debug) trace('got offer desc ' + desc.sdp);
+//   if(debug) trace("Setting Remote Description for incoming");
+//   incoming.setRemoteDescription(new RTCSessionDescription(desc), function() {
+//     if(debug) trace('incomingOfferDescription SUCCEEDED to be set as remote description');
+//     incoming.createAnswer(gotDescription2, null, null);
+//     stopreceivebtn.disabled = false;
+//   }, function(){
+//     if(debug) trace('incomingOfferDescription FAILED set as remote description');
+//   });
+// });
+
+socket.on('answer', function(email, answer) {
+  // var desc = (JSON.parse(obj)).desc;
+  trace('got answer desc ' + answer.sdp);
   trace("Setting Remote Description for outgoing");
-  outgoing.setRemoteDescription(new RTCSessionDescription(desc), function() {
-    if(debug) trace('incomingAnswerDescription SUCCEEDED to be set as remote description');
+  outgoing.setRemoteDescription(new RTCSessionDescription(answer), function() {
+    if(debug) trace('answer SUCCEEDED to be set as remote description');
   }, function(){
-    if(debug) trace('incomingAnswerDescription FAILED set as remote description');
+    if(debug) trace('answer FAILED set as remote description');
   });
   stoptransbtn.disabled = false;
 });
 
-socket.on('incomingIceCandidate1', function(obj) {
-  if(debug) trace("Adding ICE candidate to incoming");
-  incoming.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
-  if(debug) trace("Local ICE candidate: \n" + JSON.parse(obj).cand.candidate);
+// socket.on('incomingAnswerDescription', function(obj) {
+
+// });
+
+socket.on('ice_in', function(email, cand) {
+  if(debug) trace("Adding ICE candidate to incoming from " + email);
+  incoming.addIceCandidate(new RTCIceCandidate(cand));
+  if(debug) trace("Local ICE candidate: \n" + cand.candidate);
 });
 
-socket.on('incomingIceCandidate2', function(obj) {
-  if(debug) trace("Adding ICE candidate to outgoing");
-  outgoing.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
-  if(debug) trace("Remote ICE candidate: \n" + JSON.parse(obj).cand.candidate);
+socket.on('ice_out', function(email, cand) {
+  if(debug) trace("Adding ICE candidate to outgoing from " + email);
+  outgoing.addIceCandidate(new RTCIceCandidate(cand));
+  if(debug) trace("Remote ICE candidate: \n" + cand.candidate);
 });
+
+// socket.on('incomingIceCandidate1', function(obj) {
+
+//   incoming.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
+//   if(debug) trace("Local ICE candidate: \n" + JSON.parse(obj).cand.candidate);
+// });
+
+// socket.on('incomingIceCandidate2', function(obj) {
+//   if(debug) trace("Adding ICE candidate to outgoing");
+//   outgoing.addIceCandidate(new RTCIceCandidate(JSON.parse(obj).cand));
+//   if(debug) trace("Remote ICE candidate: \n" + JSON.parse(obj).cand.candidate);
+// });
 
 start();

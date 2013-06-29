@@ -41,33 +41,29 @@ app.get('/logout', routes.logout);
 var first_pc = null;
 var second_pc = null;
 
-//TODO: make this use apply
-function socketsend(id, message, obj) {
-  if(obj) {
-    if(first_pc == id) {
-      io.sockets.socket(second_pc).emit(message, obj);
-    }
-    else if(second_pc == id) {
-      io.sockets.socket(first_pc).emit(message, obj);
-    }
-  }
-  else {
-    if(first_pc == id) {
-      io.sockets.socket(second_pc).emit(message);
-    }
-    else if(second_pc == id) {
-      io.sockets.socket(first_pc).emit(message);
-    }
-  }
-}
+// //TODO: make this use apply
+// function socketsend(id, message, obj) {
+//   if(obj) {
+//     if(first_pc == id) {
+//       io.sockets.socket(second_pc).emit(message, obj);
+//     }
+//     else if(second_pc == id) {
+//       io.sockets.socket(first_pc).emit(message, obj);
+//     }
+//   }
+//   else {
+//     if(first_pc == id) {
+//       io.sockets.socket(second_pc).emit(message);
+//     }
+//     else if(second_pc == id) {
+//       io.sockets.socket(first_pc).emit(message);
+//     }
+//   }
+// }
 
-function socketsendto(id, message, obj) {
-  if(obj) {
-    io.sockets.socket(id).emit(message, obj);
-  }
-  else {
-    io.sockets.socket(id).emit(message);
-  }
+function send_to_socket(id, args) {
+  var to = io.sockets.socket(id);
+  to.emit.apply(to, args);
 }
 
 /**
@@ -98,33 +94,35 @@ io.sockets.on('connection', function(client) {
   var cookie = getCookie(client.manager.handshaken[client.id].headers.cookie, "connect.sid");
   store.mapSocketIDToCookie(client.id, cookie); //is this used?
   store.mapEmailToSocketID(store.getEmailFromCookie(cookie), client.id);
-  if(!first_pc && !second_pc) first_pc = client.id;
-  else if(first_pc && !second_pc) {
-    second_pc = client.id;
-    client.broadcast.emit('OtherUserConnected', client.id);
-    io.sockets.socket(client.id).emit('OtherUserConnected', first_pc);
-  }
-  else if(!first_pc && second_pc) {
-    first_pc = second_pc;
-    second_pc = client.id;
-    client.broadcast.emit('OtherUserConnected', client.id);
-    io.sockets.socket(client.id).emit('OtherUserConnected', first_pc);
-  }
-  else {
-    console.log('too many clients');
-  }
 
-  io.sockets.socket(client.id).emit('YouConnected', client.id);
+  // if(!first_pc && !second_pc) first_pc = client.id;
+  // else if(first_pc && !second_pc) {
+  //   second_pc = client.id;
+  //   client.broadcast.emit('OtherUserConnected', client.id);
+  //   io.sockets.socket(client.id).emit('OtherUserConnected', first_pc);
+  // }
+  // else if(!first_pc && second_pc) {
+  //   first_pc = second_pc;
+  //   second_pc = client.id;
+  //   client.broadcast.emit('OtherUserConnected', client.id);
+  //   io.sockets.socket(client.id).emit('OtherUserConnected', first_pc);
+  // }
+  // else {
+  //   console.log('too many clients');
+  // }
+
+  // io.sockets.socket(client.id).emit('YouConnected', client.id);
 
   client.on('disconnect', function() {
+    store.mapSocketIDToCookie(client.id, null);
     // delete sessions[client.id]; // delete from sessions
-    if(first_pc == client.id) {
-      first_pc = second_pc;
-      second_pc = null;
-    }
-    else if(second_pc == client.id){
-      second_pc = null;
-    }
+    // if(first_pc == client.id) {
+    //   first_pc = second_pc;
+    //   second_pc = null;
+    // }
+    // else if(second_pc == client.id){
+    //   second_pc = null;
+    // }
   });
 
   client.on('addContact', function(email) {
@@ -140,42 +138,59 @@ io.sockets.on('connection', function(client) {
     io.sockets.socket(client.id).emit('contactAdded', email);
   });
 
-  client.on('call', function(email) {
+  // client.on('call', function(email, offer) {
+  //   var to_socket = store.getSocketIDFromEmail(email);
+  //   var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
+  //   send_to_socket(to_socket, ['incomingCall', from_email]);
+  // });
+
+  client.on('offer', function(email, offer) {
     var to_socket = store.getSocketIDFromEmail(email);
-    socketsendto(to_socket, 'incomingCall', store.getEmailFromCookie(store.getCookieFromSocketID(client.id)));
+    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
+    send_to_socket(to_socket, ['offer', from_email, offer]);
   });
 
-  client.on('offer', function(){
-    socketsend(client.id, 'offerComingThru');
+  client.on('answer', function(email, answer) {
+    var to_socket = store.getSocketIDFromEmail(email);
+    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
+    send_to_socket(to_socket, ['answer', from_email, answer]);
   });
 
-  client.on('sendOfferDescription', function(obj) {
-    socketsend(client.id, 'incomingOfferDescription', obj);
+  client.on('ice_in', function(email, cand) {
+    var to_socket = store.getSocketIDFromEmail(email);
+    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
+    send_to_socket(to_socket, ['ice_in', from_email, answer]);
   });
 
-  client.on('sendIceCandidate1', function(obj) {
-    socketsend(client.id, 'incomingIceCandidate1', obj);
+  client.on('ice_out', function(email, cand) {
+    var to_socket = store.getSocketIDFromEmail(email);
+    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
+    send_to_socket(to_socket, ['ice_out', from_email, answer]);
   });
 
-  client.on('sendIceCandidate2', function(obj) {
-    socketsend(client.id, 'incomingIceCandidate2', obj);
-  });
+  // client.on('sendIceCandidate1', function(obj) {
+  //   socketsend(client.id, 'incomingIceCandidate1', obj);
+  // });
 
-  client.on('sendAnswerDescription', function(obj) {
-    socketsend(client.id, 'incomingAnswerDescription', obj);
-  });
+  // client.on('sendIceCandidate2', function(obj) {
+  //   socketsend(client.id, 'incomingIceCandidate2', obj);
+  // });
 
-  client.on('IStoppedTransmitting', function() {
-    socketsend(client.id, 'callerStoppedTransmitting');
-  });
+  // client.on('sendAnswerDescription', function(obj) {
+  //   socketsend(client.id, 'incomingAnswerDescription', obj);
+  // });
 
-  client.on('IStoppedReceiving', function() {
-    socketsend(client.id, 'calleeStoppedReceiving');
-  });
+  // client.on('IStoppedTransmitting', function() {
+  //   socketsend(client.id, 'callerStoppedTransmitting');
+  // });
 
-  client.on('signout', function() {
-    io.sockets.socket(client.id).emit('successfulSignout');
-  });
+  // client.on('IStoppedReceiving', function() {
+  //   socketsend(client.id, 'calleeStoppedReceiving');
+  // });
+
+  // client.on('signout', function() {
+  //   io.sockets.socket(client.id).emit('successfulSignout');
+  // });
 });
 
 app.listen(config.port, function() {
