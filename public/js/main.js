@@ -72,16 +72,9 @@ submitcontact.onsubmit = function(e) {
   e.stopPropagation();
   var contactemail = document.getElementById('contactemail');
   contactemail.checkValidity();
-  if(contactemail.validity.valid && contactemail.value != "") {
+  if(contactemail.validity.valid && contactemail.value !== "") {
     socket.emit('addContact', contactemail.value);
   }
-  else {
-    contactemail.setCustomValidity("Need to give a valid email");
-  }
-}
-
-function addContact() {
-
 };
 
 function call() {

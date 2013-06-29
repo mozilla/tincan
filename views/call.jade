@@ -9,15 +9,15 @@ body
     button(id="stopreceivebtn", onclick="stopReceiving()") Stop Receiving
   div(class="container")
     div(class="bigbox")
-      p(id='incomingstatus', style="position:absolute;") Your Friend Hasn't Connected
+      p(id='incomingstatus', style="position:absolute;") Them
       video(id="incomingvid", class="smallboxvid", autoplay)
     div(class="smallbox")
-      p(id='outgoingstatus', style="position:absolute;") You're Connected
+      p(id='outgoingstatus', style="position:absolute;") You
       video(id="outgoingvid", class="bigboxvid", autoplay)
     div(class="chatbox")
       form(id='submitcontact')
         input(id="contactemail", type="email", placeholder="Email")
-        button(type="submit", id="addcontactbtn", onclick="addContact()") Add Contact
+        button(type="submit", id="addcontactbtn") Add Contact
       div(id="contactlist")
     div(class="msgbox")
       input(id="msginput", type="text", class="msginput", placeholder="Message")

@@ -9,11 +9,17 @@ if (signinLink) {
 
 if(navigator.id) {
   navigator.id.watch({
+    loggedInUser: currentUser,
     onlogin: function(assertion) {
-      $.post('/login',
+      $.post(
+        '/login',
         { assertion: assertion },
         function(data) {
-          window.location = JSON.parse(data).location;
+          if(data=== 'failure') {
+            alert('Sign in failed! :(');
+            navigator.id.logout();
+          }
+          else window.location.reload();
         }
       );
     },
