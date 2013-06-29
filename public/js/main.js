@@ -225,7 +225,7 @@ socket.on('offer', function(email, offer) {
         }
       };
 
-      if(debug) trace("Adding Local Stream to peer connection");
+      // if(debug) trace("Adding Local Stream to peer connection");
       setTimeout(function() {
         outgoing.createOffer(
           function (counteroffer) {
