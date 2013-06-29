@@ -1,9 +1,9 @@
 var socket = io.connect('http://127.0.0.1:3000');
 performance.now = performance.now || performance.webkitNow; // hack added by SD!
-startbtn.disabled = false;
-callbtn.disabled = true;
-stoptransbtn.disabled = true;
-stopreceivebtn.disabled = true;
+// startbtn.disabled = false;
+// callbtn.disabled = true;
+// stoptransbtn.disabled = true;
+// stopreceivebtn.disabled = true;
 
 var localstream; //the stream of audio/video coming from this browser
 var outgoing; // peer connection for data out
@@ -123,38 +123,34 @@ function gotLocalStream(stream) {
 
 function sendAnswerFromOffer(offer, email, stream) {
   outgoing = new RTCPeerConnection(null);
-      // if(debug) trace("Created local peer connection object outgoing");
-      outgoing.addStream(localstream);
+  outgoing.addStream(localstream);
+  outgoing.onicecandidate = function(event) {
+    if (event.candidate) {
+      socket.emit('ice_in', email, event.candidate);
+    }
+  };
 
-      outgoing.onicecandidate = function(event) {
-        if (event.candidate) {
-          socket.emit('ice_in', email, event.candidate);
-        }
-      };
-
-      // if(debug) trace("Adding Local Stream to peer connection");
-      setTimeout(function() {
-        outgoing.createOffer(
-          function (counteroffer) {
-            outgoing.setLocalDescription(new RTCSessionDescription(counteroffer));
-            // if(debug) trace("Offer from outgoing \n" + desc.sdp);
-            incoming.setRemoteDescription(new RTCSessionDescription(offer), function() {
-              incoming.createAnswer(function(ans) {
-                incoming.setLocalDescription(new RTCSessionDescription(ans));
-                // if(debug) trace("Answer from incoming \n" + ans.sdp);
-                //send back!
-                socket.emit('answer', email, ans, counteroffer);
-              }, null, null);
-              // stopreceivebtn.disabled = false;
-            }, function(){
-              if(debug) trace('offer FAILED set as remote description');
-            });
-            // socket.emit('sendOfferDescription', JSON.stringify({ email: email, 'desc' : desc }));
-          },
-          null,
-          null
-        );
-      }, 1000);
+  setTimeout(function() {
+    outgoing.createOffer(
+      function (counteroffer) {
+        outgoing.setLocalDescription(new RTCSessionDescription(counteroffer));
+        if(debug) trace("Offer from outgoing \n" + counteroffer.sdp);
+        incoming.setRemoteDescription(new RTCSessionDescription(offer), function() {
+          incoming.createAnswer(function(ans) {
+            incoming.setLocalDescription(new RTCSessionDescription(ans));
+            if(debug) trace("Answer from incoming \n" + ans.sdp);
+            //send back!
+            socket.emit('answer', email, ans, counteroffer);
+          }, null, null);
+        }, function(){
+          if(debug) trace('offer FAILED set as remote description');
+        });
+        // socket.emit('sendOfferDescription', JSON.stringify({ email: email, 'desc' : desc }));
+      },
+      null,
+      null
+    );
+  }, 1000);
 }
 
 socket.on('offer', function(email, offer) {
