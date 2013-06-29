@@ -41,14 +41,18 @@ exports.login = function(req, res) {
       },
       function (error, response, body) {
         if (!error && response.statusCode == 200) {
-          console.log(body);
+          // console.log(body);
           body = JSON.parse(body);
           var status = body.status;
           if(status === 'failure') {
             res.send(status);
           }
-          req.session.email = body.email;
-          res.send(status);
+          else {
+            req.session.email = body.email;
+            res.cookie('id', req.sessionID);
+            res.send(status);
+          }
+
           // sessions[client.id] = email; // set socket to email
           // io.sockets.socket(client.id).emit('successfulSignin', email);
           // io.sockets.socket(client.id).emit('allContacts', contacts[email] || []);
