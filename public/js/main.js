@@ -1,4 +1,4 @@
-var socket = io.connect();
+var socket = io.connect('http://127.0.0.1:3000');
 performance.now = performance.now || performance.webkitNow; // hack added by SD!
 startbtn.disabled = false;
 callbtn.disabled = true;
@@ -179,6 +179,15 @@ socket.on('callerStoppedTransmitting', function() {
 
 socket.on('calleeStoppedReceiving', function() {
   stopTransmitting();
+});
+
+socket.on('incomingCall', function(email) {
+  if(confirm("Answer incoming call from " + email + " ?")) {
+    alert('answered!');
+  }
+  else {
+    alert('denied');
+  }
 });
 
 socket.on('allContacts', function(arr) {

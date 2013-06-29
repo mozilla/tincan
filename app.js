@@ -1,15 +1,13 @@
 var express = require('express'),
     routes = require('./routes'),
     socket = require('socket.io'),
+    store = require('./store'),
     config = require('./config');
 
 var app = module.exports = express.createServer();
 var io = socket.listen(app);
 
 io.set('log level', 1); // reduce logging
-
-var sessions = {};
-var contacts = {}; // { email : [email1, email2, ...] }
 
 // Configuration
 app.configure(function(){
@@ -63,8 +61,43 @@ function socketsend(id, message, obj) {
   }
 }
 
-io.sockets.on('connection', function(client) {
+function socketsendto(id, message, obj) {
+  if(obj) {
+    io.sockets.socket(id).emit(message, obj);
+  }
+  else {
+    io.sockets.socket(id).emit(message);
+  }
+}
 
+/**
+* This function is used to parse a variable value from a cookie string.
+* @param {String} cookie_string The cookie to parse.
+* @param {String} c_var The variable to extract from the cookie.
+* @return {String} The value of the variable extracted.
+*/
+function getCookie(cookie_string, c_var) {
+  if(cookie_string) {
+    var i,x,y,ARRcookies=cookie_string.split(";");
+    for (i=0;i<ARRcookies.length;i++) {
+      x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
+      y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
+      x=x.replace(/^\s+|\s+$/g,"");
+      if (x==c_var) {
+        return unescape(y);
+      }
+    }
+  }
+  else {
+    console.log("Invalid cookie");
+    return "";
+  }
+}
+
+io.sockets.on('connection', function(client) {
+  var cookie = getCookie(client.manager.handshaken[client.id].headers.cookie, "connect.sid");
+  store.mapSocketIDToCookie(client.id, cookie); //is this used?
+  store.mapEmailToSocketID(store.getEmailFromCookie(cookie), client.id);
   if(!first_pc && !second_pc) first_pc = client.id;
   else if(first_pc && !second_pc) {
     second_pc = client.id;
@@ -84,7 +117,7 @@ io.sockets.on('connection', function(client) {
   io.sockets.socket(client.id).emit('YouConnected', client.id);
 
   client.on('disconnect', function() {
-    delete sessions[client.id]; // delete from sessions
+    // delete sessions[client.id]; // delete from sessions
     if(first_pc == client.id) {
       first_pc = second_pc;
       second_pc = null;
@@ -95,16 +128,21 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('addContact', function(email) {
-    if(!sessions[client.id]) {
-      console.log('Not signed in!');
-    }
-    else if(contacts[sessions[client.id]]) {
-      contacts[sessions[client.id]].push(email);
-    }
-    else {
-      contacts[sessions[client.id]] = [email];
-    }
+    // if(!sessions[client.id]) {
+    //   console.log('Not signed in!');
+    // }
+    // else if(contacts[sessions[client.id]]) {
+    //   contacts[sessions[client.id]].push(email);
+    // }
+    // else {
+    //   contacts[sessions[client.id]] = [email];
+    // }
     io.sockets.socket(client.id).emit('contactAdded', email);
+  });
+
+  client.on('call', function(email) {
+    var to_socket = store.getSocketIDFromEmail(email);
+    socketsendto(to_socket, 'incomingCall', store.getEmailFromCookie(store.getCookieFromSocketID(client.id)));
   });
 
   client.on('offer', function(){
