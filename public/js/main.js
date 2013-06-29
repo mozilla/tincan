@@ -37,15 +37,13 @@ function trace(text) {
 }
 
 function start() {
-  // trace("Requesting local stream");
-  // startbtn.disabled = true;
   navigator.getUserMedia(
     { audio:true, video:true },
-    function gotStream(stream) {
-      outgoingvid.src = window.URL.createObjectURL(stream); // add preview
-      localstream = stream;
+    function onStream(stream) {
+      gotLocalStream(stream);
     },
     function failure(error) {
+      alert('Error: To call you need to allow video and/or mic');
       trace('Failed to get stream: ' + error);
     }
   );
@@ -62,77 +60,69 @@ submitcontact.onsubmit = function(e) {
 };
 
 function call(email) {
-  // temporary hacks to cope with API change
-  if (!!localstream.videoTracks && !localstream.getVideoTracks) {
-    localstream.getVideoTracks = function(){
-      return this.videoTracks;
-    };
-  }
-  if (!!localstream.audioTracks && !localstream.getAudioTracks) {
-    localstream.getAudioTracks = function() {
-      return this.audioTracks;
-    };
-  }
-
-  outgoing = new RTCPeerConnection(null);
-  // if(debug) trace("Created local peer connection object outgoing");
-  outgoing.addStream(localstream);
-
-  outgoing.onicecandidate = function(event) {
-    if (event.candidate) {
-      socket.emit('ice_in', email, event.candidate);
-    }
-  };
-
-  if(debug) trace("Adding Local Stream to peer connection");
-  setTimeout(function() {
-    outgoing.createOffer(
-      function (offer) {
-        outgoing.setLocalDescription(new RTCSessionDescription(offer));
-        if(debug) trace("Offer from outgoing \n" + offer.sdp);
-        socket.emit('offer', email, offer);
-        // socket.emit('sendOfferDescription', JSON.stringify({ email: email, 'desc' : desc }));
+  if(!localstream) {
+    navigator.getUserMedia(
+      { audio:true, video:true },
+      function onStream(stream) {
+        gotLocalStream(stream);
+        call(email);
       },
-      null,
-      null
+      function failure(error) {
+        alert('Error: To call you need to allow video and/or mic');
+        trace('Failed to get stream: ' + error);
+      }
     );
-  }, 1000);
+  }
+  else {
+    // temporary hacks to cope with API change
+    if (!!localstream.videoTracks && !localstream.getVideoTracks) {
+      localstream.getVideoTracks = function(){
+        return this.videoTracks;
+      };
+    }
+    if (!!localstream.audioTracks && !localstream.getAudioTracks) {
+      localstream.getAudioTracks = function() {
+        return this.audioTracks;
+      };
+    }
+
+    outgoing = new RTCPeerConnection(null);
+    outgoing.addStream(localstream);
+
+    outgoing.onicecandidate = function(event) {
+      if (event.candidate) {
+        socket.emit('ice_in', email, event.candidate);
+      }
+    };
+
+    if(debug) trace("Adding Local Stream to peer connection");
+    setTimeout(function() {
+      outgoing.createOffer(
+        function (offer) {
+          outgoing.setLocalDescription(new RTCSessionDescription(offer));
+          if(debug) trace("Offer from outgoing \n" + offer.sdp);
+          socket.emit('offer', email, offer);
+          // socket.emit('sendOfferDescription', JSON.stringify({ email: email, 'desc' : desc }));
+        },
+        null,
+        null
+      );
+    }, 1000);
+  }
 }
 
 function gotRemoteStream(e) {
   if(debug) trace(e.stream);
   incomingvid.src = window.URL.createObjectURL(e.stream);
-};
+}
 
-socket.on('offer', function(email, offer) {
-  if(!localstream) {
-    navigator.getUserMedia(
-      { audio:true, video:true },
-      function gotStream(stream) {
-        outgoingvid.src = window.URL.createObjectURL(stream); // add preview
-        localstream = stream;
-      },
-      function failure(error) {
-        trace('Failed to get stream: ' + error);
-      }
-    );
-  }
+function gotLocalStream(stream) {
+  outgoingvid.src = window.URL.createObjectURL(stream); // add preview
+  localstream = stream;
+}
 
-  if(confirm("Incoming call from " + email + "! Answer?")) {
-    incoming = new RTCPeerConnection(null);
-
-    incoming.onicecandidate = function (event) {
-      if (event.candidate) {
-        socket.emit('ice_out', email, event.candidate);
-      }
-    };
-
-    // got remote stream
-    incoming.onaddstream = gotRemoteStream;
-
-    //if the answerer has video on... they wanna chat!
-    if(localstream) {
-      outgoing = new RTCPeerConnection(null);
+function sendAnswerFromOffer(offer, email, stream) {
+  outgoing = new RTCPeerConnection(null);
       // if(debug) trace("Created local peer connection object outgoing");
       outgoing.addStream(localstream);
 
@@ -165,20 +155,34 @@ socket.on('offer', function(email, offer) {
           null
         );
       }, 1000);
+}
+
+socket.on('offer', function(email, offer) {
+  if(confirm("Incoming call from " + email + "! Answer?")) {
+    //prepare for stream
+    incoming = new RTCPeerConnection(null);
+    incoming.onicecandidate = function (event) {
+      if (event.candidate) {
+        socket.emit('ice_out', email, event.candidate);
+      }
+    };
+    incoming.onaddstream = gotRemoteStream;
+
+    if(!localstream) {
+      navigator.getUserMedia(
+        { audio:true, video:true },
+        function onStream(stream) {
+          gotLocalStream(stream);
+          sendAnswerFromOffer(offer, email, stream);
+        },
+        function failure(error) {
+          alert('Error: To call you need to allow video and/or mic');
+          trace('Failed to get stream: ' + error);
+        }
+      );
     }
-    //no video on :(
     else {
-      incoming.setRemoteDescription(new RTCSessionDescription(offer), function() {
-        incoming.createAnswer(function(ans) {
-          incoming.setLocalDescription(new RTCSessionDescription(ans));
-          // if(debug) trace("Answer from incoming \n" + ans.sdp);
-          //send back!
-          socket.emit('answer', email, ans);
-        }, null, null);
-        // stopreceivebtn.disabled = false;
-      }, function(){
-        if(debug) trace('offer FAILED set as remote description');
-      });
+      sendAnswerFromOffer(offer, email, localstream);
     }
   }
   else {
