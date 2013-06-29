@@ -150,10 +150,10 @@ io.sockets.on('connection', function(client) {
     send_to_socket(to_socket, ['offer', from_email, offer]);
   });
 
-  client.on('answer', function(email, answer) {
+  client.on('answer', function(email, answer, offer) {
     var to_socket = store.getSocketIDFromEmail(email);
     var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
-    send_to_socket(to_socket, ['answer', from_email, answer]);
+    send_to_socket(to_socket, ['answer', from_email, answer, offer]);
   });
 
   client.on('ice_in', function(email, cand) {
