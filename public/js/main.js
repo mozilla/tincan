@@ -1,9 +1,5 @@
 var socket = io.connect('http://127.0.0.1:3000');
 performance.now = performance.now || performance.webkitNow; // hack added by SD!
-// startbtn.disabled = false;
-// callbtn.disabled = true;
-// stoptransbtn.disabled = true;
-// stopreceivebtn.disabled = true;
 
 var localstream; //the stream of audio/video coming from this browser
 var outgoing; // peer connection for data out
