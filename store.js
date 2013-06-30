@@ -1,3 +1,4 @@
+// fake storage
 var sockets = {};
 var cookies = {};
 var emails = {};
