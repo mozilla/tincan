@@ -44,7 +44,6 @@ function start() {
 }
 
 submitcontact.onsubmit = function(e) {
-  alert('onsubmit');
   e.preventDefault();
   e.stopPropagation();
   var contactemail = document.getElementById('contactemail');
@@ -55,7 +54,6 @@ submitcontact.onsubmit = function(e) {
 };
 
 function call(email) {
-  alert('call');
   if(!localstream) {
     navigator.getUserMedia(
       { audio:true, video:true },
@@ -114,8 +112,6 @@ function gotLocalStream(stream) {
 }
 
 function sendAnswerFromOffer(offer, email, stream) {
-  alert('send answer from offer');
-
   incoming.setRemoteDescription(new RTCSessionDescription(offer), function() {
     incoming.createAnswer(function(ans) {
       incoming.setLocalDescription(new RTCSessionDescription(ans));
@@ -143,7 +139,6 @@ function sendAnswerFromOffer(offer, email, stream) {
 }
 
 socket.on('offer', function(email, offer) {
-  alert('offer');
   if(confirm("Incoming call from " + email + "! Answer?")) {
     //prepare for stream
     incoming = new RTCPeerConnection(null);
@@ -177,20 +172,17 @@ socket.on('offer', function(email, offer) {
 });
 
 socket.on('allContacts', function(arr) {
-  alert('all contacts');
   for(var i =  0; i < arr.length; i++) {
     document.getElementById('emails').innerHTML += "<div class='clickable contactemail'>" + arr[i] + "</div>";
   }
 });
 
 socket.on('contactAdded', function(email) {
-  alert('contactAdded');
   document.getElementById('contactlist').innerHTML += "<div class='clickable contactemail'>" + email + "<button style='float:right;' onclick='call(\"" + email + "\");'>Call</button></div>";
   document.getElementById('contactemail').value = "";
 });
 
 socket.on('answer', function(email, answer, counteroffer) {
-  alert('answer');
   trace('Got answer: ' + answer.sdp);
   outgoing.setRemoteDescription(new RTCSessionDescription(answer),
     function() {},
@@ -225,13 +217,11 @@ socket.on('answer', function(email, answer, counteroffer) {
 });
 
 socket.on('ice_in', function(email, cand) {
-  alert('ice in');
   incoming.addIceCandidate(new RTCIceCandidate(cand));
   if(debug) trace("Local ICE candidate: \n" + cand.candidate);
 });
 
 socket.on('ice_out', function(email, cand) {
-  alert('ice out');
   outgoing.addIceCandidate(new RTCIceCandidate(cand));
   if(debug) trace("Remote ICE candidate: \n" + cand.candidate);
 });
