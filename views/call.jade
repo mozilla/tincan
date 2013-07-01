@@ -5,10 +5,10 @@ body
     button(onclick="logout()") Sign out
   div(class="container")
     div(class="bigbox")
-      p(id='incomingstatus', style="position:absolute;") Them
+      p(id='incomingstatus', style="position:absolute;") &nbsp;&nbsp;Remote
       video(id="incomingvid", class="smallboxvid", autoplay)
     div(class="smallbox")
-      p(id='outgoingstatus', style="position:absolute;") You
+      p(id='outgoingstatus', style="position:absolute;") &nbsp;&nbsp;Local
       video(id="outgoingvid", class="bigboxvid", autoplay)
     div(class="chatbox")
       form(id='submitcontact')
@@ -16,6 +16,7 @@ body
         button(type="submit", id="addcontactbtn") Add Contact
       div(id="contactlist")
     div(class="msgbox")
-      input(id="msginput", type="text", class="msginput", placeholder="Message")
-      button(onclick="alert('sent fake message')") Send
+      form(id='submitmsg')
+        input(id="msginput", type="text", class="msginput", placeholder="Message")
+        button Send
   script(src="/js/main.js")

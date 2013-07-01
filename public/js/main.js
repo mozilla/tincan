@@ -43,6 +43,11 @@ function start() {
   );
 }
 
+/**
+ * On the add of a contact
+ * @param  {Event} e    event fired
+ * @return {undefined}  undefined
+ */
 submitcontact.onsubmit = function(e) {
   e.preventDefault();
   e.stopPropagation();
@@ -52,6 +57,18 @@ submitcontact.onsubmit = function(e) {
     socket.emit('addContact', contactemail.value);
   }
 };
+
+/**
+ * On the send of a message
+ * @param  {Event} e    event fired
+ * @return {undefined}  undefined
+ */
+submitmsg.onsubmit = function(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  alert(msginput.value);
+  msginput.value = "";
+}
 
 function call(email) {
   if(!localstream) {
