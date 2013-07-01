@@ -115,7 +115,6 @@ function sendAnswerFromOffer(offer, email, stream) {
   incoming.setRemoteDescription(new RTCSessionDescription(offer), function() {
     incoming.createAnswer(function(ans) {
       incoming.setLocalDescription(new RTCSessionDescription(ans));
-      if(debug) trace("Answer from incoming \n" + ans.sdp);
       outgoing = new RTCPeerConnection(null);
       outgoing.addStream(localstream);
       outgoing.onicecandidate = function(event) {
@@ -206,7 +205,6 @@ socket.on('answer', function(email, answer, counteroffer) {
     incoming.setRemoteDescription(new RTCSessionDescription(counteroffer), function() {
       incoming.createAnswer(function(ans) {
         incoming.setLocalDescription(new RTCSessionDescription(ans));
-        if(debug) trace("Answer from incoming \n" + ans.sdp);
         //send back!
         socket.emit('answer', email, ans);
       }, null, null);
