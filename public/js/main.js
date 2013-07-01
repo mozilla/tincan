@@ -7,10 +7,6 @@ var incoming; // peer connection for data in
 var debug = true; // true to log messages
 var currentUser = null;
 
-function logout() {
-  navigator.id.logout();
-}
-
 if(navigator.id) {
   navigator.id.watch({
     onlogin: function() {
@@ -28,6 +24,10 @@ function trace(text) {
     text = text.substring(0, text.length - 1);
   }
   console.log((performance.now() / 1000).toFixed(3) + ": " + text);
+}
+
+function logout() {
+  navigator.id.logout();
 }
 
 function start() {
