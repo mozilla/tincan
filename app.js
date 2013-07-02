@@ -92,16 +92,10 @@ io.sockets.on('connection', function(client) {
     send_to_socket(to_socket, ['answer', from_email, answer, offer]);
   });
 
-  client.on('ice_in', function(email, cand) {
+  client.on('iceCandidate', function(email, cand) {
     var to_socket = store.getSocketIDFromEmail(email);
     var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
-    send_to_socket(to_socket, ['ice_in', from_email, answer]);
-  });
-
-  client.on('ice_out', function(email, cand) {
-    var to_socket = store.getSocketIDFromEmail(email);
-    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
-    send_to_socket(to_socket, ['ice_out', from_email, answer]);
+    send_to_socket(to_socket, ['iceCandidate', from_email, answer]);
   });
 });
 
