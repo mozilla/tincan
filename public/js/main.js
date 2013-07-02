@@ -3,7 +3,6 @@ performance.now = performance.now || performance.webkitNow; // hack added by SD!
 
 var localstream; //the stream of audio/video coming from this browser
 var debug = true; // true to log messages
-var currentUser = null;
 
 var pc = new RTCPeerConnection(null);
 
@@ -98,7 +97,7 @@ function call(email) {
 
     pc.onicecandidate = function(event) {
       if (event.candidate) {
-        socket.emit('ice_in', email, event.candidate);
+        socket.emit('iceCandidate', email, event.candidate);
       }
     };
 
@@ -144,7 +143,7 @@ socket.on('offer', function(email, offer) {
 
     pc.onicecandidate = function (event) {
       if (event.candidate) {
-        socket.emit('ice_out', email, event.candidate);
+        socket.emit('iceCandidate', email, event.candidate);
       }
     };
 
@@ -158,7 +157,7 @@ socket.on('offer', function(email, offer) {
     }
   }
   else {
-    alert("Call denied");
+    trace("Call denied");
   }
 });
 
@@ -183,11 +182,7 @@ socket.on('answer', function(email, answer) {
   );
 });
 
-socket.on('ice_in', function(email, cand) {
-  pc.addIceCandidate(new RTCIceCandidate(cand));
-});
-
-socket.on('ice_out', function(email, cand) {
+socket.on('iceCandidate', function(email, cand) {
   pc.addIceCandidate(new RTCIceCandidate(cand));
 });
 
