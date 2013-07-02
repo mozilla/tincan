@@ -58,18 +58,6 @@ submitcontact.onsubmit = function(e) {
   }
 };
 
-/**
- * On the send of a message
- * @param  {Event} e    event fired
- * @return {undefined}  undefined
- */
-submitmsg.onsubmit = function(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  alert(msginput.value);
-  msginput.value = "";
-}
-
 function call(email) {
   if(!localstream) {
     navigator.getUserMedia(
