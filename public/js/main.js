@@ -1,4 +1,3 @@
-var socket = io.connect('http://127.0.0.1:3000');
 performance.now = performance.now || performance.webkitNow; // hack added by SD!
 
 var localstream; //the stream of audio/video coming from this browser

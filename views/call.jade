@@ -15,4 +15,6 @@ body
         input(id="contactemail", type="email", placeholder="Email")
         button(type="submit", id="addcontactbtn") Add Contact
       div(id="contactlist")
+  script
+    var socket = io.connect('!{server}');
   script(src="/js/main.js")

@@ -9,7 +9,7 @@ exports.call = function(req, res){
     res.render('index', { title: title });
   }
   else {
-    res.render('call', { title: title, email: email });
+    res.render('call', { title: title, email: email, server: config.host + ":" + config.port });
   }
 };
 
@@ -20,7 +20,7 @@ exports.index = function(req, res){
     res.render('index', { title: title, persona_uri: uri });
   }
   else {
-    res.render('call', { title: title, persona_uri: uri, email: email });
+    res.render('call', { title: title, persona_uri: uri, email: email, server: config.host + ":" + config.port });
   }
 };
 
