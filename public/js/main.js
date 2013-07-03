@@ -35,7 +35,7 @@ function getMedia(callback, args) {
     function onStream(stream) {
       gotLocalStream(stream);
       args = args ? args : [];
-      console.log(args);
+      //run the callback with args
       if(callback) callback.apply(callback, args);
     },
     function failure(error) {
