@@ -15,7 +15,7 @@ If you wish to develop this project further, awesome! You can install all of the
 
 and then you can start the server by running:
 
-```$ node app.js```
+```$ npm start```
 
 and direct your browser to `http://127.0.0.1:3000`
 
