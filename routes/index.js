@@ -1,29 +1,30 @@
 var request = require('request');
 var config = require('../config');
 var store = require('../store');
-var title = "WebRTC and Persona";
 
-exports.call = function(req, res){
-  var email = req.session.email;
-  if(!email) {
-    res.render('index', { title: title });
-  }
-  else {
-    res.render('call', { title: title, email: email, server: config.host + ":" + config.port });
-  }
-};
-
+/**
+ * GET /
+ * @param  {Object}     req request object
+ * @param  {Object}     res response object
+ * @return {undefined}      undefined
+ */
 exports.index = function(req, res){
   var uri = config.persona_uri;
   var email = req.session.email;
   if(!email) {
-    res.render('index', { title: title, persona_uri: uri });
+    res.render('index', { title: config.title, persona_uri: uri });
   }
   else {
-    res.render('call', { title: title, persona_uri: uri, email: email, server: config.host + ":" + config.port });
+    res.render('call', { title: config.title, persona_uri: uri, email: email, server: config.host + ":" + config.port });
   }
 };
 
+/**
+ * GET /logout
+ * @param  {Object}     req request object
+ * @param  {Object}     res response object
+ * @return {undefined}      undefined
+ */
 exports.logout = function(req, res) {
   req.session.destroy();
   req.session = null;
@@ -31,6 +32,12 @@ exports.logout = function(req, res) {
   res.redirect('/');
 };
 
+/**
+ * POST /login
+ * @param  {Object}     req request object
+ * @param  {Object}     res response object
+ * @return {undefined}      undefined
+ */
 exports.login = function(req, res) {
   request.post(
     config.persona_verifier_uri, {

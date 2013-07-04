@@ -32,9 +32,7 @@ app.configure('production', function(){
 });
 
 // Routes
-
 app.get('/', routes.index);
-// app.get('/call', routes.call);
 app.post('/login', routes.login);
 app.get('/logout', routes.logout);
 
