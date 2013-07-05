@@ -59,13 +59,14 @@ submitcontact.onsubmit = function(e) {
   var contactemail = document.getElementById('contactemail');
   contactemail.checkValidity();
   if(contactemail.validity.valid && contactemail.value !== "") {
-    socket.emit('addContact', contactemail.value);
+    callEmail(contactemail.value);
+    contactemail.value = "";
   }
 };
 
-function call(email) {
+function callEmail(email) {
   if(!localstream) {
-    getMedia(call, [email]);
+    getMedia(callEmail, [email]);
   }
   else {
     // temporary hacks to cope with API change
@@ -90,16 +91,13 @@ function call(email) {
 
     if(debug) trace("Adding Local Stream to peer connection");
     var options = null;
-    setTimeout(function() {
-      pc.createOffer(
-        function success(offer) {
-          pc.setLocalDescription(new RTCSessionDescription(offer));
-          if(debug) trace("Offer from outgoing \n" + offer.sdp);
-          socket.emit('offer', email, offer);
-        },
-        function failure(err) {
-        }, options);
-    }, 1000);
+    pc.createOffer(
+      function (offer) {
+        pc.setLocalDescription(new RTCSessionDescription(offer));
+        if(debug) trace("Offer from outgoing \n" + offer.sdp);
+        socket.emit('offer', email, offer);
+      },
+      null, null);
   }
 }
 
@@ -155,7 +153,7 @@ socket.on('allContacts', function(arr) {
 });
 
 socket.on('contactAdded', function(email) {
-  document.getElementById('contactlist').innerHTML += "<div class='clickable contactemail'>" + email + "<button style='float:right;' onclick='call(\"" + email + "\");'>Call</button></div>";
+  document.getElementById('contactlist').innerHTML += "<div class='clickable contactemail'>" + email + "<button style='float:right;' onclick='callEmail(\"" + email + "\");'>Call</button></div>";
   document.getElementById('contactemail').value = "";
 });
 

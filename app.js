@@ -7,7 +7,7 @@ var express = require('express'),
 var app = module.exports = express.createServer();
 var io = socket.listen(app);
 
-io.set('log level', 1); // reduce logging
+// io.set('log level', 1); // reduce logging
 
 // Configuration
 app.configure(function(){
