@@ -6,7 +6,27 @@ video {
 }
 
 body {
+  /*background: #00539F;*/
+  background-color: #00539F;
+  background-image: url(/img/bg.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* Safari 4-5, Chrome 1-9 */ /* Can't specify a percentage size? Laaaaaame. */
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#0095DD), to(#00539F));
+  /* Safari 5.1+, Chrome 10+ */
+  background: -webkit-radial-gradient(circle, #0095DD, #00539F);
+  /* Firefox 3.6+ */
+  background: -moz-radial-gradient(circle, #0095DD, #00539F); /* IE 10 */
+  background: -ms-radial-gradient(circle, #0095DD, #00539F);
+
+  padding-right:15px;
+  padding-left:15px;
+  color:white;
   font: 14px/21px 'OpenSans-Reg', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
+}
+
+h3 {
+  color: white;
 }
 
 .clickable {
