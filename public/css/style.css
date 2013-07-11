@@ -36,3 +36,11 @@ h3 {
   padding:3px;
   background-color: white;
 }
+
+.title {
+  text-shadow:1px 1px 1px black;
+  color: #D4DDE4 ;
+  height:200px;
+  margin-top:50px;
+  font: 65px 'OpenSans-Reg', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
+}
