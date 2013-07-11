@@ -21,5 +21,4 @@ and direct your browser to `http://127.0.0.1:3000`
 ## Contributing
 
 If you wish to contribute to this project in any way, please don't hesistate to fork it and send a pull request!
-I am always open for more suggestions, cleaner code, better design and everything in between!
-Thanks for your contributions!
+I am always open for more suggestions, cleaner code, better design and everything in between! Thanks for your contributions!

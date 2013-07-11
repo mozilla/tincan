@@ -1,5 +1,5 @@
 {
-  "name": "node-webrtc",
+  "name": "tincan",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -7,8 +7,6 @@
     "stylus": ">= 0.0.1",
     "jade": ">= 0.0.1",
     "socket.io": "0.9.x",
-    "webrtc.io-client": "latest",
-    "ws": "latest",
     "request": "~2.21.0"
   },
   "scripts": {
