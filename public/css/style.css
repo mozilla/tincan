@@ -19,8 +19,6 @@ body {
   background: -moz-radial-gradient(circle, #0095DD, #00539F); /* IE 10 */
   background: -ms-radial-gradient(circle, #0095DD, #00539F);
 
-  padding-right:15px;
-  padding-left:15px;
   color:white;
   font: 14px/21px 'OpenSans-Reg', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
 }
