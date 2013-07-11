@@ -1,7 +1,6 @@
-# node-webrtc
+# tincan
 
-node-webrtc is a WebRTC PeerConnection demo built on Node.js and SocketIO.
-It uses WebRTC to connect 2 users together with full audio/video using no plugins.
+Secure calls. No strings attached.
 
 ## Requirements
 
