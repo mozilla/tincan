@@ -9,6 +9,9 @@
     "socket.io": "0.9.x",
     "request": "~2.21.0"
   },
+  "devDependencies" : {
+    "awsbox" : "*"
+  },
   "scripts": {
     "start": "node app.js"
   }
