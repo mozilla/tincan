@@ -43,7 +43,7 @@ exports.login = function(req, res) {
     config.persona_verifier_uri, {
       form: {
         assertion: req.body.assertion,
-        audience: config.host + ':' + config.port
+        audience: config.domain || config.host + ':' + config.port
       }
     },
     function (error, response, body) {
