@@ -15,7 +15,7 @@ exports.index = function(req, res){
     res.render('index', { title: config.title, persona_uri: uri });
   }
   else {
-    res.render('call', { title: config.title, persona_uri: uri, email: email, server: config.host + ":" + config.port });
+    res.render('call', { title: config.title, persona_uri: uri, email: email, server: config.domain || config.host + ":" + config.port });
   }
 };
 
