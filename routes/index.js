@@ -15,7 +15,7 @@ exports.index = function(req, res){
     res.render('index', { title: config.title, persona_uri: uri });
   }
   else {
-    res.render('call', { title: config.title, persona_uri: uri, email: email, server: config.host + ":" + config.port });
+    res.render('call', { title: config.title, persona_uri: uri, email: email, server: config.domain || config.host + ":" + config.port });
   }
 };
 
@@ -43,7 +43,7 @@ exports.login = function(req, res) {
     config.persona_verifier_uri, {
       form: {
         assertion: req.body.assertion,
-        audience: config.host + ':' + config.port
+        audience: config.domain || config.host + ':' + config.port
       }
     },
     function (error, response, body) {
