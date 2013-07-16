@@ -5,7 +5,7 @@ video {
   background-color: white;
 }
 
-body {
+.background {
   /*background: #00539F;*/
   background-color: #00539F;
   background-image: url(/img/bg.png);
@@ -18,7 +18,8 @@ body {
   /* Firefox 3.6+ */
   background: -moz-radial-gradient(circle, #0095DD, #00539F); /* IE 10 */
   background: -ms-radial-gradient(circle, #0095DD, #00539F);
-
+  width:100%;
+  height:35px;
   color:white;
   font: 14px/21px 'OpenSans-Reg', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
 }
@@ -39,7 +40,7 @@ h3 {
 
 .title {
   text-shadow:1px 1px 1px black;
-  color: #D4DDE4 ;
+  color: #EAEFF2  ;
   height:200px;
   margin-top:50px;
   font: 65px 'OpenSans-Reg', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;

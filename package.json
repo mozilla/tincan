@@ -7,10 +7,11 @@
     "stylus": ">= 0.0.1",
     "jade": ">= 0.0.1",
     "socket.io": "0.9.x",
-    "request": "~2.21.0"
+    "request": "~2.21.0",
+    "mongoose": "~3.6.14"
   },
-  "devDependencies" : {
-    "awsbox" : "*"
+  "devDependencies": {
+    "awsbox": "*"
   },
   "scripts": {
     "start": "node app.js"
