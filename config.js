@@ -1,4 +1,7 @@
 module.exports = {
+  debug: true,
+  db_url: 'mongodb://localhost/tincan',
+  db_test_url: 'mongodb://localhost/testing',
   domain: process.env.DOMAIN_NAME || null,
   host: process.env.HOST || "http://127.0.0.1",
   port: process.env.PORT || 3000,

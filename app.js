@@ -1,8 +1,11 @@
-var express = require('express'),
-    routes = require('./routes'),
-    socket = require('socket.io'),
-    store = require('./store'),
-    config = require('./config');
+var express = require('express');
+var routes = require('./routes');
+var socket = require('socket.io');
+var store = require('./store');
+var config = require('./config');
+var mongoose = require('mongoose');
+
+mongoose.connect(config.db_url); // connect to official database
 
 var app = module.exports = express.createServer();
 var io = socket.listen(app);

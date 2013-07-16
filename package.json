@@ -8,12 +8,14 @@
     "jade": ">= 0.0.1",
     "socket.io": "0.9.x",
     "request": "~2.21.0",
-    "mongoose": "~3.6.14"
+    "mongoose": "~3.6.14",
+    "mocha": "~1.12.0"
   },
   "devDependencies": {
     "awsbox": "*"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "./node_modules/mocha/bin/mocha"
   }
 }
