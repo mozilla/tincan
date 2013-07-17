@@ -1,5 +1,10 @@
 {
   "name": "tincan",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mozilla/tincan.git"
+  },
+  "bugs": "https://github.com/mozilla/tincan/issues",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
@@ -17,5 +22,8 @@
   "scripts": {
     "start": "node app.js",
     "test": "./node_modules/mocha/bin/mocha"
+  },
+  "engines": {
+    "node": ">= 0.10.12"
   }
 }
