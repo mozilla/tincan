@@ -10,7 +10,7 @@ describe("User", function(){
 
   beforeEach(function(done){
     //add some test data
-    user.register("test@test.com", function(err, u){
+    user.create("test@test.com", function(err, u){
       currentUser = u;
       done();
     });
@@ -22,24 +22,24 @@ describe("User", function(){
     });
   });
 
-  it("registers a new user", function(done){
-    user.register("test2@test.com", function(err, u){
+  it("creates a new user", function(done){
+    user.create("test2@test.com", function(err, u){
       assert.equal(u.email, "test2@test.com");
       done();
     });
   });
 
-  it("registers a new user with UPPERCASE EMAIL", function(done){
-    user.register("TEST3@TEST.COM", function(err, u){
+  it("creates a new user with UPPERCASE EMAIL", function(done){
+    user.create("TEST3@TEST.COM", function(err, u){
       assert.equal(u.email, "test3@test.com"); // should be lowercase
       done();
     });
   });
 
-  it("registers a new user twice", function(done){
-    user.register("test4@test.com", function(err, u1){
+  it("creates a new user twice", function(done){
+    user.create("test4@test.com", function(err, u1){
       assert.equal(u1.email, "test4@test.com");
-      user.register("test4@test.com", function(err, u2){
+      user.create("test4@test.com", function(err, u2){
         assert.notEqual(err, null); // should return an error
         assert.equal(u2, null); // user returned should be null
         done();
@@ -48,7 +48,7 @@ describe("User", function(){
   });
 
   it("finds by email", function(done) {
-    user.register("test5@test.com", function(err, u) {
+    user.create("test5@test.com", function(err, u) {
       user.findByEmail('test5@test.com', function(err, u2) {
         assert.equal(err, null);
         assert.equal(u2.email, 'test5@test.com');

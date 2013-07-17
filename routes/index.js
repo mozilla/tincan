@@ -1,6 +1,7 @@
 var request = require('request');
 var config = require('../config');
 var store = require('../store');
+var user = require('../lib/user');
 
 /**
  * GET /
@@ -55,6 +56,11 @@ exports.login = function(req, res) {
         }
         else {
           req.session.email = body.email; // store email
+          user.login(body.email, function(err, u) {
+            if(err) console.log('Error when logging in user: ' + err);
+            // user logged in
+            else console.log('User logged in: ' + u.email);
+          });
           store.mapCookieToEmail(req.sessionID, body.email);
           res.send(status);
         }

@@ -59,10 +59,15 @@ submitcontact.onsubmit = function(e) {
   var contactemail = document.getElementById('contactemail');
   contactemail.checkValidity();
   if(contactemail.validity.valid && contactemail.value !== "") {
-    callEmail(contactemail.value);
+    // callEmail(contactemail.value);
+    addContact(contactemail.value);
     contactemail.value = "";
   }
 };
+
+function addContact(email) {
+  socket.emit('addContact', email);
+}
 
 function callEmail(email) {
   if(!localstream) {
@@ -153,8 +158,7 @@ socket.on('allContacts', function(arr) {
 });
 
 socket.on('contactAdded', function(email) {
-  document.getElementById('contactlist').innerHTML += "<div class='clickable contactemail'>" + email + "<button style='float:right;' onclick='callEmail(\"" + email + "\");'>Call</button></div>";
-  document.getElementById('contactemail').value = "";
+  alert('contactAdded!');
 });
 
 socket.on('answer', function(email, answer) {
@@ -172,3 +176,68 @@ socket.on('iceCandidate', function(email, cand) {
 });
 
 start();
+
+var Contact = Backbone.Model.extend({
+  defaults: {
+    email : "example@example.com",
+    name: "First Last",
+    status: "Pending...",
+    fav: false
+  },
+
+  toTableArray : function() {
+    attrs = this.attributes;
+    return [attrs.email, attrs.name, attrs.status, attrs.fav];
+  }
+});
+
+var ContactList = Backbone.Collection.extend({
+  model: Contact
+});
+
+var Contacts = new ContactList();
+
+var ContactView = Backbone.View.extend({
+
+    tagName: "tr",
+
+    events: {
+      //'click #addcontactbtn':  'addContact'
+    },
+
+    template: _.template($('#contact-template').html()),
+
+    initialize: function() {
+      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'destroy', this.remove);
+    },
+
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    }
+});
+
+var AppView = Backbone.View.extend({
+  el: $("#contacts"),
+  events: {
+    "click #addcontactbtn": "addContact"
+  },
+
+  initialize: function() {
+    this.listenTo(Contacts, 'add', this.addContact);
+  },
+
+  addContact: function(todo) {
+    var view = new ContactView({model : todo});
+    console.log(view.render().el);
+    this.$el.append(view.render().el);
+  }
+});
+
+var App = new AppView();
+
+function createNewContact() {
+  var c = new Contact();
+  Contacts.add(c);
+}

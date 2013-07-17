@@ -4,11 +4,12 @@ var socket = require('socket.io');
 var store = require('./store');
 var config = require('./config');
 var mongoose = require('mongoose');
-
-mongoose.connect(config.db_url); // connect to official database
+var user = require('./lib/user');
 
 var app = module.exports = express.createServer();
 var io = socket.listen(app);
+
+mongoose.connect(config.db_url); // connect to official database
 
 io.set('log level', 1); // reduce logging
 
@@ -78,7 +79,10 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('addContact', function(email) {
-    io.sockets.socket(client.id).emit('contactAdded', email);
+    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
+    user.addContact(from_email, email, function(err, success) {
+      io.sockets.socket(client.id).emit('contactAdded', email);
+    });
   });
 
   client.on('offer', function(email, offer) {
