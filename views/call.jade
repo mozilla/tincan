@@ -5,9 +5,9 @@ body(style="padding-left: 0px; padding-right: 0px;")
     span(style="float:right; line-height:30px; padding-right:5px; padding-left:5px;")
       span(style="line-height:30px; padding-right:5px; padding-left:5px; color:white;", class="hidden-phone")=email
       button(class="btn btn-danger", onclick="logout()") Logout
-    div(id='submitcontact', class="form", style="line-height:30px;")
+    form(id='submitcontact', class="form", style="line-height:30px;")
       input(id="contactemail", type="email", placeholder="Email address to add", style="margin:0 0 0 5px; width:160px;")
-      button(id="addcontactbtn", style="margin-left:5px;", class="btn btn-success") Add Contact
+      button(id="addcontactbtn", type="submit", style="margin-left:5px;", class="btn btn-success") Add Contact
 
   div(id="contactlist")
     table(id="contact-table", class="table table-bordered")

@@ -158,7 +158,8 @@ socket.on('allContacts', function(arr) {
 });
 
 socket.on('contactAdded', function(email) {
-  alert('contactAdded!');
+  var c = new Contact({email : email});
+  Contacts.add(c);
 });
 
 socket.on('answer', function(email, answer) {
@@ -174,8 +175,6 @@ socket.on('answer', function(email, answer) {
 socket.on('iceCandidate', function(email, cand) {
   pc.addIceCandidate(new RTCIceCandidate(cand));
 });
-
-start();
 
 var Contact = Backbone.Model.extend({
   defaults: {
@@ -219,10 +218,8 @@ var ContactView = Backbone.View.extend({
 });
 
 var AppView = Backbone.View.extend({
+
   el: $("#contacts"),
-  events: {
-    "click #addcontactbtn": "addContact"
-  },
 
   initialize: function() {
     this.listenTo(Contacts, 'add', this.addContact);
@@ -230,14 +227,8 @@ var AppView = Backbone.View.extend({
 
   addContact: function(todo) {
     var view = new ContactView({model : todo});
-    console.log(view.render().el);
     this.$el.append(view.render().el);
   }
 });
 
 var App = new AppView();
-
-function createNewContact() {
-  var c = new Contact();
-  Contacts.add(c);
-}
