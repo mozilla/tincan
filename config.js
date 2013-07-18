@@ -1,5 +1,5 @@
 module.exports = {
-  domain: process.env.DOMAIN_NAME || null,
+  domain: process.env.PUBLIC_URL || null,
   host: process.env.HOST || "http://127.0.0.1",
   port: process.env.PORT || 3000,
   persona_uri: process.env.PERSONA_URI || "http://127.0.0.1:10002",
