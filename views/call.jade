@@ -3,14 +3,25 @@ body(style="padding-left: 0px; padding-right: 0px;")
     span(style="float:left;", class="hidden-phone")
       h3(style="bottom:0; margin:0; padding-left:5px; line-height:30px; color:white;")= title
     span(style="float:right; line-height:30px; padding-right:5px; padding-left:5px;")
+      a(href="#callModal", role="button", class="btn", data-toggle="modal") Call
       span(style="line-height:30px; padding-right:5px; padding-left:5px; color:white;", class="hidden-phone")=email
       button(class="btn btn-danger", onclick="logout()") Logout
     form(id='submitcontact', class="form", style="line-height:30px;")
       input(id="contactemail", type="email", placeholder="Email address to add", style="margin:0 0 0 5px; width:160px;")
       button(id="addcontactbtn", type="submit", style="margin-left:5px;", class="btn btn-success") Add Contact
 
+  div(id="callModal", class="modal hide fade", role="dialog", tabindex="-1")
+    div(class="modal-header")
+      button(type="button", class="close", data-dismiss="modal", aria-hidden="true") &times;
+      h3 Confirm call
+    div(class="modal-body")
+      p Are you sure you want to call example@example.com?
+    div(class="modal-footer")
+      a(href="#", class="btn btn-danger") Cancel
+      a(href="#", class="btn btn-primary", data-dismiss="modal") Call
+
   div(id="contactlist")
-    table(id="contact-table", class="table table-bordered")
+    table(id="contact-table", class="table table-bordered table-hover table-striped clickable")
       thead
         tr
           th Email
@@ -18,19 +29,13 @@ body(style="padding-left: 0px; padding-right: 0px;")
           th Status
           th Fav?
       tbody(id="contacts")
-        tr
-          td=email
-          td You
-          td Online
-          td -
     script(type="text/template", id="contact-template")
       <td><%- email %></td>
       <td><%- name %></td>
       <td><%- status %></td>
       <td><%- fav %></td>
-
-  //video(id="incomingvid", autoplay, muted, style="width:100%; position: fixed; top:36px; left:0; bottom:0; right:0; height:100%; padding: 0; margin:0;")
-  video(id="outgoingvid", autoplay, muted, style="position:fixed; bottom:0; width:320px; height:240px; right:0; float:right;")
+  video(id="incomingvid", autoplay, muted, class="hidden", style="width:100%; position: fixed; top:36px; left:0; bottom:0; right:0; height:100%; padding: 0; margin:0;")
+  video(id="outgoingvid", autoplay, muted, class="hidden", style="position:fixed; bottom:0; width:320px; height:240px; right:0; float:right;")
   script.
     var socket = io.connect('!{server}');
   script(src="/js/main.js")

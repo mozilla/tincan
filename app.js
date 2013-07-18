@@ -88,6 +88,7 @@ io.sockets.on('connection', function(client) {
   client.on('offer', function(email, offer) {
     var to_socket = store.getSocketIDFromEmail(email);
     var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
+    console.log("Sending offer from " + from_email + " to " + email + " (socket: " + to_socket + ")");
     send_to_socket(to_socket, ['offer', from_email, offer]);
   });
 

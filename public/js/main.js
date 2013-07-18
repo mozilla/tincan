@@ -5,6 +5,10 @@ var debug = true; // true to log messages
 
 var pc = new RTCPeerConnection(null);
 
+window.onbeforeunload = function() {
+
+};
+
 if(navigator.id) {
   navigator.id.watch({
     onlogin: function() {
@@ -102,19 +106,21 @@ function callEmail(email) {
         if(debug) trace("Offer from outgoing \n" + offer.sdp);
         socket.emit('offer', email, offer);
       },
-      null, null);
+      function() { console.log('offer failed'); }, options);
   }
 }
 
 function gotRemoteStream(e) {
   if(debug) trace(e.stream);
   incomingvid.src = window.URL.createObjectURL(e.stream);
+  $('#incomingvid').removeClass('hidden');
 }
 
 function gotLocalStream(stream) {
   pc.addStream(stream);
   outgoingvid.src = window.URL.createObjectURL(stream); // add preview
   localstream = stream;
+  $('#outgoingvid').removeClass('hidden');
 }
 
 function sendAnswerFromOffer(offer, email) {
@@ -176,6 +182,10 @@ socket.on('iceCandidate', function(email, cand) {
   pc.addIceCandidate(new RTCIceCandidate(cand));
 });
 
+/**
+ * Backbone.js Models and Views
+ */
+
 var Contact = Backbone.Model.extend({
   defaults: {
     email : "example@example.com",
@@ -187,6 +197,11 @@ var Contact = Backbone.Model.extend({
   toTableArray : function() {
     attrs = this.attributes;
     return [attrs.email, attrs.name, attrs.status, attrs.fav];
+  },
+
+  callContact : function() {
+    alert("calling "+ this.get('email'));
+    callEmail(this.get('email'));
   }
 });
 
@@ -198,23 +213,27 @@ var Contacts = new ContactList();
 
 var ContactView = Backbone.View.extend({
 
-    tagName: "tr",
+  tagName: "tr",
 
-    events: {
-      //'click #addcontactbtn':  'addContact'
-    },
+  events: {
+    'click td':  'call'
+  },
 
-    template: _.template($('#contact-template').html()),
+  template: _.template($('#contact-template').html()),
 
-    initialize: function() {
-      this.listenTo(this.model, 'change', this.render);
-      this.listenTo(this.model, 'destroy', this.remove);
-    },
+  initialize: function() {
+    this.listenTo(this.model, 'change', this.render);
+    this.listenTo(this.model, 'destroy', this.remove);
+  },
 
-    render: function() {
-      this.$el.html(this.template(this.model.toJSON()));
-      return this;
-    }
+  call: function() {
+    this.model.callContact();
+  },
+
+  render: function() {
+    this.$el.html(this.template(this.model.toJSON()));
+    return this;
+  }
 });
 
 var AppView = Backbone.View.extend({

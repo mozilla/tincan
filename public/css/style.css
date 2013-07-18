@@ -29,7 +29,8 @@ h3 {
 }
 
 .clickable {
-  cursor:pointer;
+  cursor: pointer;
+  cursor: hand;
 }
 
 .contactemail {
