@@ -1,3 +1,7 @@
 {
-  "processes" : ["app.js"]
+  "processes" : ["app.js"],
+  "env": {
+    "PERSONA_URI": "https://webrtc.personatest.org",
+    "PERSONA_VERIFIER_URI": "https://webrtc.personatest.org/verify"
+  }
 }
