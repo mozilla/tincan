@@ -15,20 +15,21 @@ body(style="padding-left: 0px; padding-right: 0px;")
       button(type="button", class="close", data-dismiss="modal", aria-hidden="true") &times;
       h3 Confirm call
     div(class="modal-body")
-      p Are you sure you want to call example@example.com?
+      span Are you sure you want to call&nbsp;
+      span(id="modalEmail")
     div(class="modal-footer")
-      a(href="#", class="btn btn-danger") Cancel
+      a(href="#", class="btn btn-danger", data-dismiss="modal") Cancel
       a(href="#", class="btn btn-primary", data-dismiss="modal") Call
 
   div(id="contactlist")
-    table(id="contact-table", class="table table-bordered table-hover table-striped clickable")
+    table(id="contact-table", class="table table-bordered table-hover table-striped")
       thead
         tr
           th Email
           th Name
           th Status
           th Fav?
-      tbody(id="contacts")
+      tbody(id="contacts", class="clickable")
     script(type="text/template", id="contact-template")
       <td><%- email %></td>
       <td><%- name %></td>

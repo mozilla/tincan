@@ -182,6 +182,8 @@ socket.on('iceCandidate', function(email, cand) {
   pc.addIceCandidate(new RTCIceCandidate(cand));
 });
 
+//start();
+
 /**
  * Backbone.js Models and Views
  */
@@ -199,9 +201,8 @@ var Contact = Backbone.Model.extend({
     return [attrs.email, attrs.name, attrs.status, attrs.fav];
   },
 
-  callContact : function() {
-    alert("calling "+ this.get('email'));
-    callEmail(this.get('email'));
+  callContact : function(obj) {
+    obj.modal.showModal(this.get('email'));
   }
 });
 
@@ -210,6 +211,16 @@ var ContactList = Backbone.Collection.extend({
 });
 
 var Contacts = new ContactList();
+
+var CallModalView = Backbone.View.extend({
+
+  tagName: "div",
+
+  showModal: function(email) {
+    $("#modalEmail").html(email); // set modal text to display email
+    $('#callModal').modal('show'); // show the email
+  }
+});
 
 var ContactView = Backbone.View.extend({
 
@@ -227,7 +238,7 @@ var ContactView = Backbone.View.extend({
   },
 
   call: function() {
-    this.model.callContact();
+    this.model.callContact({ modal: this.options.modal });
   },
 
   render: function() {
@@ -245,9 +256,10 @@ var AppView = Backbone.View.extend({
   },
 
   addContact: function(todo) {
-    var view = new ContactView({model : todo});
+    var view = new ContactView({model : todo, modal: this.options.modal });
     this.$el.append(view.render().el);
   }
 });
 
-var App = new AppView();
+var Modal = new CallModalView();
+var App = new AppView({ modal: Modal });
