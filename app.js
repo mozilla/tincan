@@ -79,11 +79,18 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('addContact', function(email) {
-    console.log('adding contact....');
     var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
-    user.addContact(from_email, email, function(err, success) {
-      console.log('added contact');
-      io.sockets.socket(client.id).emit('contactAdded', email);
+    user.hasContact(from_email, email, function(err, hasContact) {
+      if(!err) {
+        if(!hasContact) {
+          user.addContact(from_email, email, function(err, success) {
+            io.sockets.socket(client.id).emit('contactAdded', email);
+          });
+        }
+      }
+      else {
+        console.log('Error adding contact: ' + err);
+      }
     });
   });
 
@@ -108,8 +115,8 @@ io.sockets.on('connection', function(client) {
 
   client.on('allContacts', function() {
     var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
-    user.findByEmail(from_email, function(err, u) {
-      send_to_socket(store.getSocketIDFromEmail(from_email), ['allContacts', u.contacts]);
+    user.getContacts(from_email, function(err, contacts) {
+      send_to_socket(store.getSocketIDFromEmail(from_email), ['allContacts', contacts]);
     });
   });
 });
