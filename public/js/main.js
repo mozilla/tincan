@@ -64,12 +64,12 @@ submitcontact.onsubmit = function(e) {
   contactemail.checkValidity();
   if(contactemail.validity.valid && contactemail.value !== "") {
     // callEmail(contactemail.value);
-    addContact(contactemail.value);
+    requestAddContact(contactemail.value);
     contactemail.value = "";
   }
 };
 
-function addContact(email) {
+function requestAddContact(email) {
   socket.emit('addContact', email);
 }
 
@@ -157,16 +157,12 @@ socket.on('offer', function(email, offer) {
   }
 });
 
-socket.on('allContacts', function(arr) {
-  for(var i =  0; i < arr.length; i++) {
-    document.getElementById('emails').innerHTML += "<div class='clickable contactemail'>" + arr[i] + "</div>";
-  }
-});
-
-socket.on('contactAdded', function(email) {
-  var c = new Contact({email : email});
+function addContact(email) {
+  var c = new Contact({email: email});
   Contacts.add(c);
-});
+}
+
+socket.on('contactAdded', addContact);
 
 socket.on('answer', function(email, answer) {
   trace('Got answer: ' + answer.sdp);
@@ -180,6 +176,12 @@ socket.on('answer', function(email, answer) {
 
 socket.on('iceCandidate', function(email, cand) {
   pc.addIceCandidate(new RTCIceCandidate(cand));
+});
+
+socket.on('allContacts', function(arr) {
+  for (var i = 0; i < arr.length; i++) {
+    addContact(arr[i].email);
+  };
 });
 
 //start();
@@ -261,5 +263,7 @@ var AppView = Backbone.View.extend({
   }
 });
 
-var Modal = new CallModalView();
-var App = new AppView({ modal: Modal });
+var CallModal = new CallModalView();
+var App = new AppView({ modal: CallModal });
+
+socket.emit('allContacts');

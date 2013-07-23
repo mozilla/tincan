@@ -16,7 +16,8 @@ body(style="padding-left: 0px; padding-right: 0px;")
       h3 Confirm call
     div(class="modal-body")
       span Are you sure you want to call&nbsp;
-      span(id="modalEmail")
+      span(id="modalEmail", style="font-weight:bold;")
+      span &nbsp;now?
     div(class="modal-footer")
       a(href="#", class="btn btn-danger", data-dismiss="modal") Cancel
       a(href="#", class="btn btn-primary", data-dismiss="modal") Call
@@ -28,13 +29,11 @@ body(style="padding-left: 0px; padding-right: 0px;")
           th Email
           th Name
           th Status
-          th Fav?
       tbody(id="contacts", class="clickable")
     script(type="text/template", id="contact-template")
       <td><%- email %></td>
       <td><%- name %></td>
       <td><%- status %></td>
-      <td><%- fav %></td>
   video(id="incomingvid", autoplay, muted, class="hidden", style="width:100%; position: fixed; top:36px; left:0; bottom:0; right:0; height:100%; padding: 0; margin:0;")
   video(id="outgoingvid", autoplay, muted, class="hidden", style="position:fixed; bottom:0; width:320px; height:240px; right:0; float:right;")
   script.

@@ -79,8 +79,10 @@ io.sockets.on('connection', function(client) {
   });
 
   client.on('addContact', function(email) {
+    console.log('adding contact....');
     var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
     user.addContact(from_email, email, function(err, success) {
+      console.log('added contact');
       io.sockets.socket(client.id).emit('contactAdded', email);
     });
   });
@@ -102,6 +104,13 @@ io.sockets.on('connection', function(client) {
     var to_socket = store.getSocketIDFromEmail(email);
     var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
     send_to_socket(to_socket, ['iceCandidate', from_email, answer]);
+  });
+
+  client.on('allContacts', function() {
+    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
+    user.findByEmail(from_email, function(err, u) {
+      send_to_socket(store.getSocketIDFromEmail(from_email), ['allContacts', u.contacts]);
+    });
   });
 });
 
