@@ -4,12 +4,7 @@ var localstream; //the stream of audio/video coming from this browser
 var debug = true; // true to log messages
 var cfg = null;//{"iceServers":[{"url":"stun:23.21.150.121"}]};
 
-var pc_config =  {"iceServers":[{"url":"stun:stun.services.mozilla.com"}]};
-var pc_constraints = {"optional":[{"DtlsSrtpKeyAgreement":true}]};
-
-// navigator.mozGetUserMedia({ audio:true, video:true }, function(stream) { outgoingvid.src = window.URL.createObjectURL(stream); }, function(){});
-
-var pc = new RTCPeerConnection(pc_config, pc_constraints);
+var pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
 
 if(navigator.id) {
   navigator.id.watch({
@@ -20,6 +15,12 @@ if(navigator.id) {
       window.location = "/logout";
     }
   });
+}
+
+function selectEmail() {
+  var range = document.createRange();
+  range.selectNode(document.getElementById('selectemail'));
+  window.getSelection().addRange(range);
 }
 
 function endCall() {
@@ -107,6 +108,7 @@ function callEmail(email) {
     var constraints = null;
     pc.createOffer(
       function (offer) {
+        console.log('got offer: ' + offer);
         pc.setLocalDescription(new RTCSessionDescription(offer));
         if(debug) trace("Offer from outgoing \n" + offer.sdp);
         socket.emit('offer', email, offer);
@@ -116,20 +118,25 @@ function callEmail(email) {
         addcontactbtn.disabled = true;
       },
       function(err) {
-        console.log('Error: ' + err);
+        console.log('Error creating offer: ' + err);
       }, constraints);
-    console.log('tried to created offer');
+    console.log('tried to create offer');
   }
 }
 
 function gotRemoteStream(e) {
   if(debug) trace(e.stream);
   incomingvid.src = window.URL.createObjectURL(e.stream);
+
+  incomingvid.className = ""; // not hidden anymore
+  $(".callform").addClass("hidden");
+  $(".callbox").removeClass('hidden');
 }
 
 function gotLocalStream(stream) {
   pc.addStream(stream);
   outgoingvid.src = window.URL.createObjectURL(stream); // add preview
+  outgoingvid.className = ""; // not hidden anymore
   localstream = stream;
 }
 
@@ -183,12 +190,6 @@ socket.on('answer', function(email, answer) {
   trace('Got answer: ' + answer.sdp);
   pc.setRemoteDescription(new RTCSessionDescription(answer),
     function(e) {
-      //update UI
-      contactemail.value = "Connected!";
-      addcontactbtn.disabled = false;
-      addcontactbtn.innerHTML = "End Call with " + email;
-      addcontactbtn.className = "btn btn-danger";
-      addcontactbtn.onclick = endCall;
     },
     function() {
       if(debug) trace('answer FAILED set as remote description');

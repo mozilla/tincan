@@ -4,9 +4,14 @@ var attachMediaStream = null;
 var reattachMediaStream = null;
 var webrtcDetectedBrowser = null;
 var SessionDescription = null;
+var PCCONFIG = null;
+var PCCONSTRAINTS = null;
 
 if (navigator.mozGetUserMedia) {
   console.log("This appears to be Firefox");
+
+  PCCONFIG = {"iceServers":[{"url":"stun:stun.services.mozilla.com"}]};
+  PCCONSTRAINTS = {"optional":[{"DtlsSrtpKeyAgreement":true}]};
 
   webrtcDetectedBrowser = "firefox";
 
@@ -49,6 +54,8 @@ if (navigator.mozGetUserMedia) {
   console.log("This appears to be Chrome");
 
   webrtcDetectedBrowser = "chrome";
+
+  PCCONSTRAINTS = {"optional":[{"DtlsSrtpKeyAgreement":true}]};
 
   // The RTCPeerConnection object.
   RTCPeerConnection = webkitRTCPeerConnection;

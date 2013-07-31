@@ -44,3 +44,33 @@ h3 {
   margin-top:50px;
   font: 65px 'OpenSans-Reg', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
 }
+
+.incomingvid {
+  z-index:1;
+}
+
+.outgoingvid {
+  z-index:2;
+}
+
+.toolbar {
+  z-index:3;
+}
+
+.callbox {
+  position: fixed;
+  z-index:4;
+  bottom: 0;
+  left: 0;
+  width:100%;
+  height: 50px;
+}
+
+.callform {
+  text-align:center;
+  top:100px;
+  border:1px;
+  clear:both;
+  margin-top:400px;
+  padding:1px;
+}

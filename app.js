@@ -1,11 +1,11 @@
 var express = require('express'),
     routes = require('./routes'),
-    socket = require('socket.io'),
+    socketio = require('socket.io'),
     store = require('./store'),
     config = require('./config');
 
 var app = module.exports = express.createServer();
-var io = socket.listen(app);
+var io = socketio.listen(app);
 
 io.set('log level', 1); // reduce logging
 
@@ -65,35 +65,33 @@ function getCookie(cookie_string, c_var) {
   }
 }
 
-io.sockets.on('connection', function(client) {
-  var cookie = getCookie(client.manager.handshaken[client.id].headers.cookie, "connect.sid");
-  store.mapSocketIDToCookie(client.id, cookie); //is this used?
-  store.mapEmailToSocketID(store.getEmailFromCookie(cookie), client.id);
+io.sockets.on('connection', function(socket) {
+  var cookie = getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid");
+  store.mapEmailToSocketID(store.getEmailFromCookie(cookie), socket.id);
 
-  client.on('disconnect', function() {
-    store.mapSocketIDToCookie(client.id, null);
+  socket.join(store.getEmailFromCookie(cookie)); // socket joins room based on email
+  console.log('socket ' + socket.id + " joined room: " + store.getEmailFromCookie(cookie));
+
+  socket.on('disconnect', function() {
+    io.sockets.in(email).emit('offer', from_email, offer);
+    // store.mapSocketIDToCookie(socket.id, null);
   });
 
-  client.on('addContact', function(email) {
-    io.sockets.socket(client.id).emit('contactAdded', email);
+  socket.on('offer', function(email, offer) {
+    var from_email = store.getEmailFromCookie(getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid"));
+    io.sockets.in(email).emit('offer', from_email, offer);
+    console.log('sending offer from ' + from_email + " to " + email);
   });
 
-  client.on('offer', function(email, offer) {
-    var to_socket = store.getSocketIDFromEmail(email);
-    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
-    send_to_socket(to_socket, ['offer', from_email, offer]);
+  socket.on('answer', function(email, answer, offer) {
+    var from_email = store.getEmailFromCookie(getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid"));
+    io.sockets.in(email).emit('answer', from_email, answer, offer);
+    console.log('sending offer from ' + from_email + " to " + email);
   });
 
-  client.on('answer', function(email, answer, offer) {
-    var to_socket = store.getSocketIDFromEmail(email);
-    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
-    send_to_socket(to_socket, ['answer', from_email, answer, offer]);
-  });
-
-  client.on('iceCandidate', function(email, cand) {
-    var to_socket = store.getSocketIDFromEmail(email);
-    var from_email = store.getEmailFromCookie(store.getCookieFromSocketID(client.id));
-    send_to_socket(to_socket, ['iceCandidate', from_email, cand]);
+  socket.on('iceCandidate', function(email, cand) {
+    var from_email = store.getEmailFromCookie(getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid"));
+    io.sockets.in(email).emit('iceCandidate', from_email, cand);
   });
 });
 
