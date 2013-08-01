@@ -16,9 +16,9 @@ body(style="padding-right:5px; padding-left:5px;")
         i(id="selectemail", onclick="selectEmail();")= email
   div(class="callbox hidden")
     div(style="text-align: center;")
-      button(class="btn btn-large btn-danger", onclick="endCall();") End call
-  video(id="incomingvid", autoplay, muted, class="hidden", style="width:100%; height:100%; position:fixed; top:0pt; left:0; bottom:0; right:0; padding: 0; margin:0;")
-  video(id="outgoingvid", autoplay, muted, style="visibility:hidden; position:fixed; max-width:320px; bottom:0; right:0; float:right;")
+      button(class="btn btn-large btn-danger", onclick="endCurrentCall();") End call
+  video(id="incomingvid", class="incomingvid", autoplay, muted)
+  video(id="outgoingvid", class="outgoingvid", autoplay, muted)
   script.
     var socket = io.connect('!{server}');
   script(src="/js/main.js")

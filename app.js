@@ -73,8 +73,8 @@ io.sockets.on('connection', function(socket) {
   console.log('socket ' + socket.id + " joined room: " + store.getEmailFromCookie(cookie));
 
   socket.on('disconnect', function() {
-    io.sockets.in(email).emit('offer', from_email, offer);
-    // store.mapSocketIDToCookie(socket.id, null);
+    var rooms = io.sockets.manager.roomClients[socket.id];
+    console.log("disconnecting from rooms: " + JSON.stringify(rooms));
   });
 
   socket.on('offer', function(email, offer) {
@@ -83,10 +83,16 @@ io.sockets.on('connection', function(socket) {
     console.log('sending offer from ' + from_email + " to " + email);
   });
 
+  socket.on('endCall', function(email) {
+    var from_email = store.getEmailFromCookie(getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid"));
+    io.sockets.in(email).emit('endCall', from_email);
+    console.log('endCall from ' + from_email + " to " + email);
+  });
+
   socket.on('answer', function(email, answer, offer) {
     var from_email = store.getEmailFromCookie(getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid"));
     io.sockets.in(email).emit('answer', from_email, answer, offer);
-    console.log('sending offer from ' + from_email + " to " + email);
+    console.log('sending answer from ' + from_email + " to " + email);
   });
 
   socket.on('iceCandidate', function(email, cand) {

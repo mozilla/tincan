@@ -84,3 +84,25 @@ h3 {
   margin-top:5px;
   margin-right:10px;
 }
+
+.incomingvid {
+  visibility:hidden;
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  padding:0;
+  margin:0;
+}
+
+.outgoingvid {
+  visibility:hidden;
+  position:fixed;
+  max-width:320px;
+  bottom:0;
+  right:0;
+  float:right;
+}

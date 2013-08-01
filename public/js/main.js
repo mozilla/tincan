@@ -6,6 +6,8 @@ var cfg = null;//{"iceServers":[{"url":"stun:23.21.150.121"}]};
 
 var pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
 
+var current_call = null;
+
 var LOCALCONTRAINTS = {
   "audio":true,
   "video": {
@@ -22,6 +24,10 @@ var OFFERCONTRAINTS = {
     "OfferToReceiveAudio": true,
     "OfferToReceiveVideo": true
   }
+};
+
+window.onbeforeunload = function() {
+  endCurrentCall();
 };
 
 if(navigator.id) {
@@ -41,19 +47,45 @@ function selectEmail() {
   window.getSelection().addRange(range);
 }
 
-function endCall() {
-  console.log('Ending call not yet implemented');
+function endCurrentCall() {
+  if(current_call) {
+    socket.emit('endCall', current_call);
+    endCall(current_call);
+  }
+}
+
+function resetUIState() {
+  document.getElementById("outgoingvid").src = "";
+  document.getElementById("incomingvid").src = "";
+  document.getElementById("outgoingvid").style.visibility = "hidden";
+  document.getElementById("incomingvid").style.visibility = "hidden";
+
+  $(".callbox").addClass('hidden');
+  $(".callform").removeClass('hidden');
+  contactemail.value = "";
+  addcontactbtn.innerHTML = "Call";
+  addcontactbtn.disabled = false;
+}
+
+function endCall(email) {
+  console.log('Checking if currently in call with ' + email);
+  if(current_call == email) {
+    current_call = null;
+    pc.close();
+    pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+    localstream.stop();
+    localstream = null;
+
+    resetUIState();
+  }
 }
 
 function trace(text) {
-  // This function is used for logging.
-  if (text[text.length - 1] == '\n') {
-    text = text.substring(0, text.length - 1);
-  }
-  console.log((performance.now() / 1000).toFixed(3) + ": " + text);
+  console.log(text);
 }
 
 function logout() {
+  endCurrentCall();
   navigator.id.logout();
 }
 
@@ -129,8 +161,7 @@ function callEmail(email) {
         pc.setLocalDescription(new RTCSessionDescription(offer));
         if(debug) trace("Offer from outgoing \n" + offer.sdp);
         socket.emit('offer', email, offer);
-
-        contactemail.disabled = true;
+        // update UI
         addcontactbtn.innerHTML = "Calling " + email + "...";
         addcontactbtn.disabled = true;
       },
@@ -143,17 +174,16 @@ function callEmail(email) {
 
 function gotRemoteStream(e) {
   if(debug) trace(e.stream);
-  incomingvid.src = window.URL.createObjectURL(e.stream);
-
-  incomingvid.className = ""; // not hidden anymore
+  document.getElementById("incomingvid").src = window.URL.createObjectURL(e.stream);
+  document.getElementById("incomingvid").style.visibility = "visible"; // not hidden anymore
   $(".callform").addClass("hidden");
   $(".callbox").removeClass('hidden');
 }
 
 function gotLocalStream(stream) {
   pc.addStream(stream);
-  outgoingvid.style.visibility = "visible"; // not hidden anymore
-  outgoingvid.src = window.URL.createObjectURL(stream); // add preview
+  document.getElementById("outgoingvid").style.visibility = "visible"; // not hidden anymore
+  document.getElementById("outgoingvid").src = window.URL.createObjectURL(stream); // add preview
 
   localstream = stream;
 }
@@ -163,6 +193,7 @@ function sendAnswerFromOffer(offer, email) {
     pc.createAnswer(function(ans) {
       pc.setLocalDescription(new RTCSessionDescription(ans));
       socket.emit('answer', email, ans);
+      current_call = email;
     }, null, null);
   }, function(err){
     if(debug) trace('offer FAILED set as remote description');
@@ -193,6 +224,10 @@ socket.on('offer', function(email, offer) {
   }
 });
 
+socket.on('endCall', function(email) {
+  endCall(email);
+});
+
 // socket.on('allContacts', function(arr) {
 //   for(var i =  0; i < arr.length; i++) {
 //     document.getElementById('emails').innerHTML += "<div class='clickable contactemail'>" + arr[i] + "</div>";
@@ -208,6 +243,7 @@ socket.on('answer', function(email, answer) {
   trace('Got answer: ' + answer.sdp);
   pc.setRemoteDescription(new RTCSessionDescription(answer),
     function(e) {
+      current_call = email;
     },
     function() {
       if(debug) trace('answer FAILED set as remote description');
@@ -217,9 +253,6 @@ socket.on('answer', function(email, answer) {
 
 socket.on('iceCandidate', function(email, cand) {
   console.log("got candidate from email: " + email);
-  console.log("got candidate: " + cand);
-  console.log(cand);
+  console.log(JSON.stringify(cand));
   pc.addIceCandidate(new RTCIceCandidate(cand));
 });
-
-//start();
