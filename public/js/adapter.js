@@ -55,6 +55,19 @@ if (navigator.mozGetUserMedia) {
 
   webrtcDetectedBrowser = "chrome";
 
+  PCCONFIG = {
+    "iceServers":[
+      {
+        "url":"stun:stun.l.google.com:19302"
+      },
+      {
+        "url":"turn:108.59.80.54:3478?transport=udp",
+        "credential":"111182be0374e5f10a30806092ec88c0",
+        "username":"56043897-1375316132"
+      }
+    ]
+  };
+
   PCCONSTRAINTS = {"optional":[{"DtlsSrtpKeyAgreement":true}]};
 
   // The RTCPeerConnection object.

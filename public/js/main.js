@@ -6,6 +6,24 @@ var cfg = null;//{"iceServers":[{"url":"stun:23.21.150.121"}]};
 
 var pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
 
+var LOCALCONTRAINTS = {
+  "audio":true,
+  "video": {
+    "mandatory": {
+    },
+    "optional": [
+    ]
+  }
+};
+
+var OFFERCONTRAINTS = {
+  "optional": [],
+  "mandatory": {
+    "OfferToReceiveAudio": true,
+    "OfferToReceiveVideo": true
+  }
+};
+
 if(navigator.id) {
   navigator.id.watch({
     onlogin: function() {
@@ -41,7 +59,7 @@ function logout() {
 
 function getMedia(callback, args) {
   navigator.getUserMedia(
-    { audio:true, video:true },
+    LOCALCONTRAINTS,
     function onStream(stream) {
       gotLocalStream(stream);
       args = args ? args : [];
@@ -105,7 +123,6 @@ function callEmail(email) {
     };
 
     if(debug) trace("Adding Local Stream to peer connection");
-    var constraints = null;
     pc.createOffer(
       function (offer) {
         console.log('got offer: ' + offer);
@@ -119,7 +136,7 @@ function callEmail(email) {
       },
       function(err) {
         console.log('Error creating offer: ' + err);
-      }, constraints);
+      }, OFFERCONTRAINTS);
     console.log('tried to create offer');
   }
 }
@@ -135,8 +152,9 @@ function gotRemoteStream(e) {
 
 function gotLocalStream(stream) {
   pc.addStream(stream);
+  outgoingvid.style.visibility = "visible"; // not hidden anymore
   outgoingvid.src = window.URL.createObjectURL(stream); // add preview
-  outgoingvid.className = ""; // not hidden anymore
+
   localstream = stream;
 }
 

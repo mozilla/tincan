@@ -54,7 +54,10 @@ h3 {
 }
 
 .toolbar {
-  z-index:3;
+  z-index: 3;
+  position:fixed;
+  top:0;
+  width:100%;
 }
 
 .callbox {
@@ -71,6 +74,13 @@ h3 {
   top:100px;
   border:1px;
   clear:both;
-  margin-top:400px;
+  margin-top:100px;
   padding:1px;
+}
+
+.logoutbtn {
+  float:right;
+  line-height:30px;
+  margin-top:5px;
+  margin-right:10px;
 }
