@@ -1,9 +1,27 @@
-performance.now = performance.now || performance.webkitNow; // hack added by SD!
-
-var localstream; //the stream of audio/video coming from this browser
+var localstream = null; //the stream of audio/video coming from this browser
+var cfg = null;//{"iceServers":[{"url":"stun:23.21.150.121"}]};
+var current_call = null;
 var debug = true; // true to log messages
 
-var pc = new RTCPeerConnection(null);
+var pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+
+var LOCALCONTRAINTS = {
+  "audio":true,
+  "video": {
+    "mandatory": {
+    },
+    "optional": [
+    ]
+  }
+};
+
+var OFFERCONTRAINTS = {
+  "optional": [],
+  "mandatory": {
+    "OfferToReceiveAudio": true,
+    "OfferToReceiveVideo": true
+  }
+};
 
 if(navigator.id) {
   navigator.id.watch({
@@ -16,21 +34,62 @@ if(navigator.id) {
   });
 }
 
-function trace(text) {
-  // This function is used for logging.
-  if (text[text.length - 1] == '\n') {
-    text = text.substring(0, text.length - 1);
+// if the user is leaving the page
+window.onbeforeunload = function() {
+  endCurrentCall();
+};
+
+function selectEmail() {
+  var range = document.createRange();
+  range.selectNode(document.getElementById('selectemail'));
+  window.getSelection().addRange(range);
+}
+
+function endCurrentCall() {
+  if(current_call) {
+    socket.emit('endCall', current_call);
+    endCall(current_call);
   }
-  console.log((performance.now() / 1000).toFixed(3) + ": " + text);
+}
+
+function resetUIState() {
+  document.getElementById("outgoingvid").src = "";
+  document.getElementById("incomingvid").src = "";
+  document.getElementById("outgoingvid").style.visibility = "hidden";
+  document.getElementById("incomingvid").style.visibility = "hidden";
+
+  $(".callbox").addClass('hidden');
+  $(".callform").removeClass('hidden');
+  contactemail.value = "";
+  addcontactbtn.innerHTML = "Call";
+  addcontactbtn.disabled = false;
+}
+
+function endCall(email) {
+  console.log('Checking if currently in call with ' + email);
+  if(current_call == email) {
+    current_call = null;
+    pc.close();
+    pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+    localstream.stop();
+    localstream = null;
+
+    resetUIState();
+  }
+}
+
+function trace(text) {
+  console.log(text);
 }
 
 function logout() {
+  endCurrentCall();
   navigator.id.logout();
 }
 
 function getMedia(callback, args) {
   navigator.getUserMedia(
-    { audio:true, video:true },
+    LOCALCONTRAINTS,
     function onStream(stream) {
       gotLocalStream(stream);
       args = args ? args : [];
@@ -60,9 +119,12 @@ submitcontact.onsubmit = function(e) {
   contactemail.checkValidity();
   if(contactemail.validity.valid && contactemail.value !== "") {
     callEmail(contactemail.value);
-    contactemail.value = "";
   }
 };
+
+submitcontact.oninput = function(e) {
+  addcontactbtn.innerHTML = "Call " + contactemail.value;
+}
 
 function callEmail(email) {
   if(!localstream) {
@@ -83,32 +145,44 @@ function callEmail(email) {
 
     pc.onaddstream = gotRemoteStream;
 
-    pc.onicecandidate = function(event) {
+    pc.onicecandidate = function (event) {
+      console.log("ice cand: " + event.candidate);
       if (event.candidate) {
         socket.emit('iceCandidate', email, event.candidate);
       }
     };
 
     if(debug) trace("Adding Local Stream to peer connection");
-    var options = null;
     pc.createOffer(
       function (offer) {
+        console.log('got offer: ' + offer);
         pc.setLocalDescription(new RTCSessionDescription(offer));
         if(debug) trace("Offer from outgoing \n" + offer.sdp);
         socket.emit('offer', email, offer);
+        // update UI
+        addcontactbtn.innerHTML = "Calling " + email + "...";
+        addcontactbtn.disabled = true;
       },
-      null, null);
+      function(err) {
+        console.log('Error creating offer: ' + err);
+      }, OFFERCONTRAINTS);
+    console.log('tried to create offer');
   }
 }
 
 function gotRemoteStream(e) {
   if(debug) trace(e.stream);
-  incomingvid.src = window.URL.createObjectURL(e.stream);
+  document.getElementById("incomingvid").src = window.URL.createObjectURL(e.stream);
+  document.getElementById("incomingvid").style.visibility = "visible"; // not hidden anymore
+  $(".callform").addClass("hidden");
+  $(".callbox").removeClass('hidden');
 }
 
 function gotLocalStream(stream) {
   pc.addStream(stream);
-  outgoingvid.src = window.URL.createObjectURL(stream); // add preview
+  document.getElementById("outgoingvid").style.visibility = "visible"; // not hidden anymore
+  document.getElementById("outgoingvid").src = window.URL.createObjectURL(stream); // add preview
+
   localstream = stream;
 }
 
@@ -117,9 +191,11 @@ function sendAnswerFromOffer(offer, email) {
     pc.createAnswer(function(ans) {
       pc.setLocalDescription(new RTCSessionDescription(ans));
       socket.emit('answer', email, ans);
+      current_call = email;
     }, null, null);
-  }, function(){
+  }, function(err){
     if(debug) trace('offer FAILED set as remote description');
+    console.log(err);
   });
 }
 
@@ -146,21 +222,16 @@ socket.on('offer', function(email, offer) {
   }
 });
 
-socket.on('allContacts', function(arr) {
-  for(var i =  0; i < arr.length; i++) {
-    document.getElementById('emails').innerHTML += "<div class='clickable contactemail'>" + arr[i] + "</div>";
-  }
-});
-
-socket.on('contactAdded', function(email) {
-  document.getElementById('contactlist').innerHTML += "<div class='clickable contactemail'>" + email + "<button style='float:right;' onclick='callEmail(\"" + email + "\");'>Call</button></div>";
-  document.getElementById('contactemail').value = "";
+socket.on('endCall', function(email) {
+  endCall(email);
 });
 
 socket.on('answer', function(email, answer) {
   trace('Got answer: ' + answer.sdp);
   pc.setRemoteDescription(new RTCSessionDescription(answer),
-    function(e) {console.log(e);},
+    function(e) {
+      current_call = email;
+    },
     function() {
       if(debug) trace('answer FAILED set as remote description');
     }
@@ -168,7 +239,7 @@ socket.on('answer', function(email, answer) {
 });
 
 socket.on('iceCandidate', function(email, cand) {
+  console.log("got candidate from email: " + email);
+  console.log(JSON.stringify(cand));
   pc.addIceCandidate(new RTCIceCandidate(cand));
 });
-
-start();
