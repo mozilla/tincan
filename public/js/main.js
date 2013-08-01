@@ -1,12 +1,9 @@
-performance.now = performance.now || performance.webkitNow; // hack added by SD!
-
-var localstream; //the stream of audio/video coming from this browser
-var debug = true; // true to log messages
+var localstream = null; //the stream of audio/video coming from this browser
 var cfg = null;//{"iceServers":[{"url":"stun:23.21.150.121"}]};
+var current_call = null;
+var debug = true; // true to log messages
 
 var pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
-
-var current_call = null;
 
 var LOCALCONTRAINTS = {
   "audio":true,
@@ -26,10 +23,6 @@ var OFFERCONTRAINTS = {
   }
 };
 
-window.onbeforeunload = function() {
-  endCurrentCall();
-};
-
 if(navigator.id) {
   navigator.id.watch({
     onlogin: function() {
@@ -40,6 +33,11 @@ if(navigator.id) {
     }
   });
 }
+
+// if the user is leaving the page
+window.onbeforeunload = function() {
+  endCurrentCall();
+};
 
 function selectEmail() {
   var range = document.createRange();
@@ -227,17 +225,6 @@ socket.on('offer', function(email, offer) {
 socket.on('endCall', function(email) {
   endCall(email);
 });
-
-// socket.on('allContacts', function(arr) {
-//   for(var i =  0; i < arr.length; i++) {
-//     document.getElementById('emails').innerHTML += "<div class='clickable contactemail'>" + arr[i] + "</div>";
-//   }
-// });
-
-// socket.on('contactAdded', function(email) {
-//   document.getElementById('contactlist').innerHTML += "<div class='clickable contactemail'>" + email + "<button style='float:right;' onclick='callEmail(\"" + email + "\");'>Call</button></div>";
-//   document.getElementById('contactemail').value = "";
-// });
 
 socket.on('answer', function(email, answer) {
   trace('Got answer: ' + answer.sdp);

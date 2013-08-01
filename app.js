@@ -73,8 +73,8 @@ io.sockets.on('connection', function(socket) {
   console.log('socket ' + socket.id + " joined room: " + store.getEmailFromCookie(cookie));
 
   socket.on('disconnect', function() {
-    var rooms = io.sockets.manager.roomClients[socket.id];
-    console.log("disconnecting from rooms: " + JSON.stringify(rooms));
+    // we don't keep track of what calls are ongoing
+    // so we cannot ad hoc alert the other party that they are leaving
   });
 
   socket.on('offer', function(email, offer) {

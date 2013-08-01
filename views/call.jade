@@ -17,8 +17,8 @@ body(style="padding-right:5px; padding-left:5px;")
   div(class="callbox hidden")
     div(style="text-align: center;")
       button(class="btn btn-large btn-danger", onclick="endCurrentCall();") End call
-  video(id="incomingvid", class="incomingvid", autoplay, muted)
-  video(id="outgoingvid", class="outgoingvid", autoplay, muted)
+  video(id="incomingvid", class="incomingvid", autoplay)
+  video(id="outgoingvid", class="outgoingvid", autoplay)
   script.
     var socket = io.connect('!{server}');
   script(src="/js/main.js")
