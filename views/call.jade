@@ -1,15 +1,24 @@
 body(style="padding-right:5px; padding-left:5px;")
-  span(style="float:left;", class="hidden-phone")
-    h3(style="bottom:0; margin:0; padding-right:5px;padding-left:5px; line-height:30px; color:white;")= title
-  span(style="float:right; line-height:30px; padding-right:5px;padding-left:5px;")
-    span(style="line-height:30px; padding-right:5px; padding-left:5px; color:white;", class="hidden-phone")=email
-    button(class="btn btn-danger", onclick="logout()") Logout
-  div(id="contactlist")
-  form(id='submitcontact', class="form", style="line-height:30px;")
-    input(id="contactemail", type="email", placeholder="Email to call", style="margin:0; width:160px;")
-    button(type="submit", id="addcontactbtn", style="margin-left:5px;", class="btn btn-success") Call
-  video(id="incomingvid", autoplay, muted, style="width:100%; position: fixed; top:36px; left:0; bottom:0; right:0; height:100%; padding: 0; margin:0;")
-  video(id="outgoingvid", autoplay, muted, style="position:fixed; bottom:0; width:320px; height:240px; right:0; float:right;")
+  div(class="toolbar")
+    div(style="float:left; border: 1px;")
+      a(href="/")
+        h3(class="apptitle")= title
+    button(class="btn btn-danger logoutbtn", onclick="logout()") Logout
+  div(class="callform")
+    form(id='submitcontact', style="margin-top:100px;")
+      h3(style="color:white; margin-bottom:0;") enter email to call
+      fieldset
+        input(id="contactemail", autocomplete="off", type="email", placeholder="Email...", style="margin:4px; height:24pt;")
+        br
+        button(type="submit", autocomplete="off", id="addcontactbtn", class="btn btn-large btn-success") Call
+    h3(style="color:white;") or tell your friend to call&nbsp;
+      u(style="color:white;")
+        i(id="selectemail", onclick="selectEmail();")= email
+  div(class="callbox hidden")
+    div(style="text-align: center;")
+      button(class="btn btn-large btn-danger", onclick="endCurrentCall();") End call
+  video(id="incomingvid", class="incomingvid", autoplay)
+  video(id="outgoingvid", class="outgoingvid", autoplay)
   script.
     var socket = io.connect('!{server}');
   script(src="/js/main.js")
