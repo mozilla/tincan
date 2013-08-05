@@ -1,6 +1,5 @@
 var request = require('request');
 var config = require('../config');
-var store = require('../store');
 
 /**
  * GET /
@@ -55,7 +54,6 @@ exports.login = function(req, res) {
         }
         else {
           req.session.email = body.email; // store email
-          store.mapCookieToEmail(req.sessionID, body.email);
           res.send(status);
         }
       }
