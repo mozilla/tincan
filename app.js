@@ -17,7 +17,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(express.logger('dev'));
-  app.use(express.session({ store: store, secret: 'your secret here' }));
+  app.use(express.session({ store: store, secret: config.secretsauce }));
   app.use(require('stylus').middleware({ src: __dirname + '/public' }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
