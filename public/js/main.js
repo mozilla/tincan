@@ -66,14 +66,14 @@ function resetUIState() {
 }
 
 function endCall(email) {
-  console.log('Checking if currently in call with ' + email);
+  // console.log('Checking if currently in call with ' + email);
   if(current_call == email) {
     current_call = null;
     pc.close();
     pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
     localstream.stop();
     localstream = null;
-
+    alertify.success("The call was ended");
     resetUIState();
   }
 }
@@ -200,26 +200,27 @@ function sendAnswerFromOffer(offer, email) {
 }
 
 socket.on('offer', function(email, offer) {
-  if(confirm("Incoming call from " + email + "! Answer?")) {
+  alertify.confirm("Incoming call from " + email + "! Answer?", function (e) {
+    if (e) {
+      pc.onicecandidate = function (event) {
+        if (event.candidate) {
+          socket.emit('iceCandidate', email, event.candidate);
+        }
+      };
 
-    pc.onicecandidate = function (event) {
-      if (event.candidate) {
-        socket.emit('iceCandidate', email, event.candidate);
+      pc.onaddstream = gotRemoteStream;
+
+      if(!localstream) {
+        getMedia(sendAnswerFromOffer, [offer, email]);
       }
-    };
-
-    pc.onaddstream = gotRemoteStream;
-
-    if(!localstream) {
-      getMedia(sendAnswerFromOffer, [offer, email]);
+      else {
+        sendAnswerFromOffer(offer, email);
+      }
+    } else {
+      // user clicked "cancel"
+      alertify.error("You denied the call");
     }
-    else {
-      sendAnswerFromOffer(offer, email);
-    }
-  }
-  else {
-    trace("Call denied");
-  }
+  });
 });
 
 socket.on('endCall', function(email) {
