@@ -1,8 +1,8 @@
 var express = require('express'),
     routes = require('./routes'),
     socketio = require('socket.io'),
-    store = require('./store'),
-    config = require('./config');
+    config = require('./config'),
+    store = new express.session.MemoryStore;
 
 var app = module.exports = express.createServer();
 var io = socketio.listen(app);
@@ -17,7 +17,7 @@ app.configure(function(){
   app.use(express.methodOverride());
   app.use(express.cookieParser());
   app.use(express.logger('dev'));
-  app.use(express.session({ secret: 'your secret here' }));
+  app.use(express.session({ store: store, secret: 'your secret here' }));
   app.use(require('stylus').middleware({ src: __dirname + '/public' }));
   app.use(app.router);
   app.use(express.static(__dirname + '/public'));
@@ -67,10 +67,20 @@ function getCookie(cookie_string, c_var) {
 
 io.sockets.on('connection', function(socket) {
   var cookie = getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid");
-  store.mapEmailToSocketID(store.getEmailFromCookie(cookie), socket.id);
-
-  socket.join(store.getEmailFromCookie(cookie)); // socket joins room based on email
-  console.log('socket ' + socket.id + " joined room: " + store.getEmailFromCookie(cookie));
+  store.get(cookie, function(err, sess) {
+    if(err) {
+      console.log("Error: " + err);
+    }
+    else if(!sess) {
+      return;
+    }
+    else {
+      // socket joins room based on email
+      var email = sess.email;
+      socket.join(email);
+      console.log('socket ' + socket.id + " joined room: " + email);
+    }
+  });
 
   socket.on('disconnect', function() {
     // we don't keep track of what calls are ongoing
@@ -78,26 +88,58 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('offer', function(email, offer) {
-    var from_email = store.getEmailFromCookie(getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid"));
-    io.sockets.in(email).emit('offer', from_email, offer);
-    console.log('sending offer from ' + from_email + " to " + email);
+    var cookie = getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid");
+    store.get(cookie, function(err, sess) {
+      if(err) {
+        console.log("Error: " + err);
+      }
+      else {
+        var from_email = sess.email;
+        io.sockets.in(email).emit('offer', from_email, offer);
+        console.log('sending offer from ' + from_email + " to " + email);
+      }
+    });
   });
 
   socket.on('endCall', function(email) {
-    var from_email = store.getEmailFromCookie(getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid"));
-    io.sockets.in(email).emit('endCall', from_email);
-    console.log('endCall from ' + from_email + " to " + email);
+    var cookie = getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid");
+    store.get(cookie, function(err, sess) {
+      if(err) {
+        console.log("Error: " + err);
+      }
+      else {
+        var from_email = sess.email;
+        io.sockets.in(email).emit('endCall', from_email);
+        console.log('endCall from ' + from_email + " to " + email);
+      }
+    });
   });
 
   socket.on('answer', function(email, answer, offer) {
-    var from_email = store.getEmailFromCookie(getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid"));
-    io.sockets.in(email).emit('answer', from_email, answer, offer);
-    console.log('sending answer from ' + from_email + " to " + email);
+    var cookie = getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid");
+    store.get(cookie, function(err, sess) {
+      if(err) {
+        console.log("Error: " + err);
+      }
+      else {
+        var from_email = sess.email;
+        io.sockets.in(email).emit('answer', from_email, answer, offer);
+        console.log('sending answer from ' + from_email + " to " + email);
+      }
+    });
   });
 
   socket.on('iceCandidate', function(email, cand) {
-    var from_email = store.getEmailFromCookie(getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid"));
-    io.sockets.in(email).emit('iceCandidate', from_email, cand);
+    var cookie = getCookie(socket.manager.handshaken[socket.id].headers.cookie, "connect.sid");
+    store.get(cookie, function(err, sess) {
+      if(err) {
+        console.log("Error: " + err);
+      }
+      else {
+        var from_email = sess.email;
+        io.sockets.in(email).emit('iceCandidate', from_email, cand);
+      }
+    });
   });
 });
 
