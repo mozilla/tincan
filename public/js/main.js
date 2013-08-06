@@ -1,9 +1,12 @@
 var localstream = null; //the stream of audio/video coming from this browser
 var cfg = null;//{"iceServers":[{"url":"stun:23.21.150.121"}]};
 var current_call = null;
+var callTimeoutID = null;
 var debug = true; // true to log messages
-
+var callRequestDialog = null;
 var pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+
+alertify.set({ buttonFocus: "cancel" });
 
 var LOCALCONTRAINTS = {
   "audio":true,
@@ -73,9 +76,21 @@ function endCall(email) {
     pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
     localstream.stop();
     localstream = null;
-    alertify.success("The call was ended");
+    alertify.success("The call was ended!");
     resetUIState();
   }
+}
+
+function noAnswer() {
+  pc.close();
+  pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+
+  if(localstream) {
+    localstream.stop();
+    localstream = null;
+  }
+  alertify.error("There was no answer!");
+  resetUIState();
 }
 
 function trace(text) {
@@ -124,7 +139,7 @@ submitcontact.onsubmit = function(e) {
 
 submitcontact.oninput = function(e) {
   addcontactbtn.innerHTML = "Call " + contactemail.value;
-}
+};
 
 function callEmail(email) {
   if(!localstream) {
@@ -162,6 +177,9 @@ function callEmail(email) {
         // update UI
         addcontactbtn.innerHTML = "Calling " + email + "...";
         addcontactbtn.disabled = true;
+        callTimeoutID = setTimeout(function() {
+          noAnswer();
+        }, 10000); // 10 seconds to answer
       },
       function(err) {
         console.log('Error creating offer: ' + err);
@@ -200,8 +218,10 @@ function sendAnswerFromOffer(offer, email) {
 }
 
 socket.on('offer', function(email, offer) {
+
   alertify.confirm("Incoming call from " + email + "! Answer?", function (e) {
     if (e) {
+      clearTimeout(callRequestDialog);
       pc.onicecandidate = function (event) {
         if (event.candidate) {
           socket.emit('iceCandidate', email, event.candidate);
@@ -217,10 +237,14 @@ socket.on('offer', function(email, offer) {
         sendAnswerFromOffer(offer, email);
       }
     } else {
+      clearTimeout(callRequestDialog);
       // user clicked "cancel"
-      alertify.error("You denied the call");
+      alertify.error("You denied the call!");
     }
   });
+  callRequestDialog = setTimeout(function() {
+    alertify.closeOpen();
+  }, 10000); // 10 seconds
 });
 
 socket.on('endCall', function(email) {
@@ -231,6 +255,7 @@ socket.on('answer', function(email, answer) {
   trace('Got answer: ' + answer.sdp);
   pc.setRemoteDescription(new RTCSessionDescription(answer),
     function(e) {
+      clearTimeout(callTimeoutID);
       current_call = email;
     },
     function() {
