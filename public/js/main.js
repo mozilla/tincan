@@ -218,33 +218,34 @@ function sendAnswerFromOffer(offer, email) {
 }
 
 socket.on('offer', function(email, offer) {
+  if(!current_call) {
+    alertify.confirm("Incoming call from " + email + "! Answer?", function (e) {
+      if (e) {
+        clearTimeout(callRequestDialog);
+        pc.onicecandidate = function (event) {
+          if (event.candidate) {
+            socket.emit('iceCandidate', email, event.candidate);
+          }
+        };
 
-  alertify.confirm("Incoming call from " + email + "! Answer?", function (e) {
-    if (e) {
-      clearTimeout(callRequestDialog);
-      pc.onicecandidate = function (event) {
-        if (event.candidate) {
-          socket.emit('iceCandidate', email, event.candidate);
+        pc.onaddstream = gotRemoteStream;
+
+        if(!localstream) {
+          getMedia(sendAnswerFromOffer, [offer, email]);
         }
-      };
-
-      pc.onaddstream = gotRemoteStream;
-
-      if(!localstream) {
-        getMedia(sendAnswerFromOffer, [offer, email]);
+        else {
+          sendAnswerFromOffer(offer, email);
+        }
+      } else {
+        clearTimeout(callRequestDialog);
+        // user clicked "cancel"
+        alertify.error("You denied the call!");
       }
-      else {
-        sendAnswerFromOffer(offer, email);
-      }
-    } else {
-      clearTimeout(callRequestDialog);
-      // user clicked "cancel"
-      alertify.error("You denied the call!");
-    }
-  });
-  callRequestDialog = setTimeout(function() {
-    alertify.closeOpen();
-  }, 10000); // 10 seconds
+    });
+    callRequestDialog = setTimeout(function() {
+      alertify.closeOpen();
+    }, 10000); // 10 seconds
+  }
 });
 
 socket.on('endCall', function(email) {
