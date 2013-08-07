@@ -1,5 +1,41 @@
-body(style="text-align:center;")
-  h1(class="title")= title
-  button(id="signin", class="btn btn-block persona-button orange", style="max-width:400px; font-size:23px; color:white; text-shadow:black 0 0 0; border-width:0px; line-height:1.1; margin:auto;")
-    span Sign in with email
-  script(src="/js/login.js")
+body
+	a(href="http://www.mozilla.org/", id="tabzilla")
+	#introduction.container		
+		br
+		br
+		br
+		br
+		br
+		br
+		.row
+			.span5
+				h1.title 
+					img(src="/img/tincan_icon.png")
+					=' Tin Can'
+				p.lead Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+				button(id="signin", class="btn btn-block persona-button orange", style="max-width:400px; font-size:23px; color:white; text-shadow:black 0 0 0; border-width:0px; line-height:1.1; margin:auto;")
+					span Sign in with email
+			div.span7
+				div(style="margin:0 30px;height:300px;background:#eee")
+			
+	div(class='containerbg')
+		div(class='container')
+			#introducing-tincan.section
+				h1.main-header= 'Welcome to Tin Can!'
+				h2.sub-header= 'awesome stuff is awesome'
+				.span4.far-left
+					img.main-img(src="/img/introducing-mozilla.png")
+					h2.subheader Lorem Ipsum
+					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+				.span4.textcenter
+					img.main-img(src="/img/introducing-mozilla.png")
+					h2.subheader Lorem Ipsum
+					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+
+				.span4.textcenter
+					img.main-img(src="/img/introducing-mozilla.png")
+					h2.subheader Lorem Ipsum
+					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+
+	script(src="/js/login.js")
+	script(src='//mozorg.cdn.mozilla.net/tabzilla/tabzilla.js')
