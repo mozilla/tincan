@@ -13,6 +13,7 @@ io.set('log level', 1); // reduce logging
 app.configure(function(){
   app.set('view engine', 'jade');
   app.set('views', __dirname + '/views');
+  app.set('view options', {pretty: true});
   app.use(express.bodyParser());
   app.use(express.methodOverride());
   app.use(express.cookieParser());
