@@ -1,17 +1,26 @@
 !!!
 html
-  head
-    meta(charset="utf-8")
-    meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1")
-    title= title
-    link(rel='stylesheet', href='/css/persona-buttons.css')
-    link(rel='stylesheet', href='/css/style.css')
-    link(rel="stylesheet", href="/css/alertify.core.css")
-    link(rel="stylesheet", href="/css/alertify.default.css")
-    link(rel="stylesheet", href="/css/bootstrap.min.css")
-    script(src="#{persona_uri}/include.js")
-    script(src='/lib/jquery.min.js')
-    script(src="/js/adapter.js")
-    script(src='/socket.io/socket.io.js')
-    script(src="/js/alertify.js")
-  != body
+	head
+		meta(charset="utf-8")
+		meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1")
+		meta(name="description", content="#")
+		meta(name="author", content="#")
+		
+		title= 'Mozilla Tin Can'
+		
+		link(rel='stylesheet', href='/css/persona-buttons.css')
+		link(rel='stylesheet', href='/css/style.css')
+		link(rel="stylesheet", href="/css/alertify.core.css")
+		link(rel="stylesheet", href="/css/alertify.default.css")
+		link(rel="stylesheet", href="/css/bootstrap.min.css")
+		
+		link(rel="apple-touch-icon-precomposed",sizes="144x144",href="#")
+		link(rel="apple-touch-icon-precomposed",sizes="114x114",href="#")
+		link(rel="apple-touch-icon-precomposed",sizes="72x72",href="#")
+		
+		script(src="#{persona_uri}/include.js")
+		script(src='/lib/jquery.min.js')
+		script(src="/js/adapter.js")
+		script(src='/socket.io/socket.io.js')
+		script(src="/js/alertify.js")
+	!= body
