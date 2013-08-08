@@ -247,18 +247,18 @@ button#btn-tryitout.towtruck-started {
 	box-shadow:0px 1px 1px rgba(0,0,0,0.5);border-radius:2px;
 }
 
-#introducing-tincan {
+.three-cross {
   color: rgba(72,72,72,1);
   background:rgba(255,255,255,1);
   margin:0px;
   padding:0px 0px 0px;
 }
 
-#introducing-tincan h1.main-header {
+.three-cross h1.main-header {
   margin-bottom:0px;
 }
 
-#introducing-tincan h2.sub-header {
+.three-cross h2.sub-header {
   font-size: 18px;
   line-height: 1.5;
   font-family: openSansRegular;
@@ -269,24 +269,24 @@ button#btn-tryitout.towtruck-started {
   font-weight:normal;
 }
 
-#introducing-tincan .far-left {
+.three-cross .far-left {
 	margin:0 auto;
 	text-align:center;
 }
 
-#introducing-tincan .span4 {
+.three-cross .span4 {
   margin-top:-60px;
 }
 
-#introducing-tincan .textcenter {
+.three-cross .textcenter {
 	text-align:center;
 }
 
-#introducing-tincan img.main-img {
+.three-cross img.main-img {
   width:360px;
 }
 
-#introducing-tincan .subheader img {
+.three-cross .subheader img {
   position:relative;top:-2px;left:0px;width:30px;padding-right:10px;
 }
 
@@ -719,7 +719,7 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
      padding-top:40px;
    }
 
-   #introducing-tincan h2.sub-header {
+   .three-cross h2.sub-header {
      padding-bottom:20px !important;
    }
 
@@ -790,7 +790,7 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
       padding-bottom:15px;
     }
 
-    #introducing-tincan h2.subheader {
+    .three-cross h2.subheader {
       margin-top:-40px !important;
     }
 
