@@ -758,6 +758,8 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
     }
     p.lead {
       text-align: center;
+      width:70%;
+      margin:0 auto;
     }
 
     p.main-text {
