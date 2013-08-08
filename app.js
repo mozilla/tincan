@@ -12,7 +12,8 @@ io.set('log level', 1); // reduce logging
 // Configuration
 app.configure(function(){
   app.set('view engine', 'jade');
-  app.set('view options', {pretty:true});
+  //app.set('view options', {pretty:true});
+  app.locals.pretty = true; 
   app.set('views', __dirname + '/views');
   app.set('view options', {pretty: true});
   app.use(express.bodyParser());
