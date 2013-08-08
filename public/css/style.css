@@ -22,8 +22,7 @@
 
 body {
   padding-bottom: 0px;
-  background-color: #1baefc;
-  color: rgb(72, 72, 72);
+  background: #1baefc url(../img/grain.png);
   font-family: openSansRegular;
 }
 
@@ -85,10 +84,6 @@ ul.nav {
 	background:none !important;
 }
 
-.navbar-wrapper {
-	background:#1baefc;
-}
-
 .navbar .brand img {
   height:20px;
   padding-right:5px;
@@ -136,41 +131,38 @@ ul.nav {
 
 
 h1.main-header {
-	color: rgb(72, 72, 72);
 	font-size:48px;font-weight:100;line-height:1;letter-spacing:-2.3px;margin:50px 0px;font-family:openSansLight;
 }
 
 h2.subheader {
 	padding-top:0px;margin-bottom:0px;font-size:30px;font-family:openSansLight;letter-spacing:-1px;margin-top:0px;
-	color:rgb(72, 72, 72);
 }
 
 p.main-text {
-	font-size:14px;line-height:1.5;font-family:openSansRegular;letter-spacing:-0.5px;color:rgb(72, 72, 72); padding:10px;
+	font-size:14px;line-height:1.5;font-family:openSansRegular;letter-spacing:-0.5px; padding:10px;
 }
 
-#introduction {
-  color: rgb(72, 72, 72);
+.blue_back {
+  color: #fff !important;
   padding-left: 2em;
   border-bottom: 0px solid #ccc;
   padding-bottom: 50px;
   margin-bottom:0px;
-  background:#1baefc;
 }
 
-#introduction .span7 {
+.blue_back .span7 {
   padding-top:20px;
 }
 
-#introduction a:focus {
+.blue_back a:focus {
 	outline:none !important;
 }
 
-#introduction .modal {
+.blue_back .modal {
 	left: 45%;
 }
 
-#introduction #video_modal button {
+.blue_back #video_modal button {
 	width: 20px;
 	height: 20px;
 	position: relative;
@@ -178,19 +170,19 @@ p.main-text {
 	top: -10px;
 }
 
-#introduction #video_modal {
+.blue_back #video_modal {
 	width:690px;
 	background:none;
 	box-shadow:0px 0px 0px;
 	border:0px;
 }
 
-#introduction #video_modal .modal-header {
+.blue_back #video_modal .modal-header {
 	border-bottom:0px;
 	border-radius:2px;
 }
 
-#introduction h1 {
+.blue_back h1.title {
   text-align: left;
   font-size:75px;
   line-height:1;
@@ -201,25 +193,25 @@ p.main-text {
   color:#fff;
 }
 
-#introduction h1 strong {
+.blue_back h1.title strong {
   font-style:normal;
   font-weight: 500;
 }
-#introduction h1 .towtruck {
+.blue_back h1.title .towtruck {
   font-weight: 600;
 }
-#introduction iframe { /*TODO: Make iframe responsive */
+.blue_back iframe { /*TODO: Make iframe responsive */
   width: 640px;
   height: 380px;
   border: 0;
 }
 
-#introduction .span5 h1 img {
+.blue_back .span5 h1 img {
   width:80px;
   padding-bottom:15px;
 }
 
-#introduction .lead {
+.blue_back .lead {
 	font-size:20px;
 	font-weight:normal;
 	line-height:1.5;
@@ -228,7 +220,7 @@ p.main-text {
 	letter-spacing:-0.01px;
 	color:#fff;
 }
-#introduction .lead strong {
+.blue_back .lead strong {
   font-family: openSansRegular;
   font-weight: bold;
   font-size: 22px;
@@ -243,13 +235,11 @@ button#btn-tryitout.towtruck-started {
     background:#f00;
 }
 
-#introduction iframe {
+.blue_back iframe {
 	box-shadow:0px 1px 1px rgba(0,0,0,0.5);border-radius:2px;
 }
 
 .three-cross {
-  color: rgba(72,72,72,1);
-  background:rgba(255,255,255,1);
   margin:0px;
   padding:0px 0px 0px;
 }
@@ -263,7 +253,6 @@ button#btn-tryitout.towtruck-started {
   line-height: 1.5;
   font-family: openSansRegular;
   letter-spacing: -0.5px;
-  color: rgb(72, 72, 72);
   padding: 10px;
   text-align:center;
   font-weight:normal;
@@ -421,7 +410,6 @@ button#btn-tryitout.towtruck-started {
 }
 
 #features {
-  color: rgba(72,72,72,1);
   background:rgba(255,255,255,1);
   margin:0px;
   padding:0px 0px 0px;
@@ -449,7 +437,6 @@ button#btn-tryitout.towtruck-started {
 }
 
 #how_to_install {
-  color: rgb(72,72,72);
   background:#fff;
   text-align: center;
   margin:0px;
@@ -499,7 +486,6 @@ input.copy-input {
 }
 
 #tryitout {
-  color: rgba(72,72,72,1);
   background:rgba(255,255,255,1);
   margin:0 auto;
   padding:0px 0px 30px;
@@ -507,7 +493,6 @@ input.copy-input {
 }
 
 footer {
-  background-color: #1baefc;
   padding: 48px;
   margin: 0;
   font-size: 1em;
@@ -640,7 +625,7 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
  /* Large desktop */
  @media (min-width: 1200px) {
 
-   #introduction h1 {
+   .blue_back h1.title {
      text-align: left;
      font-size:85px;
      line-height:1;
@@ -651,7 +636,7 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
      color:#fff;
    }
 
-   #introduction .span5 h1 img {
+   .blue_back .span5 h1 img {
      width:80px !important;
      padding-bottom:15px;
      margin-top:0px;
@@ -673,7 +658,7 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
 
  /* Medium desktop */
 /* @media (max-width: 979px) {
-   #introduction .span5 h1 img {
+   .blue_back .span5 h1 img {
      width:80px !important;
      padding-bottom:15px;
    }
@@ -691,16 +676,16 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
      display:none !important;
    }
 
-   #introduction .span5 h1 img {
+   .blue_back .span5 h1 img {
      width:40px !important;
      padding-bottom:15px;
    }
 
-   #introduction h1 {
+   .blue_back h1.title {
      font-size:60px !important;
    }
 
-   #introduction .span7 {
+   .blue_back .span7 {
      padding-top:-40px !important;
    }
 
@@ -715,7 +700,7 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
      margin-left:-20px !important;
    }
 
-   #introduction .span7 {
+   .blue_back .span7 {
      padding-top:40px;
    }
 
@@ -768,6 +753,18 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
       padding-right: 0px;
     }
 
+    h1.title {
+      text-align: center !important;
+    }
+    p.lead {
+      text-align: center;
+    }
+
+    p.main-text {
+      width:65%;
+      margin:0 auto;
+    }
+
     .containerbg .container.examples{
       padding:20px !important;
     }
@@ -781,11 +778,11 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
       padding-right:20px;
     }
 
-    #introduction {
+    .blue_back {
       padding-left:0px;
     }
 
-    #introduction .span5 h1 img {
+    .blue_back .span5 h1 img {
       width:60px !important;
       padding-bottom:15px;
     }

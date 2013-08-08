@@ -1,6 +1,6 @@
 body
 	a(href="http://www.mozilla.org/", id="tabzilla")
-	#introduction.container		
+	.blue_back.container		
 		br
 		br
 		br
@@ -33,39 +33,36 @@ body
 					img.main-img(src="/img/introducing-private.png")
 					h2.subheader Lorem Ipsum
 					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
-				.pipe
+	.container.blue_back
 		.section.three-cross
-			.container
 				h1.main-header="How It Works"
 				h2.sub-header='Three Easy Steps!'
 				.span4.far-left
-					img.main-img(src="/img/lil_browser_1.png")
-					h2.subheader Lorem Ipsum
-					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
-				.span4.textcenter
-					img.main-img(src="/img/lil_browser_2.png")
+					img.main-img(src="/img/lil_browser_3.png")
 					h2.subheader Lorem Ipsum
 					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
 				.span4.textcenter
 					img.main-img(src="/img/lil_browser_3.png")
 					h2.subheader Lorem Ipsum
 					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
-				.pipe
-		#features.section
-			.container
-				h1.main-header="Features"
-				.pipe
+				.span4.textcenter
+					img.main-img(src="/img/lil_browser_3.png")
+					h2.subheader Lorem Ipsum
+					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+	.containerbg
 		#tryitout.section
 			.container
 				h1.main-header="Try It Out"
 				p="this ish is in ALPHA, plan accordingly"
+				br
+				br
 				button(id="signin", class="btn btn-block persona-button orange", style="max-width:400px; font-size:23px; color:white; text-shadow:black 0 0 0; border-width:0px; line-height:1.1; margin:auto;")
 					span Sign in with email
-				.pipe
-	#introduction.container
+				// if you want to string two white sections together, use a pipe class between them ie: .pipe
+	.blue_back.container
 		br
 		br
 		br
-		p.lead="hey"
+		img(src="/img/logo_2.png", style="display:block;margin:0 auto;width:100px")
 	script(src="/js/login.js")
 	script(src='//mozorg.cdn.mozilla.net/tabzilla/tabzilla.js')
