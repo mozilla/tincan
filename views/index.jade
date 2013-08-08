@@ -5,37 +5,57 @@ body
 		br
 		br
 		br
-		br
-		br
 		.row
 			.span5
 				h1.title 
-					img(src="/img/tincan_icon.png")
-					=' Tin Can'
-				p.lead Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+					img(src="/img/logo_2.png")
+					=' TinCan'
+				p.lead Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor  <strong>dolore</strong> magna aliqua.
 				button(id="signin", class="btn btn-block persona-button orange", style="max-width:400px; font-size:23px; color:white; text-shadow:black 0 0 0; border-width:0px; line-height:1.1; margin:auto;")
 					span Sign in with email
 			div.span7
-				div(style="margin:0 30px;height:300px;background:#eee")
+				img(src="/img/board.png")
 			
 	div(class='containerbg')
-		div(class='container')
-			#introducing-tincan.section
-				h1.main-header= 'Welcome to Tin Can!'
+		#introducing-tincan.section
+			.container
+				h1.main-header= 'Welcome to TinCan!'
 				h2.sub-header= 'awesome stuff is awesome'
 				.span4.far-left
 					img.main-img(src="/img/introducing-mozilla.png")
 					h2.subheader Lorem Ipsum
 					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
 				.span4.textcenter
-					img.main-img(src="/img/introducing-mozilla.png")
+					img.main-img(src="/img/introducing-secure.png")
 					h2.subheader Lorem Ipsum
 					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
-
 				.span4.textcenter
-					img.main-img(src="/img/introducing-mozilla.png")
+					img.main-img(src="/img/introducing-private.png")
 					h2.subheader Lorem Ipsum
 					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+				.pipe
+		#how_it_works.section
+			.container
+				h1.main-header="How it works"
+				.row
+					ol#how_it_works_indicator.span5
+						li.active(data-slide-index="0")
+							.col-right
+								h2.subheader Lorem Ipsum Dolor
+								p.main-text Lorem Ipsum
+							.clear
+						li(data-slide-index="1")
+							.col-right
+								h2.subheader Lorem Ipsum Dolor Sit Amet
+								p.main-text Lorem Ipsum
+							.clear
+						li(data-slide-index="2")
+							.col-right
+								h2.subheader Lorem Ipsum
+								p.main-text Lorem Ipsum
+							.clear
+
+				.pipe
 
 	script(src="/js/login.js")
 	script(src='//mozorg.cdn.mozilla.net/tabzilla/tabzilla.js')

@@ -623,6 +623,15 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
   letter-spacing: -1px;
 }
 
+.pipe {
+  width:50%;
+  margin: 0 auto;
+  padding: 10px 0 0 0;
+  height:1px;
+  border-bottom:1px dashed #ccc;
+  clear:both;
+}
+
 
 
 /* RESPONSIVE CSS
