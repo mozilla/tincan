@@ -1,8 +1,14 @@
-body(style="padding-right:5px; padding-left:5px;")
+.blue_back.container    
+    br
+    br
+    .row
+      .span3
+      .span6
+        h1.title 
+          img(src="/img/logo_2.png",style="padding:0 0 15px 10px")
+          =' TinCan'
+      .span3
   div(class="toolbar")
-    div(style="float:left; border: 1px;")
-      a(href="/")
-        h3(class="apptitle")= title
     button(class="btn btn-danger logoutbtn", onclick="logout()") Logout
   div(class="callform")
     form(id='submitcontact', style="margin-top:100px;")

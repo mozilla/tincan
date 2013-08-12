@@ -6,25 +6,28 @@ body
 		br
 		br
 		.row
-			.span5
+			.span12
 				h1.title 
 					img(src="/img/logo_2.png")
 					=' TinCan'
+		.row
+			.span5
+				
 				p.lead Secure, serverless WebRTC video chat that uses Persona to sign you in.
 				p.lead <strong>No Strings Attached.</strong>
+				
+			div.span7
 				button(id="signin", class="btn btn-block persona-button orange", style="max-width:400px; font-size:23px; color:white; text-shadow:black 0 0 0; border-width:0px; line-height:1.1; margin:auto;")
 					span Sign in with email
-			div.span7
-				img(src="/img/board.png")
 			
 	div(class='containerbg')
 		#introducing-tincan.section.three-cross
 			.container
 				h1.main-header= 'Introducing TinCan!'
-				h2.sub-header= 'awesome stuff is awesome'
+				h2.sub-header= 'No strings attached'
 				.span4.far-left
 					img.main-img(src="/img/introducing-mozilla.png")
-					h2.subheader Opensource Love
+					h2.subheader 100% opensource
 					p.main-text Mozilla is the non-profit behind the web browser Firefox.
 				.span4.textcenter
 					img.main-img(src="/img/introducing-persona.png")
@@ -34,24 +37,27 @@ body
 					img.main-img(src="/img/introducing-rtc.png")
 					h2.subheader Pure client to client
 					p.main-text <a>WebRTC</a> is a free, open project that enables web browsers with Real-Time Communications (RTC) capabilities via simple Javascript APIs.
-			br
-	.container.blue_back
+				.pipe
+	.containerbg
 		.section.three-cross
-				h1.main-header="How It Works"
-				h2.sub-header='Three Easy Steps!'
+			.container
+				h1.main-header="How does it work?"
+				h2.sub-header='Three easy steps!'
 				.span4.far-left
-					img.main-img(src="/img/lil_browser_3.png")
-					h2.subheader Lorem Ipsum
-					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+					img.main-img(src="/img/step_1.png")
+					h2.subheader Log in
 				.span4.textcenter
-					img.main-img(src="/img/lil_browser_3.png")
-					h2.subheader Lorem Ipsum
-					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+					img.main-img(src="/img/step_2.png")
+					h2.subheader Invite a friend
 				.span4.textcenter
-					img.main-img(src="/img/lil_browser_3.png")
-					h2.subheader Lorem Ipsum
-					p.main-text Lorem ipsum dolor sit amet, <strong>consectetur</strong> adipisicing elit, sed do eiusmod tempor incididunt ut labore et <strong>dolore</strong> magna aliqua.
+					img.main-img(src="/img/step_3.png")
+					h2.subheader Chat!
+				.clear
 				br
+
+				p Tin Can is browser-to-browser video chat that works in the latest versions of Firefox. Tell a friend to visit this site, log in with your email and have your friend do the same, and then one of you invite the other to chat.
+				br
+				.pipe
 	.containerbg
 		#tryitout.section
 			.container
