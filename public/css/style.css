@@ -891,10 +891,6 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
 
 @media (max-width: 979px) {
 
-  
-  #signin{
-    margin: 20px auto 0 auto;
-  }
 
   .navbar {
     margin-top: 0;
@@ -931,6 +927,11 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
 
 
 @media (max-width: 767px) {
+
+ #signin{
+    margin: 20px auto 0 auto;
+  }
+  
   .navbar {
     margin-top: 0;
   }
@@ -1041,11 +1042,21 @@ p.signout button {
   vertical-align: baseline;
 }
 
-video {
+video#incomingvid {
   position: absolute;
   z-index: 999;
   top: 0;
   left: 0;
+}
+
+#signin {
+    display: block;
+    font-family: openSansRegular;
+    text-align: left;
+    padding:0;
+    padding:12px 15px 10px 15px;
+    vertical-align: middle;
+    font-size: 20px;
 }
 
 
