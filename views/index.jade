@@ -2,29 +2,25 @@ body
 	a(href="http://www.mozilla.org/", id="tabzilla")
 	.blue_back.container		
 		br
-		br
-		br
-		br
-		.row
-			.span12
-				h1.title 
-					img(src="/img/logo_2.png")
-					=' TinCan'
+		br			
 		.row
 			.span5
-				
+				h1.title 
+					img(src="/img/logo_3.png")
+					=' Tin Can'
 				p.lead Secure, serverless WebRTC video chat that uses Persona to sign you in.
 				p.lead <strong>No Strings Attached.</strong>
-				
-			div.span7
-				button(id="signin", class="btn btn-block persona-button orange", style="max-width:400px; font-size:23px; color:white; text-shadow:black 0 0 0; border-width:0px; line-height:1.1; margin:auto;")
+				button(id="signin")
 					span Sign in with email
+			div.span7
+				img(src="/img/board.png")
+				
 			
 	div(class='containerbg')
 		#introducing-tincan.section.three-cross
 			.container
 				h1.main-header= 'Introducing TinCan!'
-				h2.sub-header= 'No strings attached'
+				h2.sub-header= ''
 				.span4.far-left
 					img.main-img(src="/img/introducing-mozilla.png")
 					h2.subheader 100% opensource
@@ -42,7 +38,7 @@ body
 		.section.three-cross
 			.container
 				h1.main-header="How does it work?"
-				h2.sub-header='Three easy steps!'
+				h2.sub-header=''
 				.span4.far-left
 					img.main-img(src="/img/step_1.png")
 					h2.subheader Log in
@@ -54,16 +50,15 @@ body
 					h2.subheader Chat!
 				.clear
 				br
-
-				p Tin Can is browser-to-browser video chat that works in the latest versions of Firefox. Tell a friend to visit this site, log in with your email and have your friend do the same, and then one of you invite the other to chat.
+				br
+				p.aligncenter Tin Can is browser-to-browser video chat that works in the latest versions of Firefox. Tell a friend to visit this site, log in with your email and have your friend do the same, and then one of you invite the other to chat.
 				br
 				.pipe
 	.containerbg
 		#tryitout.section
 			.container
 				h1.main-header="Try It Out"
-				p="this ish is in ALPHA, plan accordingly"
-				br
+				p="Tin Can is in Alpha, proceed accordingly."
 				br
 				button(id="signin", class="btn btn-block persona-button orange", style="max-width:400px; font-size:23px; color:white; text-shadow:black 0 0 0; border-width:0px; line-height:1.1; margin:auto;")
 					span Sign in with email
@@ -71,7 +66,6 @@ body
 	.blue_back.container
 		br
 		br
-		br
-		img(src="/img/logo_2.png", style="display:block;margin:0 auto;width:100px")
+		img(src="/img/logo_3.png", style="display:block;margin:0 auto;width:100px")
 	script(src="/js/login.js")
 	script(src='//mozorg.cdn.mozilla.net/tabzilla/tabzilla.js')

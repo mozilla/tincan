@@ -68,6 +68,24 @@ function resetUIState() {
   addcontactbtn.disabled = false;
 }
 
+function vidResize() {
+  // var vWidth = $('video').width();
+  // var vHeight = $('video').height();
+  // var vAspectRatio = vWidth/vHeight;
+  // var h = $(document).height();
+  // var w = $(document).width();
+  // var docAspectRatio = w/h;
+  // if (vAspectRatio > docAspectRatio) {
+
+  //   $('video').height(h);
+  //   var offset = $('video').width() - w;
+  //   console.log("offset: " offset);
+  //   //$('video').css('left',);
+  // }
+  // console.log(h);
+  // console.log(w);
+}
+
 function endCall(email) {
   // console.log('Checking if currently in call with ' + email);
   if(current_call == email) {
@@ -185,6 +203,7 @@ function callEmail(email) {
         console.log('Error creating offer: ' + err);
       }, OFFERCONTRAINTS);
     console.log('tried to create offer');
+    //vidSize();
   }
 }
 
