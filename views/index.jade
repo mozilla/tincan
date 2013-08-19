@@ -1,5 +1,72 @@
-body(style="text-align:center;")
-  h1(class="title")= title
-  button(id="signin", class="btn btn-block persona-button orange", style="max-width:400px; font-size:23px; color:white; text-shadow:black 0 0 0; border-width:0px; line-height:1.1; margin:auto;")
-    span Sign in with email
-  script(src="/js/login.js")
+body
+	a(href="http://www.mozilla.org/", id="tabzilla")
+	.blue_back.container		
+		br
+		br			
+		.row
+			.span5
+				h1.title 
+					img(src="/img/logo_3.png")
+					=' Tin Can'
+				p.lead Secure, serverless WebRTC video chat that uses Persona to sign you in.
+				p.lead <strong>No Strings Attached.</strong>
+				button#signin.btn.btn-large.btn-success
+					img(src="/img/lil_persona.png", height="25",width="32")
+					=" Sign in with email"
+			div.span7
+				img(src="/img/board.png")
+				
+			
+	div(class='containerbg')
+		#introducing-tincan.section.three-cross
+			.container
+				h1.main-header= 'Introducing TinCan!'
+				h2.sub-header= ''
+				.span4.far-left
+					img.main-img(src="/img/introducing-mozilla.png")
+					h2.subheader 100% opensource
+					p.main-text Mozilla is the non-profit behind the web browser Firefox.
+				.span4.textcenter
+					img.main-img(src="/img/introducing-persona.png")
+					h2.subheader No passwords necessary
+					p.main-text Persona is a cross-browser login system from Mozilla for the Web that's easy to use and easy to deploy.
+				.span4.textcenter
+					img.main-img(src="/img/introducing-rtc.png")
+					h2.subheader Pure client to client
+					p.main-text <a>WebRTC</a> is a free, open project that enables web browsers with Real-Time Communications (RTC) capabilities via simple Javascript APIs.
+				.pipe
+	.containerbg
+		.section.three-cross
+			.container
+				h1.main-header="How does it work?"
+				h2.sub-header=''
+				.span4.far-left
+					img.main-img(src="/img/step_1.png")
+					h2.subheader Log in
+				.span4.textcenter
+					img.main-img(src="/img/step_2.png")
+					h2.subheader Invite a friend
+				.span4.textcenter
+					img.main-img(src="/img/step_3.png")
+					h2.subheader Chat!
+				.clear
+				br
+				br
+				p.aligncenter Tin Can is browser-to-browser video chat that works in the latest versions of Firefox. Tell a friend to visit this site, log in with your email and have your friend do the same, and then one of you invite the other to chat.
+				br
+				.pipe
+	.containerbg
+		#tryitout.section
+			.container
+				h1.main-header="Try It Out"
+				p="Tin Can is in Alpha, proceed accordingly."
+				br
+				button(id="signin", class="btn btn-block persona-button orange", style="max-width:400px; font-size:23px; color:white; text-shadow:black 0 0 0; border-width:0px; line-height:1.1; margin:auto;")
+					span Sign in with email
+				// if you want to string two white sections together, use a pipe class between them ie: .pipe
+	.blue_back.container
+		br
+		br
+		img(src="/img/logo_3.png", style="display:block;margin:0 auto;width:100px")
+	script(src="/js/login.js")
+	script(src='//mozorg.cdn.mozilla.net/tabzilla/tabzilla.js')

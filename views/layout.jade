@@ -8,19 +8,23 @@ html
 		
 		title= 'Mozilla Tin Can'
 		
-		link(rel='stylesheet', href='/css/persona-buttons.css')
-		link(rel='stylesheet', href='/css/style.css')
-		link(rel="stylesheet", href="/css/alertify.core.css")
-		link(rel="stylesheet", href="/css/alertify.default.css")
-		link(rel="stylesheet", href="/css/bootstrap.min.css")
-		
-		link(rel="apple-touch-icon-precomposed",sizes="144x144",href="#")
-		link(rel="apple-touch-icon-precomposed",sizes="114x114",href="#")
-		link(rel="apple-touch-icon-precomposed",sizes="72x72",href="#")
-		
 		script(src="#{persona_uri}/include.js")
 		script(src='/lib/jquery.min.js')
 		script(src="/js/adapter.js")
 		script(src='/socket.io/socket.io.js')
 		script(src="/js/alertify.js")
+		
+		link(rel='stylesheet', href='/css/persona-buttons.css')
+		link(rel="stylesheet", href="/css/alertify.core.css")
+		link(rel="stylesheet", href="/css/alertify.default.css")
+		link(rel="stylesheet", href="/css/bootstrap.min.css")
+		link(rel='stylesheet', href='/css/style.css')
+		
+		link(rel="stylesheet", href="//mozorg.cdn.mozilla.net/media/css/tabzilla-min.css")
+		
+		link(rel="shortcut icon", href="/icons/favicon.ico")
+		link(rel="apple-touch-icon-precomposed",sizes="144x144",href="#")
+		link(rel="apple-touch-icon-precomposed",sizes="114x114",href="#")
+		link(rel="apple-touch-icon-precomposed",sizes="72x72",href="#")
+		
 	!= body

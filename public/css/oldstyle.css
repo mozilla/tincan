@@ -1,0 +1,118 @@
+/*=======ALL BELOW ARE THE OLD STYLES!========*/
+
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+video {
+  border:1px solid black;
+  background-color: white;
+}
+
+body {
+  /*background: #00539F;*/
+  background-color: #00539F;
+  background-image: url(/img/bg.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+  /* Safari 4-5, Chrome 1-9 */ /* Can't specify a percentage size? Laaaaaame. */
+  background: -webkit-gradient(radial, center center, 0, center center, 460, from(#0095DD), to(#00539F));
+  /* Safari 5.1+, Chrome 10+ */
+  background: -webkit-radial-gradient(circle, #0095DD, #00539F);
+  /* Firefox 3.6+ */
+  background: -moz-radial-gradient(circle, #0095DD, #00539F); /* IE 10 */
+  background: -ms-radial-gradient(circle, #0095DD, #00539F);
+
+  color:white;
+  font: 14px/21px 'OpenSans-Reg', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
+}
+
+h3 {
+  color: white;
+}
+
+.clickable {
+  cursor:pointer;
+}
+
+.contactemail {
+  padding-left: 5px;
+  padding:3px;
+  background-color: white;
+}
+
+.title {
+  text-shadow:1px 1px 1px black;
+  color: #D4DDE4 ;
+  height:200px;
+  font: 65px 'OpenSans-Reg', "Lucida Sans", "Lucida Grande", "Lucida Sans Unicode", Verdana, sans-serif;
+}
+
+.incomingvid {
+  z-index:1;
+}
+
+.outgoingvid {
+  z-index:2;
+}
+
+.toolbar {
+  z-index: 3;
+  position:fixed;
+  top:0;
+  width:100%;
+}
+
+.callbox {
+  position: fixed;
+  z-index:4;
+  bottom: 0;
+  left: 0;
+  width:100%;
+  height: 50px;
+}
+
+.apptitle {
+  bottom:0;
+  margin:0;
+  padding-right:5px;
+  padding-left:5px;
+  color:white;
+  font-size:25pt;
+  line-height:25pt;
+  text-shadow: 0.1em 0.1em 0.05em #333;
+}
+
+.callform {
+  text-align:center;
+  top:100px;
+  border:1px;
+  clear:both;
+  margin-top:100px;
+  padding:1px;
+}
+
+.logoutbtn {
+  float:right;
+  line-height:30px;
+  margin-top:5px;
+  margin-right:10px;
+}
+
+.incomingvid {
+  visibility:hidden;
+  width:100%;
+  position:fixed;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  padding:0;
+  margin:0;
+}
+
+.outgoingvid {
+  visibility:hidden;
+  position:fixed;
+  max-width:320px;
+  bottom:0;
+  right:0;
+  float:right;
+}

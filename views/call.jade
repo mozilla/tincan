@@ -1,24 +1,38 @@
-body(style="padding-right:5px; padding-left:5px;")
-  div(class="toolbar")
-    div(style="float:left; border: 1px;")
-      a(href="/")
-        h3(class="apptitle")= title
-    button(class="btn btn-danger logoutbtn", onclick="logout()") Logout
-  div(class="callform")
-    form(id='submitcontact', style="margin-top:100px;")
-      h3(style="color:white; margin-bottom:0;") enter email to call
-      fieldset
-        input(id="contactemail", autocomplete="off", type="email", placeholder="Email...", style="margin:4px; height:24pt;")
-        br
-        button(type="submit", autocomplete="off", id="addcontactbtn", class="btn btn-large btn-success") Call
-    h3(style="color:white;") or tell your friend to call&nbsp;
-      u(style="color:white;")
-        i(id="selectemail", onclick="selectEmail();")= email
-  div(class="callbox hidden")
-    div(style="text-align: center;")
-      button(class="btn btn-large btn-danger", onclick="endCurrentCall();") End call
-  video(id="incomingvid", class="incomingvid", autoplay)
-  video(id="outgoingvid", class="outgoingvid", autoplay)
+.blue_back.container  
+  .lil_container
+      h1.screen_title 
+          img(src="/img/logo_3.png")
+          =' Tin Can'
+      .toolbar
+      .callform
+        hr
+        form#submitcontact
+          ol
+            li Have a friend sign in to <strong>http://tincan.im</strong>
+            li Get your smile ready
+            li Place a call
+              span.smaller 
+                ="...or receive calls at" 
+                  u
+                    em(id="selectemail", onclick="selectEmail();")= email
+          fieldset
+            input#contactemail(autocomplete="off",type="email",placeholder="Email...")
+            button#addcontactbtn.btn.btn-large.btn-success(type="submit", autocomplete="off") Call
+          //button(class="btn btn-danger logoutbtn", onclick="logout()") Logout
+        hr
+        p.signout
+          img(src="/img/lil_persona.png", height="35", width="45")
+          =" Signed in as " 
+          span(id="selectemail", onclick="selectEmail();")= email
+          span  |
+          button(onclick="logout()") Logout
+    
+div(class="callbox hidden")
+  div(style="text-align: center;")
+    button(class="btn btn-large btn-danger", onclick="endCurrentCall();") End call
+video(id="incomingvid", class="incomingvid", autoplay)
+video(id="outgoingvid", class="outgoingvid", autoplay)
   script.
     var socket = io.connect('!{server}');
+    $('body').css('overflow','hidden');
   script(src="/js/main.js")
