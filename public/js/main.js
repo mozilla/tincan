@@ -170,9 +170,8 @@ function callEmail(email) {
     if(debug) trace("Adding Local Stream to peer connection");
     pc.createOffer(
       function (offer) {
-        console.log('got offer: ' + offer);
         pc.setLocalDescription(new RTCSessionDescription(offer));
-        if(debug) trace("Offer from outgoing \n" + offer.sdp);
+        if(debug) trace("Created offer \n" + offer.sdp);
         socket.emit('offer', email, offer);
         // update UI
         addcontactbtn.innerHTML = "Calling " + email + "...";
@@ -218,6 +217,7 @@ function sendAnswerFromOffer(offer, email) {
 }
 
 socket.on('offer', function(email, offer) {
+  trace('Received offer: ' + offer.sdp);
   if(!current_call) {
     alertify.confirm("Incoming call from " + email + "! Answer?", function (e) {
       if (e) {
@@ -253,7 +253,7 @@ socket.on('endCall', function(email) {
 });
 
 socket.on('answer', function(email, answer) {
-  trace('Got answer: ' + answer.sdp);
+  trace('Received answer: ' + answer.sdp);
   pc.setRemoteDescription(new RTCSessionDescription(answer),
     function(e) {
       clearTimeout(callTimeoutID);
