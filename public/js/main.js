@@ -58,8 +58,8 @@ function endCurrentCall() {
 function resetUIState() {
   document.getElementById("outgoingvid").src = "";
   document.getElementById("incomingvid").src = "";
-  document.getElementById("outgoingvid").style.visibility = "hidden";
-  document.getElementById("incomingvid").style.visibility = "hidden";
+  document.getElementById("outgoingvid").style.display = "none";
+  document.getElementById("incomingvid").style.display = "none";
 
   $(".callbox").addClass('hidden');
   $(".callform").removeClass('hidden');
@@ -68,23 +68,6 @@ function resetUIState() {
   addcontactbtn.disabled = false;
 }
 
-function vidResize() {
-  // var vWidth = $('video').width();
-  // var vHeight = $('video').height();
-  // var vAspectRatio = vWidth/vHeight;
-  // var h = $(document).height();
-  // var w = $(document).width();
-  // var docAspectRatio = w/h;
-  // if (vAspectRatio > docAspectRatio) {
-
-  //   $('video').height(h);
-  //   var offset = $('video').width() - w;
-  //   console.log("offset: " offset);
-  //   //$('video').css('left',);
-  // }
-  // console.log(h);
-  // console.log(w);
-}
 
 function endCall(email) {
   // console.log('Checking if currently in call with ' + email);
@@ -202,21 +185,20 @@ function callEmail(email) {
         console.log('Error creating offer: ' + err);
       }, OFFERCONTRAINTS);
     console.log('tried to create offer');
-    //vidSize();
   }
 }
 
 function gotRemoteStream(e) {
   if(debug) trace(e.stream);
   document.getElementById("incomingvid").src = window.URL.createObjectURL(e.stream);
-  document.getElementById("incomingvid").style.visibility = "visible"; // not hidden anymore
+  document.getElementById("incomingvid").style.display = "block"; // not hidden anymore
   $(".callform").addClass("hidden");
   $(".callbox").removeClass('hidden');
 }
 
 function gotLocalStream(stream) {
   pc.addStream(stream);
-  document.getElementById("outgoingvid").style.visibility = "visible"; // not hidden anymore
+  document.getElementById("outgoingvid").style.display = "block"; // not hidden anymore
   document.getElementById("outgoingvid").src = window.URL.createObjectURL(stream); // add preview
 
   localstream = stream;
