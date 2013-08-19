@@ -931,7 +931,7 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
  #signin{
     margin: 20px auto 0 auto;
   }
-  
+
   .navbar {
     margin-top: 0;
   }
@@ -1043,10 +1043,23 @@ p.signout button {
 }
 
 video#incomingvid {
-  position: absolute;
-  z-index: 999;
+  position: fixed;
+  z-index: 900;
   top: 0;
   left: 0;
+  min-width:100%;
+  min-height:100%;
+  display: none;
+}
+
+video#outgoingvid {
+  position:fixed;
+  z-index: 999;
+  bottom:10px;
+  right:10px;
+  width:150px;
+  box-shadow: 0 0 30px #000;
+  display:none;
 }
 
 #signin {
@@ -1059,4 +1072,15 @@ video#incomingvid {
     font-size: 20px;
 }
 
+#end_call {
+  z-index: 999;
+  position: fixed;
+  font-family: openSansRegular;
+  bottom:10px;
+  left:10px;
+}
+
+.alertify {
+  font-family: openSansRegular !important;
+}
 
