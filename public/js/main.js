@@ -6,6 +6,10 @@ var debug = true; // true to log messages
 var callRequestDialog = null;
 var pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
 
+if(pc.setIdentityProvider) {
+  pc.setIdentityProvider(idp_provider, idp_protocol, idp_username);
+}
+
 alertify.set({ buttonFocus: "cancel" });
 
 var LOCALCONTRAINTS = {
@@ -75,6 +79,9 @@ function endCall(email) {
     current_call = null;
     pc.close();
     pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+    if(pc.setIdentityProvider) {
+      pc.setIdentityProvider(idp_provider, idp_protocol, idp_username);
+    }
     localstream.stop();
     localstream = null;
     alertify.success("The call was ended!");
@@ -85,6 +92,9 @@ function endCall(email) {
 function noAnswer() {
   pc.close();
   pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+  if(pc.setIdentityProvider) {
+    pc.setIdentityProvider(idp_provider, idp_protocol, idp_username);
+  }
 
   if(localstream) {
     localstream.stop();
