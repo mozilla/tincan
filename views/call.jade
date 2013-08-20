@@ -34,5 +34,8 @@ div(class="callbox hidden")
     video(id="outgoingvid", class="outgoingvid", autoplay)
 script.
   var socket = io.connect('!{server}');
+  var idp_provider = '!{idp_provider}';
+  var idp_protocol = '!{idp_protocol}';
+  var idp_username = '!{idp_username}';
   $('body').css('overflow','hidden');
 script(src="/js/main.js")
