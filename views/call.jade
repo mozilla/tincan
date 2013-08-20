@@ -1,18 +1,18 @@
-.blue_back.container  
+.blue_back.container
   .lil_container
       .toolbar
       .callform
-        h1.screen_title 
+        h1.screen_title
           img(src="/img/logo_3.png")
-          =' Tin Can'
+          &nbsp; #{title}
         hr
         form#submitcontact
           ol
             li Have a friend sign in to <strong>http://tincan.im</strong>
             li Get your smile ready
             li Place a call
-              span.smaller 
-                ="...or receive calls at" 
+              span.smaller
+                ="...or receive calls at"
                   u
                     em(id="selectemail", onclick="selectEmail();")= email
           fieldset
@@ -22,11 +22,11 @@
         hr
         p.signout
           img(src="/img/lil_persona.png", height="35", width="45")
-          =" Signed in as " 
+          =" Signed in as "
           span(id="selectemail", onclick="selectEmail();")= email
           span  |
           button(onclick="logout()") Logout
-    
+
 div(class="callbox hidden")
   div(style="text-align: center;")
     button#end_call(class="btn btn-large btn-danger", onclick="endCurrentCall();") End call

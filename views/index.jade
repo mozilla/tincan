@@ -1,13 +1,13 @@
 body
 	a(href="http://www.mozilla.org/", id="tabzilla")
-	.blue_back.container		
+	.blue_back.container
 		br
-		br			
+		br
 		.row
 			.span5
-				h1.title 
+				h1.title
 					img(src="/img/logo_3.png")
-					=' Tin Can'
+					&nbsp; #{title}
 				p.lead Secure, serverless WebRTC video chat that uses Persona to sign you in.
 				p.lead <strong>No Strings Attached.</strong>
 				button#signin.btn.btn-large.btn-success
@@ -15,12 +15,12 @@ body
 					=" Sign in with email"
 			div.span7
 				img(src="/img/board.png")
-				
-			
+
+
 	div(class='containerbg')
 		#introducing-tincan.section.three-cross
 			.container
-				h1.main-header= 'Introducing TinCan!'
+				h1.main-header Introducing #{title}!
 				h2.sub-header= ''
 				.span4.far-left
 					img.main-img(src="/img/introducing-mozilla.png")
@@ -33,7 +33,7 @@ body
 				.span4.textcenter
 					img.main-img(src="/img/introducing-rtc.png")
 					h2.subheader Pure client to client
-					p.main-text <a>WebRTC</a> is a free, open project that enables web browsers with Real-Time Communications (RTC) capabilities via simple Javascript APIs.
+					p.main-text <a href="http://www.webrtc.org/" target="_blank">WebRTC</a> is a free, open project that enables web browsers with Real-Time Communications (RTC) capabilities via simple Javascript APIs.
 				.pipe
 	.containerbg
 		.section.three-cross
@@ -52,14 +52,14 @@ body
 				.clear
 				br
 				br
-				p.aligncenter Tin Can is browser-to-browser video chat that works in the latest versions of Firefox. Tell a friend to visit this site, log in with your email and have your friend do the same, and then one of you invite the other to chat.
+				p.aligncenter #{title} is browser-to-browser video chat that works in the latest versions of Firefox. Tell a friend to visit this site, log in with your email and have your friend do the same, and then one of you invite the other to chat.
 				br
 				.pipe
 	.containerbg
 		#tryitout.section
 			.container
 				h1.main-header="Try It Out"
-				p="Tin Can is in Alpha, proceed accordingly."
+				p #{title} is in Alpha, proceed accordingly.
 				br
 				button#signin.btn.btn-large.btn-success(style="margin:0 auto")
 					img(src="/img/lil_persona.png", height="25",width="32")
