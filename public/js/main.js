@@ -4,11 +4,9 @@ var current_call = null;
 var callTimeoutID = null;
 var debug = true; // true to log messages
 var callRequestDialog = null;
-var pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+var pc; // peer connection
 
-if(pc.setIdentityProvider) {
-  pc.setIdentityProvider(idp_provider, idp_protocol, idp_username);
-}
+var RTCPeerConnectionID = RTCPeerConnectionID || null;
 
 alertify.set({ buttonFocus: "cancel" });
 
@@ -78,7 +76,14 @@ function endCall(email) {
   if(current_call == email) {
     current_call = null;
     pc.close();
-    pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+
+    if(!!RTCPeerConnectionID) {
+      pc = new RTCPeerConnectionID(PCCONFIG, PCCONSTRAINTS);
+    }
+    else {
+      pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+    }
+
     if(pc.setIdentityProvider) {
       pc.setIdentityProvider(idp_provider, idp_protocol, idp_username);
     }
@@ -91,7 +96,13 @@ function endCall(email) {
 
 function noAnswer() {
   pc.close();
-  pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+  if(!!RTCPeerConnectionID) {
+    pc = new RTCPeerConnectionID(PCCONFIG, PCCONSTRAINTS);
+  }
+  else {
+    pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+  }
+
   if(pc.setIdentityProvider) {
     pc.setIdentityProvider(idp_provider, idp_protocol, idp_username);
   }
@@ -153,6 +164,19 @@ submitcontact.oninput = function(e) {
 };
 
 function callEmail(email) {
+  if(!pc) {
+    if(!!RTCPeerConnectionID) {
+      pc = new RTCPeerConnectionID(PCCONFIG, PCCONSTRAINTS);
+    }
+    else {
+      pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+    }
+
+    if(pc.setIdentityProvider) {
+      pc.setIdentityProvider(idp_provider, idp_protocol, idp_username);
+    }
+  }
+
   if(!localstream) {
     getMedia(callEmail, [email]);
   }
@@ -172,7 +196,7 @@ function callEmail(email) {
     pc.onaddstream = gotRemoteStream;
 
     pc.onicecandidate = function (event) {
-      console.log("ice cand: " + event.candidate);
+      if(debug) console.log("ice cand: " + event.candidate);
       if (event.candidate) {
         socket.emit('iceCandidate', email, event.candidate);
       }
@@ -183,7 +207,7 @@ function callEmail(email) {
       function (offer) {
         pc.setLocalDescription(new RTCSessionDescription(offer));
         if(debug) trace("Created offer \n" + offer.sdp);
-        socket.emit('offer', email, offer);
+        socket.emit('offer', email, { type: offer.type, sdp: offer.sdp });
         // update UI
         addcontactbtn.innerHTML = "Calling " + email + "...";
         addcontactbtn.disabled = true;
@@ -218,7 +242,7 @@ function sendAnswerFromOffer(offer, email) {
   pc.setRemoteDescription(new RTCSessionDescription(offer), function() {
     pc.createAnswer(function(ans) {
       pc.setLocalDescription(new RTCSessionDescription(ans));
-      socket.emit('answer', email, ans);
+      socket.emit('answer', email, { type: ans.type, sdp: ans.sdp });
       current_call = email;
     }, null, null);
   }, function(err){
@@ -228,6 +252,18 @@ function sendAnswerFromOffer(offer, email) {
 }
 
 socket.on('offer', function(email, offer) {
+  if(!pc) {
+    if(!!RTCPeerConnectionID) {
+      pc = new RTCPeerConnectionID(PCCONFIG, PCCONSTRAINTS);
+    }
+    else {
+      pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+    }
+
+    if(pc.setIdentityProvider) {
+      pc.setIdentityProvider(idp_provider, idp_protocol, idp_username);
+    }
+  }
   trace('Received offer: ' + offer.sdp);
   if(!current_call) {
     alertify.confirm("Incoming call from " + email + "! Answer?", function (e) {
@@ -277,7 +313,19 @@ socket.on('answer', function(email, answer) {
 });
 
 socket.on('iceCandidate', function(email, cand) {
-  console.log("got candidate from email: " + email);
-  console.log(JSON.stringify(cand));
+  if(!pc) {
+    if(!!RTCPeerConnectionID) {
+      pc = new RTCPeerConnectionID(PCCONFIG, PCCONSTRAINTS);
+    }
+    else {
+      pc = new RTCPeerConnection(PCCONFIG, PCCONSTRAINTS);
+    }
+
+    if(pc.setIdentityProvider) {
+      pc.setIdentityProvider(idp_provider, idp_protocol, idp_username);
+    }
+  }
+  if(debug) console.log("got candidate from email: " + email);
+  if(debug) console.log(JSON.stringify(cand));
   pc.addIceCandidate(new RTCIceCandidate(cand));
 });
