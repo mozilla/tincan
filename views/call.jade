@@ -31,7 +31,7 @@ div(class="callbox hidden")
   div(style="text-align: center;")
     button#end_call(class="btn btn-large btn-danger", onclick="endCurrentCall();") End call
     video(id="incomingvid", class="incomingvid", autoplay)
-    video(id="outgoingvid", class="outgoingvid", autoplay)
+    video(id="outgoingvid", class="outgoingvid", autoplay, muted)
 script.
   var socket = io.connect('!{server}');
   var idp_provider = '!{idp_provider}';
