@@ -66,8 +66,8 @@ function resetUIState() {
   $(".callbox").addClass('hidden');
   $(".callform").removeClass('hidden');
   contactemail.value = "";
-  addcontactbtn.innerHTML = "Call";
-  addcontactbtn.disabled = false;
+  callbtn.innerHTML = "Call";
+  callbtn.disabled = false;
 }
 
 
@@ -144,6 +144,19 @@ function start() {
   getMedia();
 }
 
+submitcontact.oninput = function(e) {
+  var contactemail = document.getElementById('contactemail');
+  if(contactemail.value) {
+    var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i)
+    if(match) {
+      document.getElementById('callbtn').disabled = false;
+    }
+    else {
+      document.getElementById('callbtn').disabled = true;
+    }
+  }
+}
+
 /**
  * On the add of a contact
  * @param  {Event} e    event fired
@@ -153,14 +166,12 @@ submitcontact.onsubmit = function(e) {
   e.preventDefault();
   e.stopPropagation();
   var contactemail = document.getElementById('contactemail');
-  contactemail.checkValidity();
-  if(contactemail.validity.valid && contactemail.value !== "") {
-    callEmail(contactemail.value);
+  if(contactemail.value) {
+    var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i)
+    if(match) {
+      callEmail(match[0]);
+    }
   }
-};
-
-submitcontact.oninput = function(e) {
-  addcontactbtn.innerHTML = "Call " + contactemail.value;
 };
 
 function callEmail(email) {
@@ -209,8 +220,8 @@ function callEmail(email) {
         if(debug) trace("Created offer \n" + offer.sdp);
         socket.emit('offer', email, { type: offer.type, sdp: offer.sdp });
         // update UI
-        addcontactbtn.innerHTML = "Calling " + email + "...";
-        addcontactbtn.disabled = true;
+        callbtn.innerHTML = "Calling " + email + "...";
+        callbtn.disabled = true;
         callTimeoutID = setTimeout(function() {
           noAnswer();
         }, 10000); // 10 seconds to answer
@@ -329,3 +340,5 @@ socket.on('iceCandidate', function(email, cand) {
   if(debug) console.log(JSON.stringify(cand));
   pc.addIceCandidate(new RTCIceCandidate(cand));
 });
+
+$(".alert").alert()

@@ -5,27 +5,23 @@
         h1.screen_title
           img(src="/img/logo_3.png")
           &nbsp; #{title}
-        hr
         form#submitcontact
-          ol
-            li Have a friend sign in to <strong>http://tincan.im</strong>
-            li Get your smile ready
-            li Place a call
-              span.smaller
-                ="...or receive calls at"
-                  u
-                    em(id="selectemail", onclick="selectEmail();")= email
+          div.online-status
+            div.online-circle(title="Online.")
+            span &nbsp;<b>#{email}</b> is ready to chat at: <b>http://tincan.im<b>
+          //- div(class="alert")
+          //-   button(type="button", class="close", data-dismiss="alert") &times;
+          //-   span No answer from friend@domain.com  &nbsp;<a href="#">Try again</a>.
+          //- div(class="alert alert-success")
+          //-   button(type="button", class="close", data-dismiss="alert") &times;
+          //-   span Call ended with friend@domain.com  &nbsp;<a href="#">Call back</a>.
+          h3.place-call Place a call to...
           fieldset
-            input#contactemail(type="email",placeholder="Email...")
-            button#addcontactbtn.btn.btn-large.btn-success(type="submit", autocomplete="off") Call
-          //button(class="btn btn-danger logoutbtn", onclick="logout()") Logout
+            input#contactemail(type="text", placeholder="Email address")
+            button#callbtn.btn.btn-large.btn-success(type="submit", autocomplete="off", disabled) Call
         hr
-        p.signout
-          img(src="/img/lil_persona.png", height="35", width="45")
-          =" Signed in as "
-          span(id="selectemail", onclick="selectEmail();")= email
-          span  |
-          button(onclick="logout()") Logout
+        span.moz-foot This an open source project by Mozilla.
+        button(class="signout", onclick="logout()") Sign out.
 
 div(class="callbox hidden")
   div(style="text-align: center;")

@@ -843,11 +843,11 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
       display: block;
       margin: 0 auto;
     }
-   
+
    #tryitout h1.main-header {
      padding:10px;
    }
-   
+
    #how_to_install #disclaimer {
      padding:10px;
    }
@@ -980,18 +980,16 @@ h1.screen_title img {
   border:none;
   line-height: 24px;
   height:30px;
-
+  /*color:black;*/
 }
 
-#addcontactbtn {
+#callbtn {
   width:100%;
   display: block;
   margin:0 auto 10px auto;
   padding:15px 20px !important;
   font-family:openSansRegular;
   font-size: 24px;
-
-
 }
 
 #submitcontact {
@@ -1021,25 +1019,17 @@ strong {
   font-size: 16px;
 }
 
-p.signout {
+button.signout {
   font-size: 16px;
   text-align: center;
   vertical-align: baseline;
-  line-height: 1em;
-}
-
-p.signout button {
   background: none;
   border:none;
-  font-size: 15px;
   padding:0;
-  margin:0;
   display: inline;
   line-height: normal;
-  height:22px;
   color:#fff;
   font-family: openSansBold;
-  vertical-align: baseline;
 }
 
 video#incomingvid {
@@ -1084,5 +1074,27 @@ video#outgoingvid {
   font-family: openSansRegular !important;
 }
 
+.online-circle {
+  width: 20px;
+  height: 20px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  background-color: #22FF07;
+  float:left;
+}
 
+.online-status {
+  margin-top:10px;
+  margin-bottom:20px;
+}
 
+.place-call {
+  line-height: 22px;
+  margin-bottom: 0;
+  margin-bottom: 10px;
+}
+
+.moz-foot {
+  font-family: openSansLight;
+}
