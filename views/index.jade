@@ -8,10 +8,11 @@ body
 				h1.title
 					img(src="/img/logo_3.png")
 					&nbsp; #{title}
-				p.lead Secure, serverless WebRTC video chat that uses Persona to sign you in. <b>No strings attached.</b>
+				p.lead WebRTC video chat that uses Persona to sign you in. <b>No strings attached.</b>
 				button#signin.btn.btn-large.btn-success
 					img(src="/img/lil_persona.png", height="25",width="32")
 					=" Sign in with email"
+				span(class="label label-important", style="padding:10px; margin-top:1em;") HIGHLY EXPERIMENTAL – No HTTPS, sign-in uses non-production Persona
 			div.span7
 				img(src="/img/board.png")
 
@@ -59,11 +60,7 @@ body
 			.container
 				h1.main-header="Try It Out"
 				p #{title} is in Alpha, proceed accordingly.
-				br
-				button#signin.btn.btn-large.btn-success(style="margin:0 auto")
-					img(src="/img/lil_persona.png", height="25",width="32")
-					=" Sign in with email"
-				// if you want to string two white sections together, use a pipe class between them ie: .pipe
+				//- if you want to string two white sections together, use a pipe class between them ie: .pipe
 	.blue_back.container
 		br
 		br
