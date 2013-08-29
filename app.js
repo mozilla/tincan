@@ -7,7 +7,7 @@ var express = require('express'),
 var app = module.exports = express.createServer();
 var io = socketio.listen(app);
 
-io.set('log level', 1); // reduce logging
+io.set('log level', 0); // reduce logging
 
 // Configuration
 app.configure(function(){
@@ -53,7 +53,7 @@ function getCookie(cookie_string, c_var) {
       y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
       x=x.replace(/^\s+|\s+$/g,"");
       if (x===c_var) {
-        return unescape(y);
+        return decodeURIComponent(y);
       }
     }
   }
@@ -76,7 +76,6 @@ io.sockets.on('connection', function(socket) {
       // socket joins room based on email
       var email = sess.email;
       socket.join(email);
-      console.log('socket ' + socket.id + " joined room: " + email);
     }
   });
 
@@ -94,7 +93,6 @@ io.sockets.on('connection', function(socket) {
       else {
         var from_email = sess.email;
         io.sockets.in(email).emit('offer', from_email, offer);
-        console.log('sending offer from ' + from_email + " to " + email);
       }
     });
   });
@@ -108,7 +106,6 @@ io.sockets.on('connection', function(socket) {
       else {
         var from_email = sess.email;
         io.sockets.in(email).emit('endCall', from_email);
-        console.log('endCall from ' + from_email + " to " + email);
       }
     });
   });
@@ -122,7 +119,6 @@ io.sockets.on('connection', function(socket) {
       else {
         var from_email = sess.email;
         io.sockets.in(email).emit('answer', from_email, answer, offer);
-        console.log('sending answer from ' + from_email + " to " + email);
       }
     });
   });
