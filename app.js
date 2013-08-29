@@ -2,7 +2,7 @@ var express = require('express'),
     routes = require('./routes'),
     socketio = require('socket.io'),
     config = require('./config'),
-    store = new express.session.MemoryStore;
+    store = new express.session.MemoryStore();
 
 var app = module.exports = express.createServer();
 var io = socketio.listen(app);
@@ -39,11 +39,6 @@ app.get('/', routes.index);
 app.post('/login', routes.login);
 app.get('/logout', routes.logout);
 
-function send_to_socket(id, args) {
-  var to = io.sockets.socket(id);
-  to.emit.apply(to, args);
-}
-
 /**
 * This function is used to parse a variable value from a cookie string.
 * @param {String} cookie_string The cookie to parse.
@@ -57,7 +52,7 @@ function getCookie(cookie_string, c_var) {
       x=ARRcookies[i].substr(0,ARRcookies[i].indexOf("="));
       y=ARRcookies[i].substr(ARRcookies[i].indexOf("=")+1);
       x=x.replace(/^\s+|\s+$/g,"");
-      if (x==c_var) {
+      if (x===c_var) {
         return unescape(y);
       }
     }
