@@ -1,6 +1,21 @@
 {
   "name": "tincan",
+  "description": "A WebRTC demonstration",
   "version": "0.0.1",
+  "author": {
+    "name" : "Mozilla",
+    "url" : "https://mozilla.org/"
+  },
+  "licenses" : [{
+    "type": "MPL 2.0",
+    "url": "https://mozilla.org/MPL/2.0/"
+  }],
+  "homepage": "http://tincan.im/",
+  "bugs": "https://github.com/mozilla/tincan/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mozilla/tincan"
+  },
   "private": true,
   "dependencies": {
     "express": "2.5.x",
