@@ -5,6 +5,9 @@ var callTimeoutID = null;
 var debug = true; // true to log messages
 var callRequestDialog = null;
 var pc; // peer connection
+var favicanvas = document.createElement('canvas');
+var favicontimer;
+var favicontimer2;
 
 var RTCPeerConnectionID = RTCPeerConnectionID || null;
 
@@ -147,7 +150,7 @@ function start() {
 submitcontact.oninput = function(e) {
   var contactemail = document.getElementById('contactemail');
   if(contactemail.value) {
-    var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i)
+    var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i);
     if(match) {
       document.getElementById('callbtn').disabled = false;
     }
@@ -155,7 +158,7 @@ submitcontact.oninput = function(e) {
       document.getElementById('callbtn').disabled = true;
     }
   }
-}
+};
 
 /**
  * On the add of a contact
@@ -167,7 +170,7 @@ submitcontact.onsubmit = function(e) {
   e.stopPropagation();
   var contactemail = document.getElementById('contactemail');
   if(contactemail.value) {
-    var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i)
+    var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i);
     if(match) {
       callEmail(match[0]);
     }
@@ -262,6 +265,43 @@ function sendAnswerFromOffer(offer, email) {
   });
 }
 
+function activateIncomingCallFavicon() {
+  var link;
+  if(isFirefox) {
+    link = document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = '/icons/incoming.gif';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  }
+  else {
+    var context = favicanvas.getContext('2d');
+    link = document.getElementById('favicon');
+    favicontimer = setInterval(function() {
+      context.rect(0,0,300,300);
+      context.fillStyle = '#22FF07';
+      context.fill();
+      link.href = favicanvas.toDataURL();
+      favicontimer2 = setTimeout(function() {
+        context.rect(0,0,300,300);
+        context.fillStyle = 'rgb(235,57,221);';
+        context.fill();
+        link.href = favicanvas.toDataURL();
+      }, 400);
+    }, 800);
+  }
+}
+
+function deactivateIncomingCallFavicon() {
+  clearTimeout(favicontimer);
+  clearTimeout(favicontimer2);
+  var link = document.createElement('link');
+  link.type = 'image/x-icon';
+  link.rel = 'shortcut icon';
+  link.href = '/icons/favicon.ico';
+  document.getElementsByTagName('head')[0].appendChild(link);
+}
+
 socket.on('offer', function(email, offer) {
   if(!pc) {
     if(!!RTCPeerConnectionID) {
@@ -277,6 +317,7 @@ socket.on('offer', function(email, offer) {
   }
   trace('Received offer: ' + offer.sdp);
   if(!current_call) {
+    activateIncomingCallFavicon();
     alertify.confirm("Incoming call from " + email + "! Answer?", function (e) {
       if (e) {
         clearTimeout(callRequestDialog);
@@ -299,9 +340,11 @@ socket.on('offer', function(email, offer) {
         // user clicked "cancel"
         alertify.error("You denied the call!");
       }
+      deactivateIncomingCallFavicon();
     });
     callRequestDialog = setTimeout(function() {
       alertify.closeOpen();
+      deactivateIncomingCallFavicon();
     }, 10000); // 10 seconds
   }
 });
@@ -341,4 +384,4 @@ socket.on('iceCandidate', function(email, cand) {
   pc.addIceCandidate(new RTCIceCandidate(cand));
 });
 
-$(".alert").alert()
+$(".alert").alert();

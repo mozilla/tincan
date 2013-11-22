@@ -6,8 +6,10 @@ var webrtcDetectedBrowser = null;
 var SessionDescription = null;
 var PCCONFIG = null;
 var PCCONSTRAINTS = null;
+var isFirefox;
 
 if (navigator.mozGetUserMedia) {
+  isFirefox = true;
   console.log("This appears to be Firefox");
 
   PCCONFIG = {"iceServers":[{"url":"stun:stun.services.mozilla.com"}]};
@@ -51,6 +53,7 @@ if (navigator.mozGetUserMedia) {
     return [];
   };
 } else if (navigator.webkitGetUserMedia) {
+  isFirefox = false;
   console.log("This appears to be Chrome");
 
   webrtcDetectedBrowser = "chrome";
