@@ -1098,3 +1098,10 @@ video#outgoingvid {
 .moz-foot {
   font-family: openSansLight;
 }
+
+.warninglabel {
+  padding: 10px;
+  margin-top: 1em;
+  white-space: pre-line;
+  display: block;
+}
