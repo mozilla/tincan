@@ -1100,6 +1100,11 @@ video#outgoingvid {
   font-family: openSansLight;
 }
 
+.moz-foot a {
+  text-decoration:underline;
+  color: white;
+}
+
 .warninglabel {
   padding: 10px;
   margin-top: 1em;
