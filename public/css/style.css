@@ -956,14 +956,14 @@ background:#05A44F;border-radius:2px;font-size:17px;font-weight:normal;line-heig
 
 h1.screen_title {
   text-align: left;
-  font-size:72px;
-  line-height:1;
-  letter-spacing:-2px;
-  font-weight:normal;
-  font-family:openSansLight;
-  margin-top:10px;
-  color:#fff;
-  margin-bottom:0;
+  font-size: 65px;
+  line-height: 1;
+  letter-spacing: -2px;
+  font-weight: normal;
+  font-family: openSansLight;
+  margin-top: 10px;
+  color: #fff;
+  margin-bottom: 0;
   text-align: center;
 }
 
@@ -1011,8 +1011,9 @@ strong {
 }
 
 .lil_container {
-  width:430px;
+  max-width:430px;
   margin:30px auto 0 auto;
+  padding: 0 10px 0 10px;
 }
 
 .smaller {
