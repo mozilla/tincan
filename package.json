@@ -1,20 +1,20 @@
 {
   "name": "tincan",
-  "description": "A WebRTC demonstration",
+  "description": "Secure calls. No strings attached.",
   "version": "0.0.1",
   "author": {
-    "name" : "Mozilla",
-    "url" : "https://mozilla.org/"
+    "name" : "Ryan Seys",
+    "url" : "https://ryanseys.com/"
   },
   "licenses" : [{
     "type": "MPL 2.0",
     "url": "https://mozilla.org/MPL/2.0/"
   }],
   "homepage": "http://tincan.im/",
-  "bugs": "https://github.com/mozilla/tincan/issues",
+  "bugs": "https://github.com/mozilla/ryanseys/issues",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mozilla/tincan"
+    "url": "https://github.com/ryanseys/tincan"
   },
   "private": true,
   "dependencies": {
@@ -23,9 +23,6 @@
     "jade": ">=0.0.1",
     "socket.io": "0.9.x",
     "request": "~2.21.0"
-  },
-  "devDependencies" : {
-    "awsbox" : "*"
   },
   "scripts": {
     "start": "node app.js"
