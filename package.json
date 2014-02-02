@@ -11,7 +11,7 @@
     "url": "https://mozilla.org/MPL/2.0/"
   }],
   "homepage": "http://tincan.im/",
-  "bugs": "https://github.com/mozilla/ryanseys/issues",
+  "bugs": "https://github.com/ryanseys/tincan/issues",
   "repository": {
     "type": "git",
     "url": "https://github.com/ryanseys/tincan"
