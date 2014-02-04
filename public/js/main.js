@@ -173,6 +173,7 @@ submitcontact.onsubmit = function(e) {
     var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i);
     if(match) {
       callEmail(match[0]);
+      addEmailtoCookies(contactemail.value);
     }
   }
 };
@@ -401,3 +402,69 @@ $("#outgoingvid").click(function(){
     }, 500);
 });
 
+  /*
+  creates cookies
+  @param {String} name -  of coookie
+  @param {String} valie - value of coookie
+  @param {number} days -  number of days for coookie to stay active
+  */
+function createCookie(name,value,days) {
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime()+(days*24*60*60*1000));
+    var expires = "; expires="+date.toGMTString();
+  }
+  else var expires = "";
+  document.cookie = name+"="+value+expires+"; path=/";
+}
+
+  /*
+  creates cookies
+  @param {String} name -  of coookie
+  @return {String} valie - value of coookie
+  */
+
+function readCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+    var c = ca[i];
+    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  }
+  return null;
+}
+
+  /*
+  * erases cookies
+  * @param {String} name -  of coookie
+  */
+function eraseCookie(name) {
+  createCookie(name,"",-1);
+}
+
+  /*
+  * adds email to list of cookies
+  * @param {String} email -  email address string
+  */
+function addEmailtoCookies(email){
+  var emails = readCookie("emails");
+  console.log(emails);
+  emails = emails + "," + email;
+  createCookie(emails);
+}
+
+function createEmailButtonsFromCookies(){
+  var emailArray = createCookie("emails").split(',');
+  emailArray.forEach(function (elem){
+    addEmailButtonShortcut(elem);
+  });
+}
+
+function addEmailButtonShortcut(email){
+  var emailElem =  $( "<div/>",
+  {
+    "class":"emailShortcut"
+  });
+  $(emailElem).insertAfter(".place-call");
+}
