@@ -8,6 +8,7 @@ var pc; // peer connection
 var favicanvas = document.createElement('canvas');
 var favicontimer;
 var favicontimer2;
+var emailList = [];
 
 var RTCPeerConnectionID = RTCPeerConnectionID || null;
 
@@ -173,6 +174,7 @@ submitcontact.onsubmit = function(e) {
     var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i);
     if(match) {
       callEmail(match[0]);
+      addEmailtoCookies(contactemail.value);
     }
   }
 };
@@ -385,3 +387,111 @@ socket.on('iceCandidate', function(email, cand) {
 });
 
 $(".alert").alert();
+
+/*
+* bind event to toggle between smaller and larger out going video box
+*/
+$("#outgoingvid").click(function(){
+  var width = $("#outgoingvid").width();
+  //toggle between 150px and 300px;
+  if (width > 150){
+    width = 150;
+  }
+  else{
+    width = 300;
+  }
+  $("#outgoingvid").animate({
+      width: width
+    }, 500);
+});
+
+  /*
+  creates cookies
+  @param {String} name -  of coookie
+  @param {String} valie - value of coookie
+  @param {number} days -  number of days for coookie to stay active
+  */
+function createCookie(name,value,days) {
+  if (days) {
+    var date = new Date();
+    date.setTime(date.getTime()+(days*24*60*60*1000));
+    var expires = "; expires="+date.toGMTString();
+  }
+  else var expires = "";
+  document.cookie = name+"="+value+expires+"; path=/";
+}
+
+  /*
+  creates cookies
+  @param {String} name -  of coookie
+  @return {String} valie - value of coookie
+  */
+
+function readCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie.split(';');
+  for(var i=0;i < ca.length;i++) {
+    var c = ca[i];
+    while (c.charAt(0)==' ') c = c.substring(1,c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+  }
+  return null;
+}
+
+  /*
+  * erases cookies
+  * @param {String} name -  of coookie
+  */
+function eraseCookie(name) {
+  createCookie(name,"",-1);
+}
+
+  /*
+  * adds email to list of cookies
+  * @param {String} email -  email address string
+  */
+function addEmailtoCookies(email){
+  var emailListString = readCookie("emails");
+  if(!emailListString){
+    console.log("creating emails");
+    createCookie('emails', "");
+    emailListString = "";
+  }
+  console.log(emailListString);
+  emailListString = emailListString + "," + email;
+  createCookie("emails", emailListString);
+}
+
+  /*
+  * creates emails buttons from list of emails stored in cookies
+  */
+function createEmailButtonsFromCookies(){
+  var emailArray = readCookie("emails").split(',');
+  emailArray.forEach(function (elem){
+    if (emailList.indexOf(elem) < 0 && elem.length > 0){  //don't add duplicates or 0 length strings
+      addEmailButtonShortcut(elem);
+      emailList.push(elem);
+    }
+  });
+}
+
+
+  /*
+  * adds email button to the DOM
+  * @param {String} email -  email address string
+  */
+function addEmailButtonShortcut(email){
+  var emailElem =  $( "<div/>",
+  {
+    "class":"emailShortcut btn btn-info"
+  });
+  $(emailElem).append(email);
+  $(emailElem).click(function(){
+    callEmail($(emailElem)[0].textContent);
+  });
+  $(emailElem).insertAfter(".place-call");
+}
+
+$(document).ready(function(){
+  createEmailButtonsFromCookies();
+});
