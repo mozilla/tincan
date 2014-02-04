@@ -385,3 +385,19 @@ socket.on('iceCandidate', function(email, cand) {
 });
 
 $(".alert").alert();
+
+/*
+* bind event to toggle between smaller and larger out going video box
+*/
+$("#outgoingvid").click(function(){
+  var width = $("#outgoingvid").width();
+  //toggle between 150px and 300px;
+  if (width > 150)
+    width = 150
+  else
+    width = 300
+  $("#outgoingvid").animate({
+      width: width
+    }, 500);
+});
+
