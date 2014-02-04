@@ -8,6 +8,7 @@ var pc; // peer connection
 var favicanvas = document.createElement('canvas');
 var favicontimer;
 var favicontimer2;
+var emailList = [];
 
 var RTCPeerConnectionID = RTCPeerConnectionID || null;
 
@@ -393,10 +394,12 @@ $(".alert").alert();
 $("#outgoingvid").click(function(){
   var width = $("#outgoingvid").width();
   //toggle between 150px and 300px;
-  if (width > 150)
-    width = 150
-  else
-    width = 300
+  if (width > 150){
+    width = 150;
+  }
+  else{
+    width = 300;
+  }
   $("#outgoingvid").animate({
       width: width
     }, 500);
@@ -448,23 +451,47 @@ function eraseCookie(name) {
   * @param {String} email -  email address string
   */
 function addEmailtoCookies(email){
-  var emails = readCookie("emails");
-  console.log(emails);
-  emails = emails + "," + email;
-  createCookie(emails);
+  var emailListString = readCookie("emails");
+  if(!emailListString){
+    console.log("creating emails");
+    createCookie('emails', "");
+    emailListString = "";
+  }
+  console.log(emailListString);
+  emailListString = emailListString + "," + email;
+  createCookie("emails", emailListString);
 }
 
+  /*
+  * creates emails buttons from list of emails stored in cookies
+  */
 function createEmailButtonsFromCookies(){
-  var emailArray = createCookie("emails").split(',');
+  var emailArray = readCookie("emails").split(',');
   emailArray.forEach(function (elem){
-    addEmailButtonShortcut(elem);
+    if (emailList.indexOf(elem) < 0 && elem.length > 0){  //don't add duplicates or 0 length strings
+      addEmailButtonShortcut(elem);
+      emailList.push(elem);
+    }
   });
 }
 
+
+  /*
+  * adds email button to the DOM
+  * @param {String} email -  email address string
+  */
 function addEmailButtonShortcut(email){
   var emailElem =  $( "<div/>",
   {
-    "class":"emailShortcut"
+    "class":"emailShortcut btn btn-info"
+  });
+  $(emailElem).append(email);
+  $(emailElem).click(function(){
+    callEmail($(emailElem)[0].textContent);
   });
   $(emailElem).insertAfter(".place-call");
 }
+
+$(document).ready(function(){
+  createEmailButtonsFromCookies();
+});
