@@ -174,7 +174,10 @@ submitcontact.onsubmit = function(e) {
     var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i);
     if(match) {
       callEmail(match[0]);
-      addEmailtoCookies(contactemail.value);
+      addEmailButtonShortcut(contactemail.value);
+      if(emailList.indexOf(contactemail.value) < 0){
+        addEmailtoCookies(contactemail.value);
+      }
     }
   }
 };
@@ -481,11 +484,26 @@ function createEmailButtonsFromCookies(){
   * @param {String} email -  email address string
   */
 function addEmailButtonShortcut(email){
-  var emailElem =  $( "<div/>",
-  {
-    "class":"emailShortcut btn btn-info"
-  });
+  if (emailList.indexOf(email) < 0 && email.length > 0){  //don't add duplicates or 0 length strings
+    var emailElem =  $( "<div/>",
+    {
+      "class":"emailShortcut btn btn-info"
+    });
+  }
   $(emailElem).append(email);
+
+  var removeIconElement = $("<i/>",
+    {
+      "class" : "fa fa-times-circle-o remove-icon"
+    });
+
+  $(removeIconElement).click(function(){
+    removeEmailFromCookies(email);
+    $(emailElem).remove();
+  })
+
+  $(emailElem).append(removeIconElement);
+
   $(emailElem).click(function(){
     callEmail($(emailElem)[0].textContent);
   });
@@ -495,3 +513,13 @@ function addEmailButtonShortcut(email){
 $(document).ready(function(){
   createEmailButtonsFromCookies();
 });
+
+function removeEmailFromCookies(email){
+  var index = emailList.indexOf(email);
+  if(index < 0){
+    throw "email not in list";
+    return;
+  }
+  emailList.splice(index,1);
+  createCookie("emails", emailList.toString());
+};
