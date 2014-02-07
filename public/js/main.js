@@ -473,7 +473,6 @@ function createEmailButtonsFromCookies(){
   emailArray.forEach(function (elem){
     if (emailList.indexOf(elem) < 0 && elem.length > 0){  //don't add duplicates or 0 length strings
       addEmailButtonShortcut(elem);
-      emailList.push(elem);
     }
   });
 }
@@ -485,6 +484,7 @@ function createEmailButtonsFromCookies(){
   */
 function addEmailButtonShortcut(email){
   if (emailList.indexOf(email) < 0 && email.length > 0){  //don't add duplicates or 0 length strings
+    emailList.push(email);
     var emailElem =  $( "<div/>",
     {
       "class":"emailShortcut btn btn-info"
@@ -498,6 +498,7 @@ function addEmailButtonShortcut(email){
     });
 
   $(removeIconElement).click(function(){
+    console.log("removing eamil");
     removeEmailFromCookies(email);
     $(emailElem).remove();
   })
