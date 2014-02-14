@@ -174,7 +174,9 @@ submitcontact.onsubmit = function(e) {
     var match = contactemail.value.match(/^[\w.!#$%&'*+\-\/=?\^`{|}~]+@[a-z\d\-]+(\.[a-z\d\-]+)+$/i);
     if(match) {
       callEmail(match[0]);
-      addEmailtoCookies(contactemail.value);
+      if(emailList.indexOf(contactemail.value) < 0){
+        addEmailObject(contactemail.value);
+      }
     }
   }
 };
@@ -451,6 +453,7 @@ function eraseCookie(name) {
   * @param {String} email -  email address string
   */
 function addEmailtoCookies(email){
+  console.log("adding email to cookie: " + email)
   var emailListString = readCookie("emails");
   if(!emailListString){
     console.log("creating emails");
@@ -466,13 +469,17 @@ function addEmailtoCookies(email){
   * creates emails buttons from list of emails stored in cookies
   */
 function createEmailButtonsFromCookies(){
-  var emailArray = readCookie("emails").split(',');
-  emailArray.forEach(function (elem){
-    if (emailList.indexOf(elem) < 0 && elem.length > 0){  //don't add duplicates or 0 length strings
-      addEmailButtonShortcut(elem);
-      emailList.push(elem);
-    }
-  });
+  var emailCookie = readCookie("emails");
+  var tempEmailArray;
+  if(emailCookie){
+    tempEmailArray = emailCookie.split(',');
+    tempEmailArray.forEach(function (elem){
+      if (emailList.indexOf(elem) < 0 && elem.length > 0){  //don't add duplicates or 0 length strings
+        addEmailButton(elem);
+        emailList.push(elem);
+      }
+    });
+  }
 }
 
 
@@ -480,18 +487,54 @@ function createEmailButtonsFromCookies(){
   * adds email button to the DOM
   * @param {String} email -  email address string
   */
-function addEmailButtonShortcut(email){
+function addEmailButton(email){
   var emailElem =  $( "<div/>",
   {
     "class":"emailShortcut btn btn-info"
   });
+
   $(emailElem).append(email);
+
+  var removeIconElement = $("<i/>",
+    {
+      "class" : "fa fa-times-circle-o remove-icon"
+    });
+
+  $(removeIconElement).click(function(){
+    console.log("removing eamil");
+    removeEmailFromCookies(email);
+    $(emailElem).remove();
+
+  })
+
+  $(emailElem).append(removeIconElement);
+
   $(emailElem).click(function(){
     callEmail($(emailElem)[0].textContent);
   });
   $(emailElem).insertAfter(".place-call");
 }
 
+function addEmailObject(email){
+  if (emailList.indexOf(email) < 0 && email.length > 0){  //don't add duplicates or 0 length strings
+    emailList.push(email);
+    addEmailButton(email);
+    addEmailtoCookies(email);
+  }
+  else
+    throw "duplicate email";
+}
+
 $(document).ready(function(){
   createEmailButtonsFromCookies();
 });
+
+function removeEmailFromCookies(email){
+  var index = emailList.indexOf(email);
+  if(index < 0){
+    throw "email not in list";
+    return;
+  }
+  emailList.splice(index,1);
+  createCookie("emails", emailList.toString());
+};
