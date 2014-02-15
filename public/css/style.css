@@ -1111,3 +1111,15 @@ video#outgoingvid {
   white-space: pre-line;
   display: block;
 }
+
+.emailShortcut {
+/*  margin-top: 5px;*/
+  margin-bottom: 5px;
+  margin-right: 5px;
+  padding-right: 3px;
+}
+
+.remove-icon{
+  margin-left: 7px;
+  color: rgba(255, 255, 255, 0.67);
+}
